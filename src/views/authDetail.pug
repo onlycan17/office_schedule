@@ -1,0 +1,28 @@
+extends base
+include mixins/departments
+
+block content
+    if errorMessage 
+        span=errorMessage
+    form(method="post")
+        input(placeholder="권한명", name="name", type="text", required, value=auth.name)
+        select(name="userId")
+            option(value="") 선택
+            each item in userList
+                option(value=`${item._id}`) #{item.name}_#{item.email}
+        select(name="departmentId")
+            option(value="") 선택
+            each item in departmentList
+                option(value=`${item._id}`) #{item.name}        
+        input(type="submit", value="저장")    
+    ul.list
+        each item in auth.user.reverse()
+            li
+                span #{item.name}
+                span #{item.email}
+                a(href=`/authUserDelete/${auth._id}/${item._id}`) ❌  
+    ul.list
+        each item in auth.department.reverse()
+            li
+                span #{item.name}
+                a(href=`/authDepartmentDelete/${auth._id}/${item._id}`) ❌                  
