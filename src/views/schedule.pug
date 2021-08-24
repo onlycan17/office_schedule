@@ -1,0 +1,10 @@
+extends base
+
+block content
+    if errorMessage 
+        span=errorMessage
+    div(id="calendar") 
+    input(id="calValue", type="hidden", value="11")
+block scripts
+    script(src="/static/js/schedule.js") 
+    link(rel="stylesheet", href="/static/css/main.css")

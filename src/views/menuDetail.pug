@@ -19,33 +19,34 @@ block content
         input(type="submit", value="등록")        
     
     ul 
-        each item, index in subMenuDetail.subMenu
-            li 
-                span #{item.subMenuName}
-                span #{item.subMenuUrl} 
-                span #{item.order}
-                each userItem in item.user 
-                    span #{userItem.name}_#{userItem.email}
-                else 
-                    span 사용자 없음
-                each departmentItem in item.department
-                    sapn #{departmentItem.name}
-                else 
-                    span 부서 없음
-                select(name="userAuth", id=`userAuth_${item._id}`)
-                    option(value="") 선택
-                    each item in userList
-                        option(value=`${item._id}`) #{item.name}_#{item.email}
-                select(name="departmentAuth", id=`departmentAuth_${item._id}`)
-                    option(value="") 선택
-                    each item in departmentList
-                        option(value=`${item._id}`) #{item.name}
-                button(id="btnAdd", onclick=`addAuth('${menucheck._id}','${item._id}','${index}')`) 추가등록
-                a(href=`/subMenuDelete/${menucheck._id}/${item._id}`) ❌                    
-        else 
-            li 
-                span 서브메뉴를 등록해 주세요.
+        if subMenuDetail.subMenu
+            each item, index in subMenuDetail.subMenu
+                li 
+                    span #{item.subMenuName}
+                    span #{item.subMenuUrl} 
+                    span #{item.order}
+                    each userItem in item.user 
+                        span #{userItem.name}_#{userItem.email}
+                    else 
+                        span 사용자 없음
+                    each departmentItem in item.department
+                        sapn #{departmentItem.name}
+                    else 
+                        span 부서 없음
+                    select(name="userAuth", id=`userAuth_${item._id}`)
+                        option(value="") 선택
+                        each item in userList
+                            option(value=`${item._id}`) #{item.name}_#{item.email}
+                    select(name="departmentAuth", id=`departmentAuth_${item._id}`)
+                        option(value="") 선택
+                        each item in departmentList
+                            option(value=`${item._id}`) #{item.name}
+                    button(id="btnAdd", onclick=`addAuth('${menucheck._id}','${item._id}','${index}')`) 추가등록
+                    a(href=`/menuDetailDelete/${menucheck._id}/${item._id}`) ❌                    
+            else 
+                li 
+                    span 서브메뉴를 등록해 주세요.
 
 block scripts
     script(src="//code.jquery.com/jquery-3.4.1.min.js")
-    script(src="/static/js/menu.js") 
+    script(src="/static/js/menu.ojs") 

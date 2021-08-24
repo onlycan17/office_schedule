@@ -7,34 +7,40 @@ import bcrypt from "bcrypt";
 export const getLogin = (req, res) =>
   res.render("login", { pageTitle: "Login" });
 
-export const postLogin = async(req, res) => {
-  const pageTitle = '로그인';
+export const postLogin = async (req, res) => {
+  const pageTitle = "로그인";
   const { email, password } = req.body;
-  const user = await User.findOne({ email });
-  if (!user) {
-    return res.status(400).render("login", {
-      pageTitle,
-      errorMessage: "해당 계정이 존재하지 않습니다.",
-    });
+  try {
+    const user = await User.findOne({ email })
+      .populate("department")
+      .populate({ path: "menu", populate: { path: "subMenu" } });
+    if (!user) {
+      return res.status(400).render("login", {
+        pageTitle,
+        errorMessage: "해당 계정이 존재하지 않습니다.",
+      });
+    }
+    const ok = await bcrypt.compare(password, user.password);
+    if (!ok) {
+      return res.status(400).render("login", {
+        pageTitle,
+        errorMessage: "아이디/패스워드 입력을 다시 확인해 주세요.",
+      });
+    }
+    req.session.loggedIn = true;
+    req.session.user = user;
+    req.flash("info", "로그인 성공!");
+    return res.redirect("/home");
+  } catch (error) {
+    return res.sendStatus(404);
   }
-  const ok = await bcrypt.compare(password, user.password);
-  if (!ok) {
-    return res.status(400).render("login", {
-      pageTitle,
-      errorMessage: "아이디/패스워드 입력을 다시 확인해 주세요.",
-    });
-  }
-  req.session.loggedIn = true;
-  req.session.user = user;
-  req.flash("info","로그인 성공!");
-  return res.redirect("/home");
 };
 
 export const logout = (req, res) => {
-  req.flash("info","Bye Bye");
+  req.flash("info", "Bye Bye");
   req.session.destroy();
   return res.redirect("/");
-}
+};
 
 export const getJoin = async (req, res) => {
   const partList = await Department.find();

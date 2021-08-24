@@ -5,24 +5,26 @@ import { getDeleteDepartmentDetail, getDepartment, getDepartmentDetail, postDepa
 import { getMenu,getMenuDetail,getSubMenuDelete,postMenu, postMenuDetail, subMenuAuthAdd } from "../controller/menuController";
 import { getAuth, getAuthDetail, postAuth } from "../controller/authController";
 import { home } from "../controller/homeController";
+import { getSchedule } from "../controller/scheduleController";
 
 const router = express.Router();
 
-router.route("/home").all(localsMiddleware).get(home);
+router.route("/home").all(localsMiddleware).all(protectorMiddleware).get(home);
 router.route("/").all(localsMiddleware).get(getLogin).post(postLogin);
 router.route("/logout").all(localsMiddleware).get(logout);
-router.route("/join").all(localsMiddleware).get(getJoin).post(postJoin);
+router.route("/join").all(protectorMiddleware).get(getJoin).post(postJoin);
 
-router.route("/department").all(localsMiddleware).get(getDepartment).post(postDepartment);
-router.route("/departmentDetail/:id([0-9a-f]{24})").all(localsMiddleware).get(getDepartmentDetail).post(postDepartmentDetail);
-router.route("/departmentDetailDelete/:departmentId([0-9a-f]{24})/:userId([0-9a-f]{24})").all(localsMiddleware).get(getDeleteDepartmentDetail);
+router.route("/department").all(protectorMiddleware).get(getDepartment).post(postDepartment);
+router.route("/departmentDetail/:id([0-9a-f]{24})").all(protectorMiddleware).get(getDepartmentDetail).post(postDepartmentDetail);
+router.route("/departmentDetailDelete/:departmentId([0-9a-f]{24})/:userId([0-9a-f]{24})").all(protectorMiddleware).get(getDeleteDepartmentDetail);
 
-router.route("/menu").all(localsMiddleware).get(getMenu).post(postMenu);
-router.route("/menuDetail/:id([0-9a-f]{24})").all(localsMiddleware).get(getMenuDetail).post(postMenuDetail)
-router.route("/subMenuDelete/:menuId([0-9a-f]{24})/:subMenuId([0-9a-f]{24})").all(localsMiddleware).get(getSubMenuDelete);
-router.route("/subMenuAuthAdd").patch(subMenuAuthAdd);
+router.route("/menu").all(protectorMiddleware).get(getMenu).post(postMenu);
+router.route("/menuDetail/:id([0-9a-f]{24})").all(protectorMiddleware).get(getMenuDetail).post(postMenuDetail)
+router.route("/menuDetailDelete/:menuId([0-9a-f]{24})/:subMenuId([0-9a-f]{24})").all(protectorMiddleware).get(getSubMenuDelete);
+router.route("/menuDetailAuthAdd").all(protectorMiddleware).patch(subMenuAuthAdd);
 
-router.route("/auth").all(localsMiddleware).get(getAuth).post(postAuth);
-router.route("/authDetail/:id([0-9a-f]{24})").all(localsMiddleware).get(getAuthDetail);
+router.route("/auth").all(protectorMiddleware).get(getAuth).post(postAuth);
+router.route("/authDetail/:id([0-9a-f]{24})").all(protectorMiddleware).get(getAuthDetail);
 
+router.route("/schedule").all(protectorMiddleware).get(getSchedule);
 export default router;
