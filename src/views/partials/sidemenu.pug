@@ -1,5 +1,9 @@
 ul.sidemenu 
-    li
-        a(href="/calendar") 스케줄
-    li
-        a(href="/test") 테스트
+    each item in menuList 
+        li
+            a(href=`${item.menuUrl}`) #{item.menuName}
+            if(item.subMenu)
+                ul
+                    each subItem in item.subMenu
+                        li
+                            a(href=`${subItem.subMenuUrl}`) #{subItem.subMenuName}

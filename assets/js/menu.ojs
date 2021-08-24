@@ -16,7 +16,7 @@ function addAuth(menuId,subMenuId,idx){
   console.log(form_data);
   $.ajax({
     type:"patch",
-    url:"/subMenuAuthAdd",
+    url:"/menuDetailAuthAdd",
     data:form_data,
     success: function (res){
       console.log(res);

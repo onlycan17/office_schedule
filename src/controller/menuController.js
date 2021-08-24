@@ -39,11 +39,15 @@ export const postMenu = async (req, res) => {
       department.menu.push(menu._id);
       department.save();
     }
+    menu.save();
     return res.redirect("/menu");
   } catch (error) {
-    const menuList = await Menu.find();
+    const menuList = await Menu.find()
+      .populate({ path: "user" })
+      .populate({ path: "department" });
     const departmentList = await Department.find();
     const userList = await User.find();
+    console.log(error);
     return res.status(400).render("menu", {
       pageTitle: "menu 등록",
       errorMessage: error._message,
@@ -55,6 +59,8 @@ export const postMenu = async (req, res) => {
 };
 
 export const getMenuDetail = async (req, res) => {
+  console.log("---------getMenuDetail------------");
+  console.log(req.params);
   const { id } = req.params;
   const menucheck = await Menu.findById(id);
   //console.log(menucheck.user.length);
@@ -93,14 +99,16 @@ export const postMenuDetail = async (req, res) => {
   const { id } = req.params;
   //console.log(req.body);
   //console.log(req.params);
-  const departmentList = await Department.find();
-  const userList = await User.find();
   let menudetailObj;
   try {
     const checkSubMenu = await Menu.findOne({
+      _id: id,
       subMenu: {
         $elemMatch: {
-          $or: [{ subMenuName }, { order }],
+          subMenuName,
+        },
+        $elemMatch: {
+          order,
         },
       },
     });
@@ -118,12 +126,14 @@ export const postMenuDetail = async (req, res) => {
           populate: { path: "user", select: "_id name email" },
         });
       }
-      return res.status(404).render("menuDetail/" + id, {
+      console.log("------?------");
+      return res.status(404).render("menuDetail", {
         pageTitle: "메뉴등록 상세페이지",
         errorMessage: "이미 등록된 메뉴정보(메뉴명,정렬순서) 입니다.",
         departmentList,
         userList,
         menucheck,
+        subMenuDetail,
       });
     }
     menudetailObj = id ? await Menu.findById(id) : null;
@@ -156,7 +166,7 @@ export const postMenuDetail = async (req, res) => {
     //console.log(menudetailObj);
     return res.redirect("/menuDetail/" + id);
   } catch (error) {
-    //console.log(error);
+    console.log(error);
     const departmentList = await Department.find();
     const userList = await User.find();
     let subMenuDetail;
@@ -167,7 +177,9 @@ export const postMenuDetail = async (req, res) => {
         populate: { path: "user", select: "_id name email" },
       });
     }
-    return res.status(400).render("menuDetail/"+id, {
+    console.log("--------------------------");
+    console.log(subMenuDetail);
+    return res.status(400).render("menuDetail", {
       pageTitle: "menu 등록 상세페이지",
       errorMessage: error._message,
       menucheck: menudetailObj,
@@ -184,13 +196,14 @@ export const getSubMenuDelete = async (req, res) => {
     const menu = await Menu.findById(menuId).populate("subMenu");
     menu.subMenu.pull(subMenuId);
     menu.save();
+    const user = await User.findById();
     return res.redirect("/menuDetail/" + menuId);
   } catch (error) {
     const departmentList = await Department.find();
     const userList = await User.find();
     let subMenuDetail;
     if (menucheck.subMenu) {
-        subMenuDetail = await Menu.findById(menuId).populate({
+      subMenuDetail = await Menu.findById(menuId).populate({
         path: "subMenu",
         populate: { path: "department" },
         populate: { path: "user", select: "_id name email" },
@@ -207,19 +220,23 @@ export const getSubMenuDelete = async (req, res) => {
   }
 };
 
-export const subMenuAuthAdd = async (req,res) => {
-    console.log('subMenuAuthAdd');
-    console.log(req.body);
-    const {menuId,subMenuId,idx,userId,departmentId} = req.body;
-    const menu = await Menu.findById(menuId).populate(subMenuId);
-    if(userId){
-        menu.subMenu[idx].user.push(userId)
-    }
-    if(departmentId){
-      menu.subMenu[idx].department.push(departmentId);  
-    }
-    menu.save();
-    res.json({
-        message:'success'
-    });
-}
+export const subMenuAuthAdd = async (req, res) => {
+  console.log("subMenuAuthAdd");
+  console.log(req.body);
+  const { menuId, subMenuId, idx, userId, departmentId } = req.body;
+  const menu = await Menu.findById(menuId).populate(subMenuId);
+  if (userId) {
+    menu.subMenu[idx].user.push(userId);
+    const user = await User.findById(userId);
+    user.menu.push(menu.subMenu[idx]._id);
+  }
+  if (departmentId) {
+    menu.subMenu[idx].department.push(departmentId);
+    const department = await Department.findById(departmentId);
+    department.menu.push(menu.subMenu[idx]._id);
+  }
+  menu.save();
+  res.json({
+    message: "success",
+  });
+};

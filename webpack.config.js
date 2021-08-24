@@ -7,16 +7,21 @@ module.exports = {
   entry: {
       main: BASE_JS + "main.js",
       department: BASE_JS + "department.js",
+      schedule: BASE_JS + "schedule.js",
+     // menu: BASE_JS + "menu.js",
+  },
+  resolve: {
+    extensions: ['.js'],
   },
   plugins: [
       new MiniCssExtractPlugin({
-          filename: "css/styles.css",
+          filename: "/css/main.css",
       }),
   ],
   output: {
     filename: "js/[name].js",
     path: path.resolve(__dirname, "assets"),
-    clean: true,
+    clean: false,
   },
   module: {
     rules: [
@@ -30,8 +35,8 @@ module.exports = {
         },
       },
       {
-          test: /\.scss$/,
-          use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+          test: /\.css$/,
+          use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
     ],
   },
