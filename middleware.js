@@ -32,40 +32,41 @@ export const localsMiddleware = async (req, res, next) => {
 };
 
 export const protectorMiddleware = async (req, res, next) => {
+  if (req.session.loggedIn) {
     let flag = false;
-    req.session.user.menu.forEach(menu => {
-      menu.subMenu.forEach(subMenu => {
-        if(req.url.indexOf(subMenu.subMenuUrl) != -1){
-            flag = true;
+    req.session.user.menu.forEach((menu) => {
+      menu.subMenu.forEach((subMenu) => {
+        if (req.url.indexOf(subMenu.subMenuUrl) != -1) {
+          flag = true;
         }
       });
     });
-    
-    if(req.url !=='/home' && !flag){
-        res.sendStatus(404);
+
+    if (req.url !== "/home" && !flag) {
+      res.sendStatus(404);
     }
 
     const menuList = await Menu.find({
-    $or: [
-      { user: req.session.user._id },
-      { department: req.session.user.department },
-    ],
-    subMenu: {
-      $elemMatch: {
-        $or: [
-          { user: req.session.user._id },
-          { department: req.session.user.department },
-        ],
+      $or: [
+        { user: req.session.user._id },
+        { department: req.session.user.department },
+      ],
+      subMenu: {
+        $elemMatch: {
+          $or: [
+            { user: req.session.user._id },
+            { department: req.session.user.department },
+          ],
+        },
       },
-    },
-  });
+    });
 
-  res.locals.menuList = menuList;
-  res.locals.loggedIn = req.session.loggedIn;
-  res.locals.siteName = "명작";
-  res.locals.loggedInUser = req.session.user || {};
-  res.locals.isHeroku = isHeroku;
-  if (req.session.loggedIn) {
+    res.locals.menuList = menuList;
+    res.locals.loggedIn = req.session.loggedIn;
+    res.locals.siteName = "명작";
+    res.locals.loggedInUser = req.session.user || {};
+    res.locals.isHeroku = isHeroku;
+
     return next();
   } else {
     req.flash("error", "세션이 종료되었습니다. 로그인페이지로 이동합니다.");
