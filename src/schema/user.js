@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String, require: true },
   department: { type: mongoose.Schema.Types.ObjectId, ref: "Department" },
   menu: [{ type: mongoose.Schema.Types.ObjectId, ref: "Menu"}],
+  color: {type: String, require: true},
 });
 
 userSchema.pre("save", async function () {

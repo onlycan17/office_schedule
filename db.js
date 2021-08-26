@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 console.log("test : "+process.env.DB_URL);
 
-mongoose.connect(process.env.DB_URL,
+const connection = mongoose.connect(process.env.DB_URL,
 {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -10,6 +10,8 @@ mongoose.connect(process.env.DB_URL,
     useCreateIndex: true,
 }
 );
+
+
 
 const db = mongoose.connection;
 

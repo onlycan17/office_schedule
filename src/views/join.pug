@@ -3,16 +3,9 @@ extends base
 block content
     if errorMessage 
         span=errorMessage
-    form(method="post")
-        input(placeholder="성명", name="name", type="text", required)
-        input(placeholder="이메일",name="email", type="email", required)
-        input(placeholder="비밀번호",name="password", type="password", required)
-        input(placeholder="비밀번호 확인", name="password2", type="password", required)
-        select(name="partId")
-            option(value="") 선택
-            each item in partList
-                option(value=`${item._id}`) #{item.name}
-        input(type="submit", value="Join")
     div 
+        a(href="/joinAdd") 사용자등록
+    ul 
         each j in userList 
-            span #{j.name}    
+            li 
+                a(href=`/join/${j._id}`) #{j.name}    

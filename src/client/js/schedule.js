@@ -5,12 +5,18 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import listPlugin from "@fullcalendar/list";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
+import fetch from "node-fetch";
 import "../css/main.css";
+import { async } from "regenerator-runtime";
 
 const modal = document.querySelector(".modal");
 const coloseButton = document.querySelector(".close-button");
 const cancelButton = document.querySelector("#cancel");
 const submitButton = document.querySelector("#submit");
+const color = document.getElementById("color").value;
+const calValue = document.getElementById("calValue").value;
+const user = document.getElementById("user").value;
+const department = document.getElementById("department").value;
 
 coloseButton.addEventListener("click", toggleModal);
 submitButton.addEventListener("click", addParam);
@@ -21,7 +27,7 @@ let globalCalendar;
 
 document.addEventListener("DOMContentLoaded", function () {
   const calendarEl = document.getElementById("calendar");
-  const value = document.getElementById("calValue");
+  const value = document.getElementById("calValue").value;
 
   const calendar = new Calendar(calendarEl, {
     plugins: [
@@ -34,7 +40,8 @@ document.addEventListener("DOMContentLoaded", function () {
     ],
     schedulerLicenseKey: "XXX",
     themeSystem: "bootstrap",
-    now: "2018-02-07",
+    //now: "2018-02-07",
+    now: new Date(),
     editable: true, // enable draggable events
     aspectRatio: 1.8,
     scrollTime: "00:00", // undo default 6am scrollTime
@@ -109,10 +116,31 @@ document.addEventListener("DOMContentLoaded", function () {
       allDay = arg.allDay;
       toggleModal();
     },
-    eventAdd: function (obj) {
+    eventAdd: async function (obj) {
       // 이벤트가 추가되면 발생하는 이벤트
       console.log("eventAdd");
       console.log(obj);
+      const form_data = {
+        title,
+        description,
+        url,
+        start,
+        end,
+        allDay,
+        color,
+        user,
+        department,
+      };
+      const flag = await fetch("/AddSchedule", {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form_data),
+      });
+      if(flag.status === 200){
+        alert('저장완료!');
+      }
     },
     eventChange: function (obj) {
       // 이벤트가 수정되면 발생하는 이벤트
@@ -123,6 +151,22 @@ document.addEventListener("DOMContentLoaded", function () {
       // 이벤트가 삭제되면 발생하는 이벤트
       console.log("eventDelete");
       console.log(obj);
+    },
+    customButtons: {
+      prev: {
+        text: "Prev",
+        click: function () {
+          console.log("PREV");
+          calendar.prev();
+        },
+      },
+      next: {
+        text: "Next",
+        click: function () {
+          console.log("NEXT");
+          calendar.next();
+        },
+      },
     },
     views: {
       resourceTimelineThreeDays: {
@@ -141,48 +185,7 @@ document.addEventListener("DOMContentLoaded", function () {
       { id: "C", title: "크로마키실 예약" },
       { id: "D", title: "녹음실 예약" },
     ],
-    events: [
-      {
-        id: "1",
-        resourceId: "b",
-        start: "2018-02-07T02:00:00",
-        end: "2018-02-07T07:00:00",
-        title: "event 1",
-        description: "test",
-      },
-      {
-        id: "2",
-        resourceId: "c",
-        start: "2018-02-07T05:00:00",
-        end: "2018-02-07T22:00:00",
-        title: "event 2",
-        description: "test",
-      },
-      {
-        id: "3",
-        resourceId: "d",
-        start: "2018-02-06",
-        end: "2018-02-08",
-        title: "event 3",
-        description: "test",
-      },
-      {
-        id: "4",
-        resourceId: "e",
-        start: "2018-02-07T03:00:00",
-        end: "2018-02-07T08:00:00",
-        title: "event 4",
-        description: "test",
-      },
-      {
-        id: "5",
-        resourceId: "f",
-        start: "2018-02-07T00:30:00",
-        end: "2018-02-07T02:30:00",
-        title: "event 5",
-        description: "test",
-      },
-    ],
+    events: value,
   });
 
   calendar.render();
@@ -192,7 +195,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function toggleModal() {
   modal.classList.toggle("show-modal");
-  
 }
 function addParam() {
   title = document.getElementById("title").value;
@@ -207,26 +209,18 @@ function addParam() {
       allDay,
       description,
       url,
+      color,
     });
-    title = "";
-    //document.getElementById("title").value = "";
-    description = "";
-    //document.getElementById("description").value = "";
-    start = "";
-    end = "";
-    allDay = "";
-    url = "";
-    //document.getElementById("url").value = "";
   }
   globalCalendar.unselect();
   toggleModal();
 }
 
 function updateParam(event) {
-  title = document.getElementById('title').value;
-  description = document.getElementById('description').value;
-  url = document.getElementById('url').value;
-  if(title){
+  title = document.getElementById("title").value;
+  description = document.getElementById("description").value;
+  url = document.getElementById("url").value;
+  if (title) {
     globalCalendar.addEvent({
       title,
       description,
@@ -234,18 +228,10 @@ function updateParam(event) {
       end,
       allDay,
       url,
+      color,
     });
   }
   globalCalendar.unselect();
   event.remove();
-  title = "";
-  document.getElementById("title").value = "";
-  description = "";
-  document.getElementById("description").value = "";
-  start = "";
-  end = "";
-  allDay = "";
-  url = "";
-  document.getElementById("url").value = "";
   toggleModal();
 }
