@@ -181,8 +181,8 @@ document.addEventListener("DOMContentLoaded", function () {
           console.log("PREV");
           calendar.prev();
           --monthCaculate;
-          console.log(window.location.href);
-          console.log(window.location.pathname);
+          //console.log(window.location.href);
+          //console.log(window.location.pathname);
           const res = await axios({
             method: "get",
             url: "/customSchedule",
@@ -201,9 +201,25 @@ document.addEventListener("DOMContentLoaded", function () {
       },
       next: {
         text: "Next",
-        click: function () {
+        click: async function () {
           console.log("NEXT");
           calendar.next();
+          ++monthCaculate;
+          //console.log(window.location.href);
+          //console.log(window.location.pathname);
+          const res = await axios({
+            method: "get",
+            url: "/customSchedule",
+            params: { monthCaculate,
+                url:window.location.pathname,
+            },
+            timeout: 15000,
+          });
+          console.log(res.data.schedule);
+          res.data.schedule.forEach(element => {
+            calendar.addEvent(element);
+          });
+          calendar.unselect();
         },
       },
     },

@@ -16,18 +16,43 @@ block content
             each item in departmentList
                 option(value=`${item._id}`) #{item.name}            
         input(type="submit", value="등록")        
-    ul 
+    table
         each item in menuList
-            li 
-                a(href=`/menuDetail/${item._id}`) #{item.menuName}_#{item.menuUrl}_#{item.order}
+            tr
+                th 메뉴명
+                th 메뉴주소
+                th 순서 
+                th 삭제 
+            tr
+                td 
+                    a(href=`/menuDetail/${item._id}`) #{item.menuName}
+                td #{item.menuUrl}
+                td #{item.order}
+                td 
+                    a(href=`/menuDelete/${item._id}`) ❌
+            tr
+                th 
+                th 이름
+                th 이메일        
             if(item.user)
                 each userItem in item.user
-                    span #{userItem.name}_#{userItem.email}
+                    tr
+                        td
+                        td #{userItem.name}
+                        td #{userItem.email}
                 else 
-                    span 사용자가 없습니다.
+                    tr 
+                        td 사용자가 없습니다.
+                    tr
+                        th  
+                        th 부서
+                        th 
             if(item.department)
                 each departmentItem in item.department
-                    span #{departmentItem.name}
+                    tr
+                        td
+                        td #{departmentItem.name}
+                        td
                 else 
                     span 부서가 없습니다.            
         else 

@@ -5,13 +5,17 @@ import { Mongoose } from "mongoose";
 
 export const getDepartment = async (req, res) =>{
   const departments = await Department.find().populate("user");
-  const userList  = await User.find();
   console.log('getDepartment');
   console.log(departments);
-  return res.render("department", { pageTitle: "부서관리 페이지", departments,userList });
+  return res.render("department", { pageTitle: "부서관리 페이지", departments});
 }
 
-export const postDepartment = async(req, res) =>{
+export const getDepartmentAdd = async(req,res) => {
+  const userList  = await User.find();
+  return res.render("departmentAdd",{pageTitle: "부서등록", userList});
+}
+
+export const postDepartmentAdd = async(req, res) =>{
   const {name,user} = req.body;
   const check = await Department.findOne({name});
   console.log(check);
@@ -40,6 +44,21 @@ export const postDepartment = async(req, res) =>{
       errorMessage: error._message,
     });
   }
+}
+
+export const deleteDepartment = async(req,res) => {
+  const {id} = req.params;
+  let depId;
+  if(id){
+    depId = await Department.findByIdAndDelete(id);  
+  }else{
+    return res.status(404).render("404", {
+      pageTitle: "부서가 존재하지 않습니다.",
+      errorMessage:"부서가 존재하지 않습니다."
+    });
+  }
+  await User.updateMany({department:depId},{$set:{department:null}});
+  return res.redirect("/department");
 }
 
 export const getDepartmentDetail = async(req,res) => {

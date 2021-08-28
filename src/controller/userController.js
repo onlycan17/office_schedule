@@ -43,7 +43,13 @@ export const logout = (req, res) => {
 };
 
 export const getJoin = async (req, res) => {
-  const userList = await User.find();
+  const userList = await User.find().populate("department");
+  // userList.forEach(element => {
+  //   console.log(element.department);
+  //   const dep = element.department;
+  //   console.log(dep.name);
+  // })
+  
   return res.render("join", { pageTitle: "회원관리", userList });
 };
 
@@ -130,7 +136,7 @@ export const postJoinUpdate = async (req, res) => {
       userList,
     });
   }
-  if(oldEmail === email){
+  if(oldEmail !== email){
     const exists = await User.find({ email });
     // console.log('findUserEmail~~~~')
     // console.log(exists.length);

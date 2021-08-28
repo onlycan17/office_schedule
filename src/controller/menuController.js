@@ -11,7 +11,41 @@ export const getMenu = async (req, res) => {
   const departmentList = await Department.find();
   const userList = await User.find();
   return res.render("menu", {
-    pageTitle: "메뉴",
+    pageTitle: "메뉴관리",
+    menuList,
+    departmentList,
+    userList,
+  });
+};
+
+export const getDeleteMenu = async (req, res) => {
+  const { id } = req.params;
+  const checkMenu = await Menu.findById(id).populate("subMenu");
+  const departmentList = await Department.find();
+  const userList = await User.find();
+  const menuList = await Menu.find()
+    .populate({ path: "user" })
+    .populate({ path: "department" });
+  if (checkMenu.subMenu) {
+    if (checkMenu.subMenu.length > 0) {
+      return res.status(404).render("menu", {
+        pageTitle: "하위메뉴가 남아있어서 삭제할 수 없습니다.",
+        errorMessage: "하위메뉴가 남아있어서 삭제할 수 없습니다.",
+        menuList,
+        departmentList,
+        userList,
+      });
+    }
+  }
+  if (checkMenu.user) {
+    checkMenu.user.forEach(async (element) => {
+      await User.updateMany({ _id: element }, { $set: { menu: null } });
+    });
+  }
+  await Menu.findByIdAndDelete(id);
+  
+  return res.render("/menu", {
+    pageTitle: "메뉴관리",
     menuList,
     departmentList,
     userList,

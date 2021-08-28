@@ -1,0 +1,15 @@
+extends base
+
+block content
+    if errorMessage 
+        span=errorMessage 
+    form(method="post")
+        input(placeholder="부서명", name="name", type="text", required)
+        select(name="user")
+            option(value="") 선택
+            each item in userList
+                option(value=`${item._id}`) #{item.name}_#{item.email}
+        input(type="submit", value="부서등록")             
+
+block scripts 
+    script(src="/static/js/department.js") 

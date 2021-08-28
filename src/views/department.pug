@@ -4,18 +4,13 @@ include mixins/departments
 block content
     if errorMessage 
         span=errorMessage
-    form(method="post")
-        input(placeholder="부서명", name="name", type="text", required)
-        select(name="user")
-            option(value="") 선택
-            each item in userList
-                option(value=`${item._id}`) #{item.name}_#{item.email}
-        input(type="submit", value="부서등록")    
-    ul.list
+    div 
+        a.button(href="/departmentAdd") 부서등록   
+    table(style="max-width:500px")
+        tr
+            th 부서명 
+            th(style="width:30px; text-align:center") 삭제
         each item in departments
             +departments(item)
         else 
-            span.empty__message 부서가 비어있습니다. 등록해 주세요.   
-
-block scripts 
-    script(src="/static/js/department.js") 
+            span.empty__message 부서가 비어있습니다. 등록해 주세요. 
