@@ -15,13 +15,17 @@ import {
   postLogin,
 } from "../controller/userController";
 import {
+    deleteDepartment,
   getDeleteDepartmentDetail,
   getDepartment,
+  getDepartmentAdd,
   getDepartmentDetail,
   postDepartment,
+  postDepartmentAdd,
   postDepartmentDetail,
 } from "../controller/departmentController";
 import {
+    getDeleteMenu,
   getMenu,
   getMenuDetail,
   getSubMenuDelete,
@@ -55,7 +59,10 @@ router
   .route("/department")
   .all(protectorMiddleware)
   .get(getDepartment)
-  .post(postDepartment);
+
+router.route("/departmentAdd").all(protectorMiddleware).get(getDepartmentAdd).post(postDepartmentAdd);  
+
+router.route("/departmentDelete/:id([0-9a-f]{24})").all(protectorMiddleware).get(deleteDepartment);
 
 router
   .route("/departmentDetail/:id([0-9a-f]{24})")
@@ -71,6 +78,8 @@ router
   .get(getDeleteDepartmentDetail);
 
 router.route("/menu").all(protectorMiddleware).get(getMenu).post(postMenu);
+
+router.route("/menuDelete/:id([0-9a-f]{24})").get(getDeleteMenu);
 
 router
   .route("/menuDetail/:id([0-9a-f]{24})")

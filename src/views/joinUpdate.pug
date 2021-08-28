@@ -6,11 +6,19 @@ block content
     form(method="post")
         input(type="hidden",name="id", value=`${user._id}`)
         input(type="hidden",name="oldEmail", value=`${user.email}`)
+        label 성명
         input(placeholder="성명", name="name", type="text",value=`${user.name}`,  required)
+        label 이메일
         input(placeholder="이메일",name="email", type="email",value=`${user.email}`, required)
+        label 비밀번호
         input(placeholder="비밀번호",name="password", type="password", value=`${user.password}`, required)
+        label 비밀번호확인
         input(placeholder="비밀번호 확인", name="password2", type="password", value=`${user.password}`, required)
+        label 캘린더일정 색상선택 
+        //- br
         input(placeholder="색상선택", name="color", type="color", value=`${user.color}`, required)
+        //- br
+        label 부서선택
         select(name="partId")
             option(value="") 선택
             each item in partList

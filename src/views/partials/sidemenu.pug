@@ -1,9 +1,10 @@
-ul.sidemenu 
-    each item in menuList 
-        li
-            a(href=`${item.menuUrl}`) #{item.menuName}
-            if(item.subMenu)
-                ul
-                    each subItem in item.subMenu
-                        li
-                            a(href=`${subItem.subMenuUrl}`) #{subItem.subMenuName}
+div.sidemenu
+    ul
+        each item in menuList 
+            li
+                a(href=`${item.menuUrl}`) #{item.menuName}
+                if(item.subMenu)
+                    ul
+                        each subItem in item.subMenu
+                            li
+                                a(href=`${subItem.subMenuUrl}`) #{subItem.subMenuName}

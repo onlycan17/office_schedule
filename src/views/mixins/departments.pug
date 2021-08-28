@@ -1,5 +1,7 @@
 mixin departments(item)
-    li
-        span
-            a(href=`/departmentDetail/${item._id}`) #{item.name} 
+    tr
+        td
+            a(href=`/departmentDetail/${item._id}`) #{item.name}
+        td(style="text-align:center")
+            a(href=`/departmentDelete/${item._id}`) ❌ 
             
