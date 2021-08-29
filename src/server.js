@@ -8,7 +8,7 @@ import Mongostore from "connect-mongo";
 import session from "express-session";
 import router from "./router/routers";
 import flash from "express-flash";
-
+import "./pusher";
 
 console.log(ipfilter);
 const PORT = process.env.PORT;
@@ -52,3 +52,4 @@ app.use("/static", express.static("assets"));
 
 const handleListening = () => console.log(`Server listening on port http://localhost:${PORT} ❤️‍🔥`);
 app.listen(PORT, handleListening);
+

@@ -15,7 +15,9 @@ html(lang="ko")
             message("success", messages.success)        
         include partials/header
         include partials/sidemenu
+        input(type="hidden" id="department" value=loggedInUser.department)
         main 
             block content 
+    script(src="https://js.pusher.com/7.0/pusher.min.js")
     script(src="/static/js/main.js")
     block scripts

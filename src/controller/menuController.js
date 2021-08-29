@@ -18,6 +18,16 @@ export const getMenu = async (req, res) => {
   });
 };
 
+export const getAddMenu = async (req, res) => {
+  const departmentList = await Department.find();
+  const userList = await User.find();
+  return res.render("menuAdd", {
+    pageTitle: "메뉴등록",
+    departmentList,
+    userList,
+  });
+}
+
 export const getDeleteMenu = async (req, res) => {
   const { id } = req.params;
   const checkMenu = await Menu.findById(id).populate("subMenu");
@@ -44,15 +54,10 @@ export const getDeleteMenu = async (req, res) => {
   }
   await Menu.findByIdAndDelete(id);
   
-  return res.render("/menu", {
-    pageTitle: "메뉴관리",
-    menuList,
-    departmentList,
-    userList,
-  });
+  return res.redirect("/menu");
 };
 
-export const postMenu = async (req, res) => {
+export const postAddMenu = async (req, res) => {
   console.log(req.body);
   const { menuName, menuUrl, order, userId, departmentId } = req.body;
   try {
@@ -119,8 +124,9 @@ export const getMenuDetail = async (req, res) => {
       });
     console.log(subMenuDetail);
   }
+  console.log(res);
   return res.render("menuDetail", {
-    pageTitle: "메뉴 상세페이지",
+    pageTitle: "서브메뉴관리",
     subMenuDetail,
     userList,
     departmentList,
@@ -128,7 +134,21 @@ export const getMenuDetail = async (req, res) => {
   });
 };
 
-export const postMenuDetail = async (req, res) => {
+// export const getAddSubMenu = async(req,res) => {
+//   console.log(req.params);
+//   const {id} = req.params;
+//   const departmentList = await Department.find();
+//   const userList = await User.find();
+//   console.log(res);
+//   return res.render("subMenuAdd", {
+//     pageTitle: "서브메뉴등록",
+//     id,
+//     departmentList,
+//     userList,
+//   }); 
+// }
+
+export const postAddSubMenu = async (req, res) => {
   const { subMenuName, subMenuUrl, order, userId, departmentId } = req.body;
   const { id } = req.params;
   //console.log(req.body);

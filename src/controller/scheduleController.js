@@ -1,5 +1,10 @@
 import Menu from "../schema/menu";
 import Schedule from "../schema/schedule";
+import pusher from "../pusher";
+import User from "../schema/user";
+import Department from "../schema/department";
+import e from "express";
+let ObjectId = require('mongoose').Types.ObjectId;
 
 let url;
 export const getSchedule = async (req, res) => {
@@ -26,20 +31,27 @@ export const getSchedule = async (req, res) => {
     //console.log(menu);
     const subMenu = await menu.subMenu.find(isUrl);
     const department = subMenu.department[0];
-    console.log(department);
+    console.log(department._id);
+    const dep = {
+      _id : new ObjectId(department)
+    };
     schedule = await Schedule.find({
-      //department,
+      department:dep,
       $or: [{ start: new RegExp(dateMonth) }, { end: new RegExp(dateMonth) }],
     });
   } else {
+    //console.log(typeof req.session.user.department._id);
+    const dep = {
+      _id : new ObjectId(req.session.user.department._id)
+    };
     schedule = await Schedule.find({
-      department: req.session.user.department,
+      department: dep,
       $or: [{ start: new RegExp(dateMonth) }, { end: new RegExp(dateMonth) }],
-    });
+    }).populate("department");
   }
   console.log(schedule);
   const color = req.session.user.color;
-  //console.log(color);
+  console.log(color);
   return res.render("schedule", { pageTitle: "스케줄 샘플", schedule, color });
 };
 
@@ -62,8 +74,11 @@ export const postAddSchedule = async (req, res) => {
     department,
   } = req.body;
   console.log(title, description);
+  const departmentInfo = JSON.parse(department);
   let schedule;
-
+   console.log('~~~~~~~~~~');
+   console.log(req.body);
+   console.log(user);
   schedule = await Schedule.create({
     title,
     description,
@@ -73,16 +88,26 @@ export const postAddSchedule = async (req, res) => {
     allDay,
     color,
     user,
-    department,
+    department:departmentInfo._id,
   });
-  console.log(schedule);
-
+  console.log('-----------------');
+  console.log(department);
+  console.log('~~~~~~~~~~');
+  
+  console.log(departmentInfo);
+  const userInfo = await User.findById(user);
+  console.log('~~~~~~~~~~');
+  console.log(departmentInfo.name);
+  
+  pusher.trigger(departmentInfo._id+"", departmentInfo._id+"", {
+    message: userInfo.name+"님의 일정이 등록되었습니다."
+  });
   return res.sendStatus(201);
 };
 
 export const deleteSchedule = async (req, res) => {
-  console.log('deleteSchedule~~~!');
-  console.log(req.body);
+  // console.log('deleteSchedule~~~!');
+  // console.log(req.body);
   const {id} = req.body;
   const result = await Schedule.findOneAndDelete(id);
   return res.sendStatus(200);
@@ -111,10 +136,10 @@ export const customSchedule = async (req, res) => {
         },
       },
     }).populate("subMenu");
-    console.log(menu);
+    // console.log(menu);
     const subMenu = await menu.subMenu.find(isUrl);
     const department = subMenu.department[0];
-    console.log(department);
+    // console.log(department);
     schedule = await Schedule.find({
       //department,
       $or: [{ start: new RegExp(dateMonth) }, { end: new RegExp(dateMonth) }],
@@ -125,7 +150,7 @@ export const customSchedule = async (req, res) => {
       $or: [{ start: new RegExp(dateMonth) }, { end: new RegExp(dateMonth) }],
     });
   }
-  console.log(schedule);
+  // console.log(schedule);
   const color = req.session.user.color;
   //console.log(color);
   return res.status(200).json({

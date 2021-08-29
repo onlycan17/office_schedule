@@ -34,14 +34,34 @@ export const localsMiddleware = async (req, res, next) => {
 export const protectorMiddleware = async (req, res, next) => {
   if (req.session.loggedIn) {
     let flag = false;
+    console.log(req.session.user.department._id);
     req.session.user.menu.forEach((menu) => {
+      console.log(menu);
       menu.subMenu.forEach((subMenu) => {
+        console.log(subMenu);
         if (req.url.indexOf(subMenu.subMenuUrl) != -1) {
           flag = true;
         }
       });
     });
-
+    const menu = await Menu.find().populate("subMenu");
+    menu.forEach((menu)=>{
+      menu.subMenu.forEach(subMenu => {
+        if(req.url.indexOf(subMenu.subMenuUrl) != -1){
+          subMenu.department.forEach(department => {
+            console.log('===================');
+            console.log(department);
+            console.log(req.session.user.department._id);
+            if(req.session.user.department._id+"" === department+""){
+              flag = true;
+            }
+          });
+        }
+        
+      });
+    });
+    console.log('-----flag----');
+    console.log(flag);
     if (req.url !== "/home" && !flag) {
       res.sendStatus(404);
     }

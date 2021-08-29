@@ -1,0 +1,17 @@
+extends base
+
+block content
+    form(method="post")
+        input(type="hidden" name="id" value=`${id}`)
+        input(placeholder="서브메뉴명", name="subMenuName", type="text", require ) 
+        input(placeholder="서브메뉴주소",name="subMenuUrl", type="text" ) 
+        input(placeholder="정렬순서",name="order", type="number", require ) 
+        select(name="userId")
+            option(value="") 선택
+            each item in userList
+                option(value=`${item._id}`) #{item.name}_#{item.email}
+        select(name="departmentId")
+            option(value="") 선택
+            each item in departmentList
+                option(value=`${item._id}`) #{item.name}            
+        input(type="submit", value="등록")      

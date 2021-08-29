@@ -11,18 +11,18 @@ block content
     div(class="modal")
         div(class="modal-content")
             span(class="close-button") &times;
-            h1(class="스케줄입력")
+            h1 스케줄입력
             div(class="form")
-                div(class="title")
+                div(class="content")
                     label(for="title") 제목 
                     input(type="text" , id="title", require)
-                div(class="description")
+                div(class="content")
                     label(for="description") 내용설명
                     input(type="text" , id="description")
-                div(class="url")
+                div(class="content")
                     label(for="url") 링크주소
                     input(type="text" , id="url")
-                div(class="button")
+                div(class="content")
                     button(id="cancel") 취소
                     button(id="submit") 보내기              
     //- span #{color}
@@ -36,3 +36,4 @@ block scripts
     script(src="/static/js/schedule.js" type="text/javascript")
     link(rel="stylesheet", href="/static/css/main.css")
     link(rel="stylesheet", href="/static/css/schedule.css")
+    link(rel="stylesheet", href="/static/css/modal.css")

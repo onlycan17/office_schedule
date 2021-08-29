@@ -179,8 +179,8 @@ form:not(.search__form) {
   border: 1px solid rgba(152, 205, 253, 0.1);
 }
 
-input:not(input[type=range],input[type=color]),
-input[type=submit]{
+form input:not(input[type=range], form input[type=color]),
+form input[type=submit]{
   all: unset;
   padding: 15px 20px;
   border-radius: 5px;
@@ -298,6 +298,10 @@ a {
   text-decoration: none;
 }
 
+a:hover{
+    color: #831283;  
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   background-color: #78a4fc;
@@ -356,4 +360,9 @@ ul > li {
     margin: 10px;
     padding: 10px;
     border-radius: 5px;
+}
+
+.addButtonLayout{
+    max-width: 800px;
+    margin: 0 auto;
 }

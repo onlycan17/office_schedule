@@ -20,16 +20,18 @@ import {
   getDepartment,
   getDepartmentAdd,
   getDepartmentDetail,
-  postDepartment,
   postDepartmentAdd,
   postDepartmentDetail,
 } from "../controller/departmentController";
 import {
+    getAddMenu,
+    getAddSubMenu,
     getDeleteMenu,
   getMenu,
   getMenuDetail,
   getSubMenuDelete,
-  postMenu,
+  postAddMenu,
+  postAddSubMenu,
   postMenuDetail,
   subMenuAuthAdd,
 } from "../controller/menuController";
@@ -77,7 +79,9 @@ router
   .all(protectorMiddleware)
   .get(getDeleteDepartmentDetail);
 
-router.route("/menu").all(protectorMiddleware).get(getMenu).post(postMenu);
+router.route("/menu").all(protectorMiddleware).get(getMenu)
+
+router.route("/menuAdd").all(protectorMiddleware).get(getAddMenu).post(postAddMenu);
 
 router.route("/menuDelete/:id([0-9a-f]{24})").get(getDeleteMenu);
 
@@ -85,7 +89,7 @@ router
   .route("/menuDetail/:id([0-9a-f]{24})")
   .all(protectorMiddleware)
   .get(getMenuDetail)
-  .post(postMenuDetail);
+  .post(postAddSubMenu);
 
   router
   .route("/menuDetailDelete/:menuId([0-9a-f]{24})/:subMenuId([0-9a-f]{24})")
