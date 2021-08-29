@@ -3,50 +3,71 @@ extends base
 block content
     if errorMessage 
         span=errorMessage
-    div #{menucheck.menuName}_#{menucheck.menuUrl}_#{menucheck.order}    
-    form(method="post")
-        input(placeholder="서브메뉴명", name="subMenuName", type="text", require ) 
-        input(placeholder="서브메뉴주소",name="subMenuUrl", type="text" ) 
-        input(placeholder="정렬순서",name="order", type="number", require ) 
-        select(name="userId")
-            option(value="") 선택
-            each item in userList
-                option(value=`${item._id}`) #{item.name}_#{item.email}
-        select(name="departmentId")
-            option(value="") 선택
-            each item in departmentList
-                option(value=`${item._id}`) #{item.name}            
-        input(type="submit", value="등록")        
-    
-    ul 
+    h1 #{menucheck.menuName}   
+    div 
+        a.button(href="#" onclick="openModal();") 서브메뉴등록   
+    table
+        tr 
+            th 서브메뉴명
+            th 서브메뉴주소
+            th 정렬순서
+            th 사용자
+            th 부서
+            th 사용자선택
+            th 부서선택
+            th 추가등록
+            th 삭제
         if subMenuDetail.subMenu
             each item, index in subMenuDetail.subMenu
-                li 
-                    span #{item.subMenuName}
-                    span #{item.subMenuUrl} 
-                    span #{item.order}
+                tr 
+                    td #{item.subMenuName}
+                    td #{item.subMenuUrl} 
+                    td #{item.order}
                     each userItem in item.user 
-                        span #{userItem.name}_#{userItem.email}
+                        td #{userItem.name}_#{userItem.email}
                     else 
-                        span 사용자 없음
+                        td 사용자 없음
                     each departmentItem in item.department
-                        sapn #{departmentItem.name}
+                        td #{departmentItem.name}
                     else 
-                        span 부서 없음
-                    select(name="userAuth", id=`userAuth_${item._id}`)
-                        option(value="") 선택
-                        each item in userList
-                            option(value=`${item._id}`) #{item.name}_#{item.email}
-                    select(name="departmentAuth", id=`departmentAuth_${item._id}`)
-                        option(value="") 선택
-                        each item in departmentList
-                            option(value=`${item._id}`) #{item.name}
-                    button(id="btnAdd", onclick=`addAuth('${menucheck._id}','${item._id}','${index}')`) 추가등록
-                    a(href=`/menuDetailDelete/${menucheck._id}/${item._id}`) ❌                    
+                        td 부서 없음
+                    td    
+                        select(name="userAuth", id=`userAuth_${item._id}`)
+                            option(value="") 선택
+                            each item in userList
+                                option(value=`${item._id}`) #{item.name}/#{item.email}
+                    td            
+                        select(name="departmentAuth", id=`departmentAuth_${item._id}`)
+                            option(value="") 선택
+                            each item in departmentList
+                                option(value=`${item._id}`) #{item.name}
+                    td            
+                        button(id="btnAdd", onclick=`addAuth('${menucheck._id}','${item._id}','${index}')`) 추가등록
+                    td    
+                        a(href=`/menuDetailDelete/${menucheck._id}/${item._id}`) ❌                    
             else 
-                li 
-                    span 서브메뉴를 등록해 주세요.
+                tr 
+                    td(colspan=8) 서브메뉴를 등록해 주세요.
+    div(class="modal")
+        div(class="modal-content")
+            span(class="close-button") &times;
+            h1 서브메뉴등록
+            form(method="post")
+                input(type="hidden" name="id" value=`${id}`)
+                input(placeholder="서브메뉴명", name="subMenuName", type="text", require ) 
+                input(placeholder="서브메뉴주소",name="subMenuUrl", type="text" ) 
+                input(placeholder="정렬순서",name="order", type="number", require ) 
+                select(name="userId")
+                    option(value="") 선택
+                    each item in userList
+                        option(value=`${item._id}`) #{item.name}_#{item.email}
+                select(name="departmentId")
+                    option(value="") 선택
+                    each item in departmentList
+                        option(value=`${item._id}`) #{item.name}            
+                input(type="submit", value="등록")      
 
 block scripts
     script(src="//code.jquery.com/jquery-3.4.1.min.js")
-    script(src="/static/js/menu.ojs") 
+    script(src="/static/js/menu.ojs")
+    link(rel="stylesheet", href="/static/css/modal.css") 

@@ -1,3 +1,11 @@
+const modal = document.querySelector(".modal");
+
+$(document).ready(function(){
+  $('.close-button').click(function(){
+      modal.classList.toggle("show-modal");
+  });
+  
+});
 
 function addAuth(menuId,subMenuId,idx){
   const userId = $('#userAuth_'+subMenuId+' option:selected').val();  
@@ -31,4 +39,8 @@ function addAuth(menuId,subMenuId,idx){
   }).fail(function(){
       alert('fail');
   });
+}
+
+function openModal(){
+  modal.classList.toggle("show-modal");
 }
