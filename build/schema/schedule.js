@@ -7,10 +7,6 @@ exports["default"] = void 0;
 
 var _mongoose = _interopRequireDefault(require("mongoose"));
 
-var _bcrypt = _interopRequireDefault(require("bcrypt"));
-
-var _autoIncrementnumber = _interopRequireDefault(require("autoIncrementnumber"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var scheduleSchema = new _mongoose["default"].Schema({
