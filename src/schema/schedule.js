@@ -1,6 +1,4 @@
 import mongoose from "mongoose";
-import bcrypt from "bcrypt";
-import autoIncrementnumber from "autoIncrementnumber";
 
 const scheduleSchema = new mongoose.Schema({
   id: { type: String },
