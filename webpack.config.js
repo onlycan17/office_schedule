@@ -10,9 +10,9 @@ module.exports = {
       schedule: BASE_JS + "schedule.js",
      // menu: BASE_JS + "menu.js",
   },
-  resolve: {
-    extensions: ['.js'],
-  },
+  // resolve: {
+  //   extensions: ['.js'],
+  // },
   plugins: [
       new MiniCssExtractPlugin({
           filename: "/css/main.css",
