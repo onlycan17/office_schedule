@@ -17,6 +17,7 @@ html(lang="ko")
         include partials/sidemenu
         if(loggedInUser)
             input(type="hidden" id="department" value=loggedInUser.department)
+        audio(src="/static/files/alam.MP3", id="sound")     
         main 
             block content 
     script(src="https://js.pusher.com/7.0/pusher.min.js")
