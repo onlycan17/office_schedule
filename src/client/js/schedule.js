@@ -89,19 +89,30 @@ document.addEventListener("DOMContentLoaded", function () {
       //info.el.append('<span class="closeon">x</span>');
       info.el.insertAdjacentHTML("beforeend", '<span class="closeon">X</span>');
       //info.el.innerText = `<span class='closeon'>x</span>`;
-      $(info.el + ".closeon").click(function () {
+      $(info.el + ".closeon").click(async function () {
         //$("#calendar").fullCalendar("removeEvents", info._id);
         deleteflag = true;
         globalId = info.event.id;
         const event = calendar.getEventById(info.event.id);
         event.remove();
+
+        const res = await axios({
+          method: "delete",
+          url: "/deleteSchedule",
+          data: { id: globalId },
+          timeout: 15000,
+        });
+
+        if (res.status === 200) {
+          console.log("저장완료!");
+        }
       });
     },
     eventClick: function (e) {
       console.log(e);
       //description = e.description;
       if (!deleteflag) {
-        modal.style.display ='block';
+        modal.style.display = "block";
         document.getElementById("title").value = e.event.title;
         document.getElementById("description").value =
           e.event.extendedProps.description;
@@ -125,58 +136,23 @@ document.addEventListener("DOMContentLoaded", function () {
       start = arg.start;
       end = arg.end;
       allDay = arg.allDay;
-      modal.style.display ='block';
+      modal.style.display = "block";
       toggleModal();
     },
     eventAdd: async function (obj) {
       // 이벤트가 추가되면 발생하는 이벤트
       console.log("eventAdd");
       console.log(obj);
-      const form_data = {
-        title,
-        description,
-        url,
-        start,
-        end,
-        allDay,
-        color,
-        user,
-        department,
-      };
-      const res = await axios({
-        method: "post",
-        url: "/addSchedule",
-        data: form_data,
-        timeout: 15000,
-      });
-
-      if (res.status === 201) {
-        console.log(res.data.id); 
-        calendar.refetchEvents();
-        console.log("저장완료!");
-      }
     },
     eventChange: async function (obj) {
       // 이벤트가 수정되면 발생하는 이벤트(insert-> delete를 사용하기 때문에 필요 없음.)
       console.log("eventEdit");
       console.log(obj);
-      
     },
     eventRemove: async function (obj) {
       // 이벤트가 삭제되면 발생하는 이벤트
       console.log("eventDelete");
       console.log(obj);
-
-      const res = await axios({
-        method: "delete",
-        url: "/deleteSchedule",
-        data: { id: globalId },
-        timeout: 15000,
-      });
-
-      if (res.status === 200) {
-        console.log("저장완료!");
-      }
     },
     customButtons: {
       prev: {
@@ -191,17 +167,14 @@ document.addEventListener("DOMContentLoaded", function () {
           const res = await axios({
             method: "get",
             url: "/customSchedule",
-            params: { monthCaculate,
-                url:window.location.pathname,
-            },
+            params: { monthCaculate, url: window.location.pathname },
             timeout: 15000,
           });
           console.log(res.data.schedule);
-          res.data.schedule.forEach(element => {
+          res.data.schedule.forEach((element) => {
             calendar.addEvent(element);
           });
           calendar.unselect();
-          
         },
       },
       next: {
@@ -216,13 +189,11 @@ document.addEventListener("DOMContentLoaded", function () {
           const res = await axios({
             method: "get",
             url: "/customSchedule",
-            params: { monthCaculate,
-                url:window.location.pathname,
-            },
+            params: { monthCaculate, url: window.location.pathname },
             timeout: 15000,
           });
           console.log(res.data.schedule);
-          res.data.schedule.forEach(element => {
+          res.data.schedule.forEach((element) => {
             calendar.addEvent(element);
           });
           calendar.unselect();
@@ -257,7 +228,8 @@ document.addEventListener("DOMContentLoaded", function () {
 function toggleModal() {
   modal.classList.toggle("show-modal");
 }
-function addParam() {
+
+async function addParam() {
   title = document.getElementById("title").value;
   description = document.getElementById("description").value;
   url = document.getElementById("url").value;
@@ -275,9 +247,33 @@ function addParam() {
   }
   globalCalendar.unselect();
   toggleModal();
+
+  const form_data = {
+    title,
+    description,
+    url,
+    start,
+    end,
+    allDay,
+    color,
+    user,
+    department,
+  };
+  const res = await axios({
+    method: "post",
+    url: "/addSchedule",
+    data: form_data,
+    timeout: 15000,
+  });
+
+  if (res.status === 201) {
+    console.log(res.data.id);
+    calendar.refetchEvents();
+    console.log("저장완료!");
+  }
 }
 
-function updateParam(event) {
+async function updateParam(event) {
   title = document.getElementById("title").value;
   description = document.getElementById("description").value;
   url = document.getElementById("url").value;
@@ -295,4 +291,37 @@ function updateParam(event) {
   globalCalendar.unselect();
   event.remove();
   toggleModal();
+
+  const resDel = await axios({
+    method: "delete",
+    url: "/deleteSchedule",
+    data: { id: globalId },
+    timeout: 15000,
+  });
+  if (resDel.status === 200) {
+    console.log("삭제완료!");
+  }
+  const form_data = {
+    title,
+    description,
+    url,
+    start,
+    end,
+    allDay,
+    color,
+    user,
+    department,
+  };
+  const res = await axios({
+    method: "post",
+    url: "/addSchedule",
+    data: form_data,
+    timeout: 15000,
+  });
+
+  if (res.status === 201) {
+    console.log(res.data.id);
+    calendar.refetchEvents();
+    console.log("저장완료!");
+  }
 }
