@@ -42,5 +42,6 @@ function addAuth(menuId,subMenuId,idx){
 }
 
 function openModal(){
+  modal.style.display ='block';
   modal.classList.toggle("show-modal");
 }
