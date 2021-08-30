@@ -3,14 +3,14 @@ import Schedule from "../schema/schedule";
 import pusher from "../pusher";
 import User from "../schema/user";
 import Department from "../schema/department";
-import e from "express";
+
 let ObjectId = require('mongoose').Types.ObjectId;
 
-let url;
+let urlParam,urlStr,orderParam;
 export const getSchedule = async (req, res) => {
   console.log("getSchedule!");
   let schedule;
-  url = req.url;
+  console.log(urlParam);
   const now = new Date();
   const dateMonth =
     now.getFullYear() +
@@ -20,16 +20,33 @@ export const getSchedule = async (req, res) => {
   //console.log(JSON.stringify(req.session.user.department._id));
   //관리자일 경우
   if (req.session.user.department._id === "612490cc21f010838f50a41b") {
-    const url = req.url;
+    urlStr = req.url;
+    urlStr = urlStr.split("?");
+    urlParam = urlStr[0];
+    const {order} = req.query;
+    console.log(urlParam);
+    console.log('------order---');
+    console.log(req.query);
+    console.log(order);
+    orderParam = order;
     const menu = await Menu.findOne({
       subMenu: {
         $elemMatch: {
-          subMenuUrl: url,
+          subMenuUrl: urlParam,
+          order,
         },
       },
     }).populate("subMenu");
-    //console.log(menu);
+    console.log(menu);
+    if(!menu){
+      return res.sendStatus(500);
+    }
     const subMenu = await menu.subMenu.find(isUrl);
+    if(!subMenu){
+      return res.sendStatus(500);
+    }
+    console.log('------submenufilter-----');
+    console.log(subMenu);
     const department = subMenu.department[0];
     console.log(department._id);
     const dep = {
@@ -43,6 +60,7 @@ export const getSchedule = async (req, res) => {
     });
   } else {
     //console.log(typeof req.session.user.department._id);
+    urlParam = req.url;
     const dep = {
       _id : new ObjectId(req.session.user.department._id)
     };
@@ -58,7 +76,9 @@ export const getSchedule = async (req, res) => {
 };
 
 const isUrl = (element, index) => {
-  if (element.subMenuUrl === url) {
+  console.log('-----isUrl------');
+  console.log(element.order);
+  if (element.subMenuUrl === urlParam && element.order === Number(orderParam)) {
     return true;
   }
 };

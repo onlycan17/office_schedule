@@ -1,10 +1,17 @@
 div.sidemenu
     ul
-        each item in menuList 
-            li
-                a(href=`${item.menuUrl}`) #{item.menuName}
-                if(item.subMenu)
-                    ul
-                        each subItem in item.subMenu
-                            li
-                                a(href=`${subItem.subMenuUrl}`) #{subItem.subMenuName}
+        if(menuList)
+            each item in menuList 
+                li
+                    a(href=`${item.menuUrl}`) #{item.menuName}
+                    if(item.subMenu)
+                        ul
+                            each subItem in item.subMenu
+                                each dep in subItem.department
+                                    if(dep == loggedInUser.department._id)
+                                        if(loggedInUser.department._id === '612490cc21f010838f50a41b')
+                                            li
+                                                a(href=`${subItem.subMenuUrl}?order=${subItem.order}`) #{subItem.subMenuName}
+                                        else 
+                                            li
+                                                a(href=`${subItem.subMenuUrl}`) #{subItem.subMenuName}    
