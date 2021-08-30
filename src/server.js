@@ -14,7 +14,7 @@ console.log(ipfilter);
 const PORT = process.env.PORT || 4500;
 const app = express();
 const logger = morgan("dev");
-const ips = ['127.126.0.1'];
+const ips = ['0.126.0.1'];
 
 app.set("view engine","pug");
 app.set("views",process.cwd()+"/src/views/");
