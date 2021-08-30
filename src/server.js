@@ -11,7 +11,7 @@ import flash from "express-flash";
 import "./pusher";
 
 console.log(ipfilter);
-const PORT = process.env.PORT || 4001;
+const PORT = process.env.PORT || 4500;
 const app = express();
 const logger = morgan("dev");
 const ips = ['127.126.0.1'];
