@@ -23,14 +23,16 @@ block content
                     td #{item.subMenuName}
                     td #{item.subMenuUrl} 
                     td #{item.order}
-                    each userItem in item.user 
-                        td #{userItem.name}_#{userItem.email}
-                    else 
-                        td 사용자 없음
-                    each departmentItem in item.department
-                        td #{departmentItem.name}
-                    else 
-                        td 부서 없음
+                    td
+                        each userItem in item.user 
+                            span #{userItem.name}_#{userItem.email}
+                        else 
+                            span 사용자 없음
+                    td    
+                        each departmentItem in item.department
+                            span #{departmentItem.name}&nbsp;&nbsp;
+                        else 
+                            span 부서 없음
                     td    
                         select(name="userAuth", id=`userAuth_${item._id}`)
                             option(value="") 선택
