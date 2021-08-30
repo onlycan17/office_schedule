@@ -41,7 +41,7 @@ import { customSchedule, deleteSchedule, getSchedule, postAddSchedule, prevSched
 
 const router = express.Router();
 
-router.route("/").all(publicOnlyMiddleware).get(getLogin).post(postLogin);
+router.route("/").all(localsMiddleware).get(getLogin).post(postLogin);
 router.route("/home").all(localsMiddleware).all(protectorMiddleware).get(home);
 router.route("/logout").all(localsMiddleware).get(logout);
 router.route("/join").all(protectorMiddleware).get(getJoin);

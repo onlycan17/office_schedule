@@ -7,7 +7,7 @@ exports["default"] = void 0;
 
 var _express = _interopRequireDefault(require("express"));
 
-var _middleware = require("../../middleware");
+var _middleware = require("../middleware");
 
 var _userController = require("../controller/userController");
 
@@ -25,8 +25,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 var router = _express["default"].Router();
 
-router.route("/home").all(_middleware.localsMiddleware).all(_middleware.protectorMiddleware).get(_homeController.home);
 router.route("/").all(_middleware.localsMiddleware).get(_userController.getLogin).post(_userController.postLogin);
+router.route("/home").all(_middleware.localsMiddleware).all(_middleware.protectorMiddleware).get(_homeController.home);
 router.route("/logout").all(_middleware.localsMiddleware).get(_userController.logout);
 router.route("/join").all(_middleware.protectorMiddleware).get(_userController.getJoin);
 router.route("/joinAdd").all(_middleware.protectorMiddleware).get(_userController.getJoinAdd).post(_userController.postJoinAdd);

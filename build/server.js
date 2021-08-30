@@ -8,7 +8,7 @@ var _express = _interopRequireWildcard(require("express"));
 
 var _morgan = _interopRequireDefault(require("morgan"));
 
-require("../db");
+require("./db");
 
 var _connectMongo = _interopRequireDefault(require("connect-mongo"));
 
@@ -29,10 +29,10 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 var ipfilter = require('express-ipfilter').IpFilter;
 
 console.log(ipfilter);
-var PORT = process.env.PORT || 4000;
+var PORT = process.env.PORT || 4500;
 var app = (0, _express["default"])();
 var logger = (0, _morgan["default"])("dev");
-var ips = ['::2'];
+var ips = ['0.126.0.1'];
 app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views/");
 app.use(ipfilter(ips));
