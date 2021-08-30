@@ -2,6 +2,7 @@ import { async } from "regenerator-runtime";
 import requestIp from "request-ip";
 import ActionLog from "./schema/actionLog";
 import Menu from "./schema/menu";
+let ObjectId = require('mongoose').Types.ObjectId;
 
 const isHeroku = process.env.NODE_ENV === "production";
 
@@ -75,22 +76,25 @@ export const protectorMiddleware = async (req, res, next) => {
     if (req.url !== "/home" && !flag) {
       res.sendStatus(404);
     }
-
+    
+    const dep = {
+      _id: new ObjectId(req.session.user.department._id)
+    }
     const menuList = await Menu.find({
-      $or: [
-        { user: req.session.user._id },
-        { department: req.session.user.department },
-      ],
+      // $or: [
+      //   { user: req.session.user._id },
+      //   //{ department: dep},
+      // ],
       subMenu: {
         $elemMatch: {
           $or: [
             { user: req.session.user._id },
-            { department: req.session.user.department },
+            { department: dep },
           ],
         },
       },
     });
-
+    console.log(menuList);
     res.locals.menuList = menuList;
     res.locals.loggedIn = req.session.loggedIn;
     res.locals.siteName = "명작";
