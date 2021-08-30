@@ -33,8 +33,10 @@ export const getSchedule = async (req, res) => {
     const department = subMenu.department[0];
     console.log(department._id);
     const dep = {
-      _id : new ObjectId(department)
+      _id : new ObjectId(department._id)
     };
+    console.log('-------------')
+    console.log(dep);
     schedule = await Schedule.find({
       department:dep,
       $or: [{ start: new RegExp(dateMonth) }, { end: new RegExp(dateMonth) }],
@@ -90,6 +92,7 @@ export const postAddSchedule = async (req, res) => {
     user,
     department:departmentInfo._id,
   });
+  console.log(schedule._id); 
   console.log('-----------------');
   console.log(department);
   console.log('~~~~~~~~~~');
@@ -102,12 +105,14 @@ export const postAddSchedule = async (req, res) => {
   pusher.trigger(departmentInfo._id+"", departmentInfo._id+"", {
     message: userInfo.name+"님의 일정이 등록되었습니다."
   });
-  return res.sendStatus(201);
+  return res.status(201).json(
+    {id:schedule._id}
+  );
 };
 
 export const deleteSchedule = async (req, res) => {
-  // console.log('deleteSchedule~~~!');
-  // console.log(req.body);
+   console.log('deleteSchedule~~~!');
+   console.log(req.body);
   const {id} = req.body;
   const result = await Schedule.findOneAndDelete(id);
   return res.sendStatus(200);

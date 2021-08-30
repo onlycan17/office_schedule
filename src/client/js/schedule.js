@@ -101,6 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log(e);
       //description = e.description;
       if (!deleteflag) {
+        modal.style.display ='block';
         document.getElementById("title").value = e.event.title;
         document.getElementById("description").value =
           e.event.extendedProps.description;
@@ -124,6 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
       start = arg.start;
       end = arg.end;
       allDay = arg.allDay;
+      modal.style.display ='block';
       toggleModal();
     },
     eventAdd: async function (obj) {
@@ -149,6 +151,8 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       if (res.status === 201) {
+        console.log(res.data.id); 
+        calendar.refetchEvents();
         console.log("저장완료!");
       }
     },
