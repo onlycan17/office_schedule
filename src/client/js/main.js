@@ -1,6 +1,7 @@
 import "regenerator-runtime";
 //import "../scss/styles.scss";
 const department = JSON.parse(document.getElementById("department").value);
+const alam = document.getElementById("sound");
 getNotificationPermission();
 //알림 권한 요청
 function getNotificationPermission() {
@@ -31,6 +32,7 @@ var channel = pusher.subscribe(department._id + "");
 channel.bind(department._id + "", function (data) {
   //alert(JSON.stringify(data));
   const notification = new Notification("스케줄알림", { body: data.message });
+  alam.play();
   setTimeout(function () {
     notification.close();
   }, 999000);
