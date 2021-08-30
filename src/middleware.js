@@ -1,7 +1,6 @@
-import { async } from "regenerator-runtime";
 import requestIp from "request-ip";
-import ActionLog from "./src/schema/actionLog";
-import Menu from "./src/schema/menu";
+import ActionLog from "./schema/actionLog";
+import Menu from "./schema/menu";
 
 const isHeroku = process.env.NODE_ENV === "production";
 

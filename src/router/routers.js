@@ -3,7 +3,7 @@ import {
   publicOnlyMiddleware,
   localsMiddleware,
   protectorMiddleware,
-} from "../../middleware";
+} from "../middleware";
 import {
   getJoin,
   getJoinAdd,
