@@ -7,6 +7,7 @@ import Mongostore from "connect-mongo";
 //import "./schema/user";
 import session from "express-session";
 import router from "./router/routers";
+import admin from "./router/admin";
 import flash from "express-flash";
 import "./pusher";
 
@@ -48,6 +49,7 @@ app.use(flash());
 app.use(logger);
 
 app.use("/", router);
+//app.use("/admin", admin);
 app.use("/static", express.static("assets"));
 
 const handleListening = () => console.log(`Server listening on port http://localhost:${PORT} ❤️‍🔥`);
