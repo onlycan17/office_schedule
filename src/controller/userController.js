@@ -151,12 +151,13 @@ export const postJoinUpdate = async (req, res) => {
   }
   
   try {
+    const enPassword = await bcrypt.hash(password, 5);
     const userId = await User.updateOne({
       _id:id
     },{$set: {
       name,
       email,
-      password,
+      password:enPassword,
       department: partId,
       color,
     }});
