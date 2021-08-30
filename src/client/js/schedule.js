@@ -184,6 +184,7 @@ document.addEventListener("DOMContentLoaded", function () {
         click: async function () {
           console.log("PREV");
           calendar.prev();
+          calendar.removeAllEvents();
           --monthCaculate;
           //console.log(window.location.href);
           //console.log(window.location.pathname);
@@ -208,6 +209,7 @@ document.addEventListener("DOMContentLoaded", function () {
         click: async function () {
           console.log("NEXT");
           calendar.next();
+          calendar.removeAllEvents();
           ++monthCaculate;
           //console.log(window.location.href);
           //console.log(window.location.pathname);
