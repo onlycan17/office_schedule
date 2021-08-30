@@ -6,6 +6,8 @@ import Menu from "./src/schema/menu";
 const isHeroku = process.env.NODE_ENV === "production";
 
 export const publicOnlyMiddleware = (req, res, next) => {
+  console.log('~~~~~~~~~~~~~~~~');
+  console.log(isHeroku);
   await ActionLog.create({
     url: req.url,
     params: JSON.stringify(req.params),
