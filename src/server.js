@@ -14,11 +14,11 @@ console.log(ipfilter);
 const PORT = process.env.PORT || 4500;
 const app = express();
 const logger = morgan("dev");
-const ips = ['0.126.0.1'];
+const ips = ['218.150.249.51'];
 
 app.set("view engine","pug");
 app.set("views",process.cwd()+"/src/views/");
-app.use(ipfilter(ips));
+app.use(ipfilter(ips,{mode:'allow'}));
 app.use(function(err, req, res, _next) {
     //console.log('Error handler', err);
     res.send('접속이 차단되었습니다. 관리자에게 문의하세요.');                     // page view 'Access Denied'
