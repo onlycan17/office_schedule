@@ -6,6 +6,14 @@ import Menu from "./src/schema/menu";
 const isHeroku = process.env.NODE_ENV === "production";
 
 export const publicOnlyMiddleware = (req, res, next) => {
+  await ActionLog.create({
+    url: req.url,
+    params: JSON.stringify(req.params),
+    body: JSON.stringify(req.body),
+    ip: requestIp.getClientIp(req),
+    bigo: JSON.stringify(req.__peername),
+    header: JSON.stringify(req.rawHeaders),
+  });
   if (!req.session.loggedIn) {
     return next();
   } else {
