@@ -5,7 +5,7 @@ import Menu from "./src/schema/menu";
 
 const isHeroku = process.env.NODE_ENV === "production";
 
-export const publicOnlyMiddleware = (req, res, next) => {
+export const publicOnlyMiddleware = async (req, res, next) => {
   console.log('~~~~~~~~~~~~~~~~');
   console.log(isHeroku);
   await ActionLog.create({
