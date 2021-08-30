@@ -1,20 +1,21 @@
+import { async } from "regenerator-runtime";
 import requestIp from "request-ip";
 import ActionLog from "./schema/actionLog";
 import Menu from "./schema/menu";
 
 const isHeroku = process.env.NODE_ENV === "production";
 
-export const publicOnlyMiddleware = async (req, res, next) => {
+export const publicOnlyMiddleware = (req, res, next) => {
   console.log('~~~~~~~~~~~~~~~~');
   console.log(isHeroku);
-  await ActionLog.create({
-    url: req.url,
-    params: JSON.stringify(req.params),
-    body: JSON.stringify(req.body),
-    ip: requestIp.getClientIp(req),
-    bigo: JSON.stringify(req.__peername),
-    header: JSON.stringify(req.rawHeaders),
-  });
+  // await ActionLog.create({
+  //   url: req.url,
+  //   params: JSON.stringify(req.params),
+  //   body: JSON.stringify(req.body),
+  //   ip: requestIp.getClientIp(req),
+  //   bigo: JSON.stringify(req.__peername),
+  //   header: JSON.stringify(req.rawHeaders),
+  // });
   if (!req.session.loggedIn) {
     return next();
   } else {
