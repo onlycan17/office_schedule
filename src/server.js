@@ -18,7 +18,7 @@ const ips = ['::2'];
 
 app.set("view engine","pug");
 app.set("views",process.cwd()+"/src/views/");
-app.use(ipfilter(ips));
+//app.use(ipfilter(ips));
 app.use(function(err, req, res, _next) {
     //console.log('Error handler', err);
     res.send('접속이 차단되었습니다. 관리자에게 문의하세요.');                     // page view 'Access Denied'
