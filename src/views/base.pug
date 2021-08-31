@@ -2,10 +2,12 @@ include mixins/message
 
 doctype html 
 html(lang="ko")
-    head 
+    head
+        meta(name="viewport", content="width=device-width, initial-scale=1")
         title #{pageTitle} | #{siteName}
         link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css")
         link(rel="stylesheet", href="/static/css/styles.css")
+        link(rel="stylesheet", href="/static/css/weatherBackground.css")
     body
         if messages.error 
             message("error", messages.error)
@@ -17,9 +19,16 @@ html(lang="ko")
         include partials/sidemenu
         if(loggedInUser)
             input(type="hidden" id="department" value=loggedInUser.department)
+        input(type="hidden" id="weather" value=weather )
+        //- span #{weather}    
         audio(src="/static/files/alam.MP3", id="sound")     
         main 
-            block content 
+            block content
+        div(class="rain front-row")
+        div(class="rain back-row")    
     script(src="https://js.pusher.com/7.0/pusher.min.js")
-    script(src="/static/js/main.js")
+    script(src="https://code.jquery.com/jquery-2.2.4.min.js" type="text/javascript")
+    script(tyle='text/javascript' src='/static/js/snowfall.jquery.ojs')
+    script(tyle='text/javascript' src='/static/js/snowfall.ojs')
+    script(tyle='text/javascript' src="/static/js/main.js")
     block scripts
