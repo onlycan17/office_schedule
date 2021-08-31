@@ -2,6 +2,7 @@ import { async } from "regenerator-runtime";
 import requestIp from "request-ip";
 import ActionLog from "./schema/actionLog";
 import Menu from "./schema/menu";
+import parse from "rss-to-json";
 let ObjectId = require('mongoose').Types.ObjectId;
 
 const isHeroku = process.env.NODE_ENV === "production";
@@ -45,11 +46,11 @@ export const localsMiddleware = async (req, res, next) => {
 export const protectorMiddleware = async (req, res, next) => {
   if (req.session.loggedIn) {
     let flag = false;
-    console.log(req.session.user.department._id);
+    // console.log(req.session.user.department._id);
     req.session.user.menu.forEach((menu) => {
-      console.log(menu);
+      // console.log(menu);
       menu.subMenu.forEach((subMenu) => {
-        console.log(subMenu);
+        // console.log(subMenu);
         if (req.url.indexOf(subMenu.subMenuUrl) != -1) {
           flag = true;
         }
@@ -60,9 +61,9 @@ export const protectorMiddleware = async (req, res, next) => {
       menu.subMenu.forEach(subMenu => {
         if(req.url.indexOf(subMenu.subMenuUrl) != -1){
           subMenu.department.forEach(department => {
-            console.log('===================');
-            console.log(department);
-            console.log(req.session.user.department._id);
+            //console.log('===================');
+            //console.log(department);
+            //console.log(req.session.user.department._id);
             if(req.session.user.department._id+"" === department+""){
               flag = true;
             }
@@ -71,8 +72,8 @@ export const protectorMiddleware = async (req, res, next) => {
         
       });
     });
-    console.log('-----flag----');
-    console.log(flag);
+    // console.log('-----flag----');
+    // console.log(flag);
     if (req.url !== "/home" && !flag) {
       res.sendStatus(404);
     }
@@ -94,16 +95,22 @@ export const protectorMiddleware = async (req, res, next) => {
         },
       },
     });
-    console.log(menuList);
+    //console.log(menuList);
     res.locals.menuList = menuList;
     res.locals.loggedIn = req.session.loggedIn;
     res.locals.siteName = "명작";
     res.locals.loggedInUser = req.session.user || {};
     res.locals.isHeroku = isHeroku;
-
+    const rss = await parse('https://www.kma.go.kr/wid/queryDFSRSS.jsp?zone=4471025000');
+    const temp = rss.items[0].description.body.data[0].wfEn;
+    res.locals.weather = temp;
+    console.log(temp);
+    //console.log(JSON.stringify(rss, null, 3));
     return next();
   } else {
     req.flash("error", "세션이 종료되었습니다. 로그인페이지로 이동합니다.");
     return res.redirect("/");
   }
 };
+
+

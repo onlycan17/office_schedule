@@ -1,7 +1,12 @@
+import { drop } from "lodash";
 import "regenerator-runtime";
+import { async } from "regenerator-runtime";
+
 //import "../scss/styles.scss";
 const department = JSON.parse(document.getElementById("department").value);
+const weatherStr = document.getElementById("weather").value;
 const alam = document.getElementById("sound");
+
 getNotificationPermission();
 //알림 권한 요청
 function getNotificationPermission() {
@@ -19,6 +24,7 @@ function getNotificationPermission() {
       return false;
     }
   });
+  weather();
 }
 
 // Enable pusher logging - don't include this in production
@@ -37,3 +43,92 @@ channel.bind(department._id + "", function (data) {
     notification.close();
   }, 999000);
 });
+
+function weather() {
+  // ① Clear
+  // ② Mostly Cloudy
+  // ③ Cloudy
+  // ④ Rain
+  // ⑤ Rain/Snow
+  // ⑥ Snow
+  // ⑦ Shower
+
+  console.log(weatherStr);
+
+  if (weatherStr === "Rain") {
+    makeItRain();
+  }else if(weatherStr === "Snow" || weatherStr === "Rain/Snow" || weatherStr === "Shower"){
+    $(document).snowfall({
+      image :"/static/img/flake.png", 
+      minSize: 3, 
+      maxSize:10, 
+      flakeCount : 120
+    });
+  }else if(weatherStr === "Mostly Cloudy" || weatherStr === "Cloudy"){
+    const cloud = document.querySelector("#clouds");
+    cloud.style.display = "block";
+  }
+}
+
+
+
+function makeItRain() {
+  //clear out everything
+  $(".rain").empty();
+
+  var increment = 0;
+  var drops = "";
+  var backDrops = "";
+
+  while (increment < 100) {
+    //couple random numbers to use for various randomizations
+    //random number between 98 and 1
+    var randoHundo = Math.floor(Math.random() * (98 - 1 + 1) + 1);
+    //random number between 5 and 2
+    var randoFiver = Math.floor(Math.random() * (5 - 2 + 1) + 2);
+    //increment
+    increment += randoFiver;
+    //add in a new raindrop with various randomizations to certain CSS properties
+    drops +=
+      '<div class="drop" style="left: ' +
+      increment +
+      "%; bottom: " +
+      (randoFiver + randoFiver - 1 + 100) +
+      "%; animation-delay: 0." +
+      randoHundo +
+      "s; animation-duration: 0.5" +
+      randoHundo +
+      's;"><div class="stem" style="animation-delay: 0.' +
+      randoHundo +
+      "s; animation-duration: 0.5" +
+      randoHundo +
+      's;"></div><div class="splat" style="animation-delay: 0.' +
+      randoHundo +
+      "s; animation-duration: 0.5" +
+      randoHundo +
+      's;"></div></div>';
+    backDrops +=
+      '<div class="drop" style="right: ' +
+      increment +
+      "%; bottom: " +
+      (randoFiver + randoFiver - 1 + 100) +
+      "%; animation-delay: 0." +
+      randoHundo +
+      "s; animation-duration: 0.5" +
+      randoHundo +
+      's;"><div class="stem" style="animation-delay: 0.' +
+      randoHundo +
+      "s; animation-duration: 0.5" +
+      randoHundo +
+      's;"></div><div class="splat" style="animation-delay: 0.' +
+      randoHundo +
+      "s; animation-duration: 0.5" +
+      randoHundo +
+      's;"></div></div>';
+  }
+
+  $(".rain.front-row").append(drops);
+  $(".rain.back-row").append(backDrops);
+  
+}
+
