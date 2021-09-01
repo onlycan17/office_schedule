@@ -37,7 +37,7 @@ import {
 } from "../controller/menuController";
 import { getAuth, getAuthDetail, postAuth } from "../controller/authController";
 import { home } from "../controller/homeController";
-import { customSchedule, deleteSchedule, getSchedule, postAddSchedule, prevSchedule, updateSchedule } from "../controller/scheduleController";
+import { customSchedule, customWeekSchedule, deleteSchedule, getSchedule, postAddSchedule, prevSchedule, updateSchedule } from "../controller/scheduleController";
 
 const router = express.Router();
 
@@ -113,4 +113,5 @@ router.route("/schedule").all(protectorMiddleware).get(getSchedule);
 router.route("/addSchedule").post(postAddSchedule);
 router.route("/deleteSchedule").delete(deleteSchedule);
 router.route("/customSchedule").get(customSchedule);
+router.route("/customWeekSchedule").get(customWeekSchedule);
 export default router;
