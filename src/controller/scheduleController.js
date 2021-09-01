@@ -134,7 +134,8 @@ export const deleteSchedule = async (req, res) => {
    console.log('deleteSchedule~~~!');
    console.log(req.body);
   const {id} = req.body;
-  const result = await Schedule.findOneAndDelete(id);
+  console.log(id);
+  const result = await Schedule.findByIdAndDelete(id);
   return res.sendStatus(200);
 };
 

@@ -25,8 +25,9 @@ cancelButton.addEventListener("click", toggleModal);
 
 let globalId, title, description, url, start, end, allDay;
 let globalCalendar;
-let deleteflag = false;
 let monthCaculate = 0;
+let deleteflag = false;
+let newEventId;
 
 const scheduleData = JSON.parse(calValue); // 캘린더 스케줄 데이터
 
@@ -87,22 +88,23 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       console.log(info.el);
       //info.el.append('<span class="closeon">x</span>');
-      info.el.insertAdjacentHTML("beforeend", '<span class="closeon">X</span>');
+      info.el.insertAdjacentHTML("beforeend", '<span id="close_'+info.event.id+'" class="closeon">X</span>');
       //info.el.innerText = `<span class='closeon'>x</span>`;
-      $(info.el + ".closeon").click(async function () {
+      $("#close_"+info.event.id).click(async function () {
         //$("#calendar").fullCalendar("removeEvents", info._id);
         deleteflag = true;
-        globalId = info.event.id;
+        //globalId = info.event.id;
         const event = calendar.getEventById(info.event.id);
         event.remove();
-
+        console.log('-----delete------');
+        console.log(info.event.id);
         const res = await axios({
           method: "delete",
           url: "/deleteSchedule",
-          data: { id: globalId },
+          data: { id: info.event.id},
           timeout: 15000,
         });
-
+        
         if (res.status === 200) {
           console.log("저장완료!");
         }
@@ -117,6 +119,8 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("description").value =
           e.event.extendedProps.description;
         document.getElementById("url").value = e.event.url;
+        console.log('------update----');
+        console.log(e.event.id);
         globalId = e.event.id;
         start = e.event.start;
         end = e.event.end;
@@ -124,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function () {
         submitButton.removeEventListener("click", addParam);
         const event = calendar.getEventById(e.event.id);
         submitButton.addEventListener("click", function () {
-          updateParam(event);
+          updateParam(e.event.id,event);
         });
         toggleModal();
       }
@@ -233,21 +237,6 @@ async function addParam() {
   title = document.getElementById("title").value;
   description = document.getElementById("description").value;
   url = document.getElementById("url").value;
-
-  if (title) {
-    globalCalendar.addEvent({
-      title,
-      start,
-      end,
-      allDay,
-      description,
-      url,
-      color,
-    });
-  }
-  globalCalendar.unselect();
-  toggleModal();
-
   const form_data = {
     title,
     description,
@@ -267,40 +256,54 @@ async function addParam() {
   });
 
   if (res.status === 201) {
-    console.log(res.data.id);
-    calendar.refetchEvents();
+    //console.log(res.data.id);
+    viewAddEvents(res.data.id);
+    //calendar.refetchEvents();
     console.log("저장완료!");
   }
 }
 
-async function updateParam(event) {
-  title = document.getElementById("title").value;
-  description = document.getElementById("description").value;
-  url = document.getElementById("url").value;
+function viewAddEvents(id){
+  
   if (title) {
     globalCalendar.addEvent({
+      id,
       title,
-      description,
       start,
       end,
       allDay,
+      description,
       url,
       color,
     });
   }
+  title = '';
+  document.getElementById("title").value ='' ;
+  description = '';
+  document.getElementById("description").value ='';
+  url = '' ;
+  document.getElementById("url").value = '';
   globalCalendar.unselect();
-  event.remove();
   toggleModal();
 
+}
+
+async function updateParam(id,event) {
+  
   const resDel = await axios({
     method: "delete",
     url: "/deleteSchedule",
-    data: { id: globalId },
+    data: { id },
     timeout: 15000,
   });
   if (resDel.status === 200) {
     console.log("삭제완료!");
+    event.remove();
   }
+
+  title = document.getElementById("title").value;
+  description = document.getElementById("description").value;
+  url = document.getElementById("url").value;
   const form_data = {
     title,
     description,
@@ -321,7 +324,7 @@ async function updateParam(event) {
 
   if (res.status === 201) {
     console.log(res.data.id);
-    calendar.refetchEvents();
+    viewAddEvents(res.data.id);
     console.log("저장완료!");
   }
 }
