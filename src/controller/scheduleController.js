@@ -143,15 +143,10 @@ export const customSchedule = async (req, res) => {
   let schedule;
   //url = req.url;
   //console.log(req);
-  const {url, monthCaculate } = req.query;
+  const {url, calendarDate } = req.query;
   console.log(req.query);
   console.log(url);
-  const now = new Date();
-  const dateMonth =
-    now.getFullYear() +
-    "-" +
-    (now.getMonth()+ Number(monthCaculate) + 1 < 10 ? "0" + (now.getMonth()+ Number(monthCaculate) + 1) : now.getMonth() + Number(monthCaculate) + 1);
-  console.log(dateMonth);
+  
   //console.log(JSON.stringify(req.session.user.department._id));
   //관리자일 경우
   if (req.session.user.department._id === "612490cc21f010838f50a41b") {
@@ -168,12 +163,60 @@ export const customSchedule = async (req, res) => {
     // console.log(department);
     schedule = await Schedule.find({
       //department,
-      $or: [{ start: new RegExp(dateMonth) }, { end: new RegExp(dateMonth) }],
+      $or: [{ start: new RegExp(calendarDate) }, { end: new RegExp(calendarDate) }],
     });
   } else {
     schedule = await Schedule.find({
       department: req.session.user.department,
-      $or: [{ start: new RegExp(dateMonth) }, { end: new RegExp(dateMonth) }],
+      $or: [{ start: new RegExp(calendarDate) }, { end: new RegExp(calendarDate) }],
+    });
+  }
+  // console.log(schedule);
+  const color = req.session.user.color;
+  //console.log(color);
+  return res.status(200).json({
+    schedule
+  });
+}
+
+
+export const customWeekSchedule = async (req, res) => {
+  let schedule;
+  //url = req.url;
+  //console.log(req);
+  const {url, startDate, endDate } = req.query;
+  console.log(req.query);
+  console.log(url);
+  const now = new Date();
+  // const dateMonth =
+  //   now.getFullYear() +
+  //   "-" +
+  //   (now.getMonth()+ Number(monthCaculate) + 1 < 10 ? "0" + (now.getMonth()+ Number(monthCaculate) + 1) : now.getMonth() + Number(monthCaculate) + 1);
+  // console.log(dateMonth);
+  //console.log(JSON.stringify(req.session.user.department._id));
+  //관리자일 경우
+  if (req.session.user.department._id === "612490cc21f010838f50a41b") {
+    const menu = await Menu.findOne({
+      subMenu: {
+        $elemMatch: {
+          subMenuUrl: url,
+        },
+      },
+    }).populate("subMenu");
+    // console.log(menu);
+    const subMenu = await menu.subMenu.find(isUrl);
+    const department = subMenu.department[0];
+    // console.log(department);
+    schedule = await Schedule.find({
+      //department,
+      start: {$gte:startDate}, 
+      end: {$lte:endDate},
+    });
+  } else {
+    schedule = await Schedule.find({
+      department: req.session.user.department,
+      start: {$gte:startDate}, 
+      end: {$lte:endDate},
     });
   }
   // console.log(schedule);

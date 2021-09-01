@@ -27,7 +27,8 @@ let globalId, title, description, url, start, end, allDay;
 let globalCalendar;
 let monthCaculate = 0;
 let deleteflag = false;
-let newEventId;
+let dateType = "month";
+let nowMonth = moment(new Date()).format('MM');
 
 const scheduleData = JSON.parse(calValue); // 캘린더 스케줄 데이터
 
@@ -88,23 +89,26 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       console.log(info.el);
       //info.el.append('<span class="closeon">x</span>');
-      info.el.insertAdjacentHTML("beforeend", '<span id="close_'+info.event.id+'" class="closeon">X</span>');
+      info.el.insertAdjacentHTML(
+        "beforeend",
+        '<span id="close_' + info.event.id + '" class="closeon">X</span>'
+      );
       //info.el.innerText = `<span class='closeon'>x</span>`;
-      $("#close_"+info.event.id).click(async function () {
+      $("#close_" + info.event.id).click(async function () {
         //$("#calendar").fullCalendar("removeEvents", info._id);
         deleteflag = true;
         //globalId = info.event.id;
         const event = calendar.getEventById(info.event.id);
         event.remove();
-        console.log('-----delete------');
+        console.log("-----delete------");
         console.log(info.event.id);
         const res = await axios({
           method: "delete",
           url: "/deleteSchedule",
-          data: { id: info.event.id},
+          data: { id: info.event.id },
           timeout: 15000,
         });
-        
+
         if (res.status === 200) {
           console.log("저장완료!");
         }
@@ -119,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("description").value =
           e.event.extendedProps.description;
         document.getElementById("url").value = e.event.url;
-        console.log('------update----');
+        console.log("------update----");
         console.log(e.event.id);
         globalId = e.event.id;
         start = e.event.start;
@@ -128,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
         submitButton.removeEventListener("click", addParam);
         const event = calendar.getEventById(e.event.id);
         submitButton.addEventListener("click", function () {
-          updateParam(e.event.id,event);
+          updateParam(e.event.id, event);
         });
         toggleModal();
       }
@@ -164,21 +168,43 @@ document.addEventListener("DOMContentLoaded", function () {
         click: async function () {
           console.log("PREV");
           calendar.prev();
-          calendar.removeAllEvents();
-          --monthCaculate;
-          //console.log(window.location.href);
-          //console.log(window.location.pathname);
-          const res = await axios({
-            method: "get",
-            url: "/customSchedule",
-            params: { monthCaculate, url: window.location.pathname },
-            timeout: 15000,
-          });
-          console.log(res.data.schedule);
-          res.data.schedule.forEach((element) => {
-            calendar.addEvent(element);
-          });
-          calendar.unselect();
+          //console.log(dateStart);
+          if (dateType === 'month' ) {
+            calendar.removeAllEvents();
+            const temp =  calendar.getDate();
+            const calendarDate = moment(temp).format('YYYY-MM');
+            console.log(calendarDate);
+            //console.log(window.location.href);
+            //console.log(window.location.pathname);
+            const res = await axios({
+              method: "get",
+              url: "/customSchedule",
+              params: { calendarDate, url: window.location.pathname },
+              timeout: 15000,
+            });
+            console.log(res.data.schedule);
+            res.data.schedule.forEach((element) => {
+              calendar.addEvent(element);
+            });
+            calendar.unselect();
+          }else{
+            const calendarDate = calendar.getDate().toISOString();
+            const startDate = moment(calendarDate).format('YYYY-MM-DD');
+            let calendarDateEnd = calendar.getDate();
+            let end = calendarDateEnd.getDay()+7;
+            const endDate = moment(end).format('YYYY-MM-DD'); 
+            const res = await axios({
+              method: "get",
+              url: "/customWeekSchedule",
+              params: { startDate, endDate , url: window.location.pathname },
+              timeout: 15000,
+            });
+            console.log(res.data.schedule);
+            res.data.schedule.forEach((element) => {
+              calendar.addEvent(element);
+            });
+            calendar.unselect();
+          }
         },
       },
       next: {
@@ -186,21 +212,66 @@ document.addEventListener("DOMContentLoaded", function () {
         click: async function () {
           console.log("NEXT");
           calendar.next();
-          calendar.removeAllEvents();
-          ++monthCaculate;
-          //console.log(window.location.href);
-          //console.log(window.location.pathname);
-          const res = await axios({
-            method: "get",
-            url: "/customSchedule",
-            params: { monthCaculate, url: window.location.pathname },
-            timeout: 15000,
-          });
-          console.log(res.data.schedule);
-          res.data.schedule.forEach((element) => {
-            calendar.addEvent(element);
-          });
-          calendar.unselect();
+          //console.log(startDate);
+          //console.log(dateStart);
+          if ( dateType === 'month') {
+            calendar.removeAllEvents();
+            const temp =  calendar.getDate();
+            const calendarDate = moment(temp).format('YYYY-MM');
+            console.log(calendarDate);
+            
+            //console.log(window.location.href);
+            //console.log(window.location.pathname);
+            const res = await axios({
+              method: "get",
+              url: "/customSchedule",
+              params: { calendarDate, url: window.location.pathname },
+              timeout: 15000,
+            });
+            console.log(res.data.schedule);
+            res.data.schedule.forEach((element) => {
+              calendar.addEvent(element);
+            });
+            calendar.unselect();
+          }else{
+            const calendarDate = calendar.getDate().toISOString();
+            const startDate = moment(calendarDate).format('YYYY-MM-DD');
+            let calendarDateEnd = calendar.getDate();
+            let end = calendarDateEnd.getDay()+7;
+            const endDate = moment(end).format('YYYY-MM-DD'); 
+            const res = await axios({
+              method: "get",
+              url: "/customWeekSchedule",
+              params: { startDate, endDate , url: window.location.pathname },
+              timeout: 15000,
+            });
+            console.log(res.data.schedule);
+            res.data.schedule.forEach((element) => {
+              calendar.addEvent(element);
+            });
+            calendar.unselect();
+          }
+        },
+      },
+      timeGridWeek: {
+        text: "Week",
+        click: function () {
+          calendar.changeView('timeGridWeek');
+          dateType = "week";
+        },
+      },
+      listWeek: {
+        text: "list week",
+        click: function () {
+          calendar.changeView('listWeek');
+          dateType = "week";
+        },
+      },
+      dayGridMonth: {
+        text: "Month",
+        click: function () {
+          calendar.changeView('dayGridMonth');
+          dateType = "month";
         },
       },
     },
@@ -263,8 +334,7 @@ async function addParam() {
   }
 }
 
-function viewAddEvents(id){
-  
+function viewAddEvents(id) {
   if (title) {
     globalCalendar.addEvent({
       id,
@@ -277,19 +347,17 @@ function viewAddEvents(id){
       color,
     });
   }
-  title = '';
-  document.getElementById("title").value ='' ;
-  description = '';
-  document.getElementById("description").value ='';
-  url = '' ;
-  document.getElementById("url").value = '';
+  title = "";
+  document.getElementById("title").value = "";
+  description = "";
+  document.getElementById("description").value = "";
+  url = "";
+  document.getElementById("url").value = "";
   globalCalendar.unselect();
   toggleModal();
-
 }
 
-async function updateParam(id,event) {
-  
+async function updateParam(id, event) {
   const resDel = await axios({
     method: "delete",
     url: "/deleteSchedule",
