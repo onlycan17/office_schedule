@@ -37,7 +37,12 @@ console.log(department._id);
 var channel = pusher.subscribe(department._id + "");
 channel.bind(department._id + "", function (data) {
   //alert(JSON.stringify(data));
-  const notification = new Notification("스케줄알림", { body: data.message });
+  const options = {
+    body: data.message,
+    icon: '/static/img/alamPush.png',
+    image: '/static/img/animalPush.png',  
+  }
+  const notification = new Notification("일정등록", options);
   alam.play();
   setTimeout(function () {
     notification.close();
