@@ -168,9 +168,9 @@ document.addEventListener("DOMContentLoaded", function () {
         click: async function () {
           console.log("PREV");
           calendar.prev();
+          calendar.removeAllEvents();
           //console.log(dateStart);
           if (dateType === 'month' ) {
-            calendar.removeAllEvents();
             const temp =  calendar.getDate();
             const calendarDate = moment(temp).format('YYYY-MM');
             console.log(calendarDate);
@@ -214,8 +214,8 @@ document.addEventListener("DOMContentLoaded", function () {
           calendar.next();
           //console.log(startDate);
           //console.log(dateStart);
+          calendar.removeAllEvents();
           if ( dateType === 'month') {
-            calendar.removeAllEvents();
             const temp =  calendar.getDate();
             const calendarDate = moment(temp).format('YYYY-MM');
             console.log(calendarDate);

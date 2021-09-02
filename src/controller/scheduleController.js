@@ -208,15 +208,27 @@ export const customWeekSchedule = async (req, res) => {
     const department = subMenu.department[0];
     // console.log(department);
     schedule = await Schedule.find({
-      //department,
-      start: {$gte:startDate}, 
-      end: {$lte:endDate},
+      department,
+      $or:[
+        {start: {$gte:startDate}},
+        {start: {$lte:endDate}}
+      ], 
+      $or:[
+        {end: {$gte:startDate}},
+        {end: {$lte:endDate}},
+      ]
     });
   } else {
     schedule = await Schedule.find({
       department: req.session.user.department,
-      start: {$gte:startDate}, 
-      end: {$lte:endDate},
+      $or:[
+        {start: {$gte:startDate}},
+        {start: {$lte:endDate}}
+      ], 
+      $or:[
+        {end: {$gte:startDate}},
+        {end: {$lte:endDate}},
+      ]
     });
   }
   // console.log(schedule);
