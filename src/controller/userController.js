@@ -29,8 +29,14 @@ export const postLogin = async (req, res) => {
     }
     req.session.loggedIn = true;
     req.session.user = user;
+    console.log('부서확인');
+    console.log(user.department._id);
     req.flash("info", "로그인 성공!");
-    return res.redirect("/home");
+    if(user.department._id+"" === '612490cc21f010838f50a41b'){
+      return res.redirect("/home");
+    }else{
+      return res.redirect("/schedule");
+    }
   } catch (error) {
     return res.sendStatus(404);
   }

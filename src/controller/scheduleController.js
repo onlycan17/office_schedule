@@ -72,7 +72,7 @@ export const getSchedule = async (req, res) => {
   console.log(schedule);
   const color = req.session.user.color;
   console.log(color);
-  return res.render("schedule", { pageTitle: "스케줄 샘플", schedule, color });
+  return res.render("schedule", { pageTitle: req.session.user.department.name+"스케줄", schedule, color });
 };
 
 const isUrl = (element, index) => {
