@@ -56,6 +56,8 @@ function weather() {
   console.log(weatherStr);
 
   if (weatherStr === "Rain") {
+    const cloud = document.querySelector("#clouds");
+    cloud.style.display = "block";
     makeItRain();
   }else if(weatherStr === "Snow" || weatherStr === "Rain/Snow" || weatherStr === "Shower"){
     $(document).snowfall({
@@ -64,9 +66,15 @@ function weather() {
       maxSize:10, 
       flakeCount : 120
     });
-  }else if(weatherStr === "Mostly Cloudy" || weatherStr === "Cloudy"){
+  }else if(weatherStr === "Cloudy"){
     const cloud = document.querySelector("#clouds");
     cloud.style.display = "block";
+  }else if(weatherStr === "Mostly Cloudy"){
+    const cloud = document.querySelector("#clouds");
+    cloud.style.display = "block";
+    $('.container-sun').css('display','block');
+  }else if(weatherStr === 'Clear'){
+    $('.container-sun').css('display','block');
   }
 }
 
@@ -79,7 +87,7 @@ function makeItRain() {
   var increment = 0;
   var drops = "";
   var backDrops = "";
-
+  $('body').css('background','linear-gradient(to bottom, #5821f0, #080847)');
   while (increment < 100) {
     //couple random numbers to use for various randomizations
     //random number between 98 and 1
