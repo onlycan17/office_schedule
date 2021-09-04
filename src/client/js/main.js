@@ -49,6 +49,20 @@ channel.bind(department._id + "", function (data) {
   }, 999000);
 });
 
+var channelMoring = pusher.subscribe("morning"+department._id);
+channelMoring.bind("morning+"+department._id, function(data){
+  const options = {
+    body: data.message,
+    icon: '/static/img/alamPush.png',
+    image: '/static/img/animalPush.png',  
+  }
+  const notification = new Notification("일정등록", options);
+  alam.play();
+  setTimeout(function () {
+    notification.close();
+  }, 999000);
+});
+
 function weather() {
   // ① Clear
   // ② Mostly Cloudy

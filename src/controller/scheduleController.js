@@ -159,6 +159,9 @@ export const customSchedule = async (req, res) => {
     }).populate("subMenu");
     // console.log(menu);
     const subMenu = await menu.subMenu.find(isUrl);
+    if(!subMenu){
+      return res.sendStatus(500);
+    }
     const department = subMenu.department[0];
     // console.log(department);
     schedule = await Schedule.find({
