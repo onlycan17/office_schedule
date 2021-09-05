@@ -157,7 +157,7 @@ export const postAddSchedule = async (req, res) => {
       }
     );
   } else if (new Date(startDate) > new Date(dateNow) && !allDay) {
-    // const today = start;
+    const today = start;
     // const startYear = start.substr(0, 4);
     // const startMonth = start.substr(5, 2);
     // const startDay = start.substr(8, 2);
