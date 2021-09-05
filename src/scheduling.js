@@ -7,6 +7,8 @@ const getScehduling = async () => {
     const month = date.getMonth()+1;
     const day = date.getDay();
     const scheduleData  = await Schedule.find({start:new RegExp(year+'-'+month+'-'+day)}).populate("user").populate("department");
+    console.log('---getschedule----');
+    console.log(scheduleData);
     return scheduleData;
 }
 

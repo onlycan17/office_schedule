@@ -42,21 +42,37 @@ channel.bind(department._id + "", function (data) {
     icon: '/static/img/alamPush.png',
     image: '/static/img/animalPush.png',  
   }
-  const notification = new Notification("일정등록", options);
+  const notification = new Notification("일정등록알림", options);
   alam.play();
   setTimeout(function () {
     notification.close();
   }, 999000);
 });
 
-var channelMoring = pusher.subscribe("morning"+department._id);
-channelMoring.bind("morning+"+department._id, function(data){
+var channelMorning = pusher.subscribe("morningAllDay_"+department._id);
+  channelMorning.bind("morningAllDay_+"+department._id, function(data){
+  console.log(data);
   const options = {
     body: data.message,
     icon: '/static/img/alamPush.png',
     image: '/static/img/animalPush.png',  
   }
-  const notification = new Notification("일정등록", options);
+  const notification = new Notification("일정알림", options);
+  alam.play();
+  setTimeout(function () {
+    notification.close();
+  }, 999000);
+});
+
+var channelTime = pusher.subscribe("timeAlram_"+department._id);
+  channelTime.bind("timeAlram_+"+department._id, function(data){
+  console.log(data);
+  const options = {
+    body: data.message,
+    icon: '/static/img/alamPush.png',
+    image: '/static/img/animalPush.png',  
+  }
+  const notification = new Notification("일정알림", options);
   alam.play();
   setTimeout(function () {
     notification.close();
