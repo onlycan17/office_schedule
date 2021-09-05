@@ -9,6 +9,7 @@ import fetch from "node-fetch";
 import "../css/main.css";
 import { async } from "regenerator-runtime";
 import axios from "axios";
+import moment from "moment";
 
 const modal = document.querySelector(".modal");
 const coloseButton = document.querySelector(".close-button");
@@ -126,8 +127,9 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("------update----");
         console.log(e.event.id);
         globalId = e.event.id;
-        start = e.event.start;
-        end = e.event.end;
+        moment.tz.setDefault("Asia/Seoul");
+        start = moment(arg.start).format('YYYY-MM-DD HH:mm:ss');
+        end = moment(arg.end).format('YYYY-MM-DD HH:mm:ss');
         allDay = e.event.allDay;
         submitButton.removeEventListener("click", addParam);
         const event = calendar.getEventById(e.event.id);
@@ -141,8 +143,9 @@ document.addEventListener("DOMContentLoaded", function () {
     select: function (arg) {
       // 캘린더에서 드래그로 이벤트를 생성할 수 있다.
       //var title = prompt("제목:");
-      start = arg.start;
-      end = arg.end;
+      moment.tz.setDefault("Asia/Seoul");
+      start = moment(arg.start).format('YYYY-MM-DD HH:mm:ss');
+      end = moment(arg.end).format('YYYY-MM-DD HH:mm:ss');
       allDay = arg.allDay;
       modal.style.display = "block";
       toggleModal();
