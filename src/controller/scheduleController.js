@@ -3,7 +3,7 @@ import Schedule from "../schema/schedule";
 import pusher from "../pusher";
 import User from "../schema/user";
 import Department from "../schema/department";
-import schedule from "node-schedule";
+import scheduleC from "node-schedule";
 
 let ObjectId = require("mongoose").Types.ObjectId;
 
@@ -118,24 +118,24 @@ export const postAddSchedule = async (req, res) => {
     user,
     department: departmentInfo._id,
   });
-  console.log(schedule._id);
-  console.log("-----------------");
-  console.log(department);
-  console.log("~~~~~~~~~~");
+  // console.log(schedule._id);
+  // console.log("-----------------");
+  // console.log(department);
+  // console.log("~~~~~~~~~~");
 
-  console.log(departmentInfo);
+  // console.log(departmentInfo);
   const userInfo = await User.findById(user);
-  console.log("~~~~~~~~~~");
-  console.log(departmentInfo.name);
+  // console.log("~~~~~~~~~~");
+  // console.log(departmentInfo.name);
 
   pusher.trigger(departmentInfo._id + "", departmentInfo._id + "", {
     message: userInfo.name + "님의 일정이 등록되었습니다.",
   });
-  startDate = start.substr(0, 10);
+  let startDate = start.substr(0, 10);
   const startYear = start.substr(0, 4);
   const startMonth = start.substr(5, 2);
   const startDay = start.substr(8, 2);
-  console.log("substr 확인------");
+  // console.log("substr 확인------");
   console.log(startYear + " " + startMonth + " " + startDay);
   let dateNow = new Date();
   const year = dateNow.getFullYear();
@@ -144,7 +144,7 @@ export const postAddSchedule = async (req, res) => {
   //console.log(date);
   dateNow = year + "-" + month + "-" + date;
   if (new Date(startDate) > new Date(dateNow) && allDay) {
-    schedule.scheduleJob(
+    scheduleC.scheduleJob(
       new Date().getSeconds()+" 30 9 " + startDay + " " + startMonth + " " + startYear,
       function () {
         pusher.trigger(
@@ -157,10 +157,10 @@ export const postAddSchedule = async (req, res) => {
       }
     );
   } else if (new Date(startDate) > new Date(dateNow) && !allDay) {
-    const today = start;
-    const startYear = start.substr(0, 4);
-    const startMonth = start.substr(5, 2);
-    const startDay = start.substr(8, 2);
+    // const today = start;
+    // const startYear = start.substr(0, 4);
+    // const startMonth = start.substr(5, 2);
+    // const startDay = start.substr(8, 2);
     let hour = today.substr(11, 2);
     let minute = today.substr(14, 2);
     if (Number(minute) <= 5) {
@@ -169,7 +169,8 @@ export const postAddSchedule = async (req, res) => {
     } else {
       minute = Number(minute) - 5 + "";
     }
-    schedule.scheduleJob(new Date().getSeconds()+ " " + minute + " " + hour + " "+startDay+" "+" "+startMonth+" "+startYear, function () {
+    console.log(startYear + " " + startMonth + " " + startDay);
+    scheduleC.scheduleJob(new Date().getSeconds()+ " " + minute + " " + hour + " "+startDay+" "+" "+startMonth+" "+startYear, function () {
       pusher.trigger(
         "timeAlram_" + departmentInfo._id,
         "timeAlram_" + departmentInfo._id,
