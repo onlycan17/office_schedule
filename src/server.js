@@ -56,6 +56,7 @@ app.use("/static", express.static("assets"));
 
  const job = schedule.scheduleJob('0 30 8 * * *', function() {
   const scheduleData = getScehduling();
+  console.log(scheduleData);
   if(scheduleData){
      scheduleData.forEach(todaySchedule => {
        if(todaySchedule.allDay){
