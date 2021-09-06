@@ -188,6 +188,7 @@ export const postAddSchedule = async (req, res) => {
 
 export const deleteSchedule = async (req, res) => {
   console.log("deleteSchedule~~~!");
+  console.log(req.params);
   console.log(req.body);
   const { id } = req.body;
   console.log(id);

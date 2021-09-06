@@ -19,7 +19,7 @@ const calValue = document.getElementById("calValue").value;
 const user = document.getElementById("user").value;
 const department = document.getElementById("department").value;
 
-coloseButton.addEventListener("click", toggleModal);
+coloseButton.addEventListener("click", cancel);
 submitButton.addEventListener("click", addParam);
 cancelButton.addEventListener("click", cancel);
 
@@ -134,9 +134,8 @@ document.addEventListener("DOMContentLoaded", function () {
         end = e.event.end;
         allDay = e.event.allDay;
         submitButton.removeEventListener("click", addParam);
-        const event = calendar.getEventById(e.event.id);
         submitButton.addEventListener("click", function () {
-          updateParam(e.event.id, event);
+          updateParam(globalId);
         });
         toggleModal();
       }
@@ -347,7 +346,7 @@ async function addParam() {
       //console.log(res.data.id);
       viewAddEvents(res.data.id);
       //calendar.refetchEvents();
-      console.log("저장완료!");
+      console.log("저장완료! id:"+res.data.id);
     }
     asyncValue = true;
   }
@@ -376,9 +375,11 @@ function viewAddEvents(id) {
   toggleModal();
 }
 
-async function updateParam(id, event) {
+async function updateParam(id) {
   if(asyncValue){
     asyncValue = false;
+    console.log('updateParam----');
+    console.log(id);
     const resDel = await axios({
       method: "delete",
       url: "/deleteSchedule",
@@ -387,7 +388,8 @@ async function updateParam(id, event) {
     });
     if (resDel.status === 200) {
       console.log("삭제완료!");
-      event.remove();
+      const element = globalCalendar.getEventById(id);
+      element.remove();
     }
   
     title = document.getElementById("title").value;
@@ -414,7 +416,7 @@ async function updateParam(id, event) {
     if (res.status === 201) {
       console.log(res.data.id);
       viewAddEvents(res.data.id);
-      console.log("저장완료!");
+      console.log("저장완료! id:"+res.data.id);
     }
     asyncValue = true;
   }
