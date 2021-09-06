@@ -21,7 +21,7 @@ const department = document.getElementById("department").value;
 
 coloseButton.addEventListener("click", toggleModal);
 submitButton.addEventListener("click", addParam);
-cancelButton.addEventListener("click", toggleModal);
+cancelButton.addEventListener("click", cancel);
 
 let globalId, title, description, url, start, end, allDay;
 let globalCalendar;
@@ -305,6 +305,10 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function toggleModal() {
+  modal.classList.toggle("show-modal");
+}
+
+function cancel(){
   title = "";
   document.getElementById("title").value = "";
   description = "";
@@ -362,6 +366,13 @@ function viewAddEvents(id) {
       color,
     });
   }
+  title = "";
+  document.getElementById("title").value = "";
+  description = "";
+  document.getElementById("description").value = "";
+  url = "";
+  document.getElementById("url").value = "";
+  globalCalendar.unselect();
   toggleModal();
 }
 
