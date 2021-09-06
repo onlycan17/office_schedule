@@ -177,8 +177,7 @@ export const postAddSchedule = async (req, res) => {
         {
           message:
             userInfo.name +
-            "님 곧 시작되는 일정이 있습니다./n " +
-            title,
+            "님 곧 시작되는 일정이 있습니다. 확인해주세요."
         }
       );
     });
