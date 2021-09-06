@@ -28,6 +28,7 @@ let globalCalendar;
 let monthCaculate = 0;
 let deleteflag = false;
 let dateType = "month";
+let asyncValue = true;
 
 const scheduleData = JSON.parse(calValue); // 캘린더 스케줄 데이터
 
@@ -95,21 +96,25 @@ document.addEventListener("DOMContentLoaded", function () {
       //info.el.innerText = `<span class='closeon'>x</span>`;
       $("#close_" + info.event.id).click(async function () {
         //$("#calendar").fullCalendar("removeEvents", info._id);
-        deleteflag = true;
+        if(asyncValue){
+          asyncValue = false;
+          deleteflag = true;
         //globalId = info.event.id;
-        const event = calendar.getEventById(info.event.id);
-        event.remove();
-        console.log("-----delete------");
-        console.log(info.event.id);
-        const res = await axios({
-          method: "delete",
-          url: "/deleteSchedule",
-          data: { id: info.event.id },
-          timeout: 15000,
-        });
+          const event = calendar.getEventById(info.event.id);
+          event.remove();
+          console.log("-----delete------");
+          console.log(info.event.id);
+          const res = await axios({
+            method: "delete",
+            url: "/deleteSchedule",
+            data: { id: info.event.id },
+            timeout: 15000,
+          });
 
-        if (res.status === 200) {
-          console.log("저장완료!");
+          if (res.status === 200) {
+            console.log("저장완료!");
+          }
+          asyncValue = true;
         }
       });
     },
@@ -300,36 +305,47 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function toggleModal() {
+  title = "";
+  document.getElementById("title").value = "";
+  description = "";
+  document.getElementById("description").value = "";
+  url = "";
+  document.getElementById("url").value = "";
+  globalCalendar.unselect();
   modal.classList.toggle("show-modal");
 }
 
 async function addParam() {
-  title = document.getElementById("title").value;
-  description = document.getElementById("description").value;
-  url = document.getElementById("url").value;
-  const form_data = {
-    title,
-    description,
-    url,
-    start,
-    end,
-    allDay,
-    color,
-    user,
-    department,
-  };
-  const res = await axios({
-    method: "post",
-    url: "/addSchedule",
-    data: form_data,
-    timeout: 15000,
-  });
-
-  if (res.status === 201) {
-    //console.log(res.data.id);
-    viewAddEvents(res.data.id);
-    //calendar.refetchEvents();
-    console.log("저장완료!");
+  if(asyncValue){
+    asyncValue = false;
+    title = document.getElementById("title").value;
+    description = document.getElementById("description").value;
+    url = document.getElementById("url").value;
+    const form_data = {
+      title,
+      description,
+      url,
+      start,
+      end,
+      allDay,
+      color,
+      user,
+      department,
+    };
+    const res = await axios({
+      method: "post",
+      url: "/addSchedule",
+      data: form_data,
+      timeout: 15000,
+    });
+  
+    if (res.status === 201) {
+      //console.log(res.data.id);
+      viewAddEvents(res.data.id);
+      //calendar.refetchEvents();
+      console.log("저장완료!");
+    }
+    asyncValue = true;
   }
 }
 
@@ -346,52 +362,49 @@ function viewAddEvents(id) {
       color,
     });
   }
-  title = "";
-  document.getElementById("title").value = "";
-  description = "";
-  document.getElementById("description").value = "";
-  url = "";
-  document.getElementById("url").value = "";
-  globalCalendar.unselect();
   toggleModal();
 }
 
 async function updateParam(id, event) {
-  const resDel = await axios({
-    method: "delete",
-    url: "/deleteSchedule",
-    data: { id },
-    timeout: 15000,
-  });
-  if (resDel.status === 200) {
-    console.log("삭제완료!");
-    event.remove();
-  }
-
-  title = document.getElementById("title").value;
-  description = document.getElementById("description").value;
-  url = document.getElementById("url").value;
-  const form_data = {
-    title,
-    description,
-    url,
-    start,
-    end,
-    allDay,
-    color,
-    user,
-    department,
-  };
-  const res = await axios({
-    method: "post",
-    url: "/addSchedule",
-    data: form_data,
-    timeout: 15000,
-  });
-
-  if (res.status === 201) {
-    console.log(res.data.id);
-    viewAddEvents(res.data.id);
-    console.log("저장완료!");
+  if(asyncValue){
+    asyncValue = false;
+    const resDel = await axios({
+      method: "delete",
+      url: "/deleteSchedule",
+      data: { id },
+      timeout: 15000,
+    });
+    if (resDel.status === 200) {
+      console.log("삭제완료!");
+      event.remove();
+    }
+  
+    title = document.getElementById("title").value;
+    description = document.getElementById("description").value;
+    url = document.getElementById("url").value;
+    const form_data = {
+      title,
+      description,
+      url,
+      start,
+      end,
+      allDay,
+      color,
+      user,
+      department,
+    };
+    const res = await axios({
+      method: "post",
+      url: "/addSchedule",
+      data: form_data,
+      timeout: 15000,
+    });
+  
+    if (res.status === 201) {
+      console.log(res.data.id);
+      viewAddEvents(res.data.id);
+      console.log("저장완료!");
+    }
+    asyncValue = true;
   }
 }
