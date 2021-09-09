@@ -47,6 +47,7 @@ channel.bind(department._id + "", function (data) {
   setTimeout(function () {
     notification.close();
   }, 999000);
+  location.href="/schedule";
 });
 
 var channelMorning = pusher.subscribe("morningAllDay_"+department._id);
