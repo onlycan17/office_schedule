@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
       timeGridPlugin,
       resourceTimelinePlugin,
     ],
-    schedulerLicenseKey: "XXX",
+    schedulerLicenseKey: "GPL-My-Project-Is-Open-Source",
     themeSystem: "bootstrap",
     //now: "2018-02-07",
     now: new Date(),
