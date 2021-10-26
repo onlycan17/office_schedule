@@ -222,7 +222,7 @@ export const customSchedule = async (req, res) => {
     const department = subMenu.department[0];
     // console.log(department);
     schedule = await Schedule.find({
-      //department,
+      department,
       $or: [
         { start: new RegExp(calendarDate) },
         { end: new RegExp(calendarDate) },
