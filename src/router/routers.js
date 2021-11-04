@@ -15,7 +15,7 @@ import {
   postLogin,
 } from "../controller/userController";
 import {
-    deleteDepartment,
+  deleteDepartment,
   getDeleteDepartmentDetail,
   getDepartment,
   getDepartmentAdd,
@@ -24,9 +24,9 @@ import {
   postDepartmentDetail,
 } from "../controller/departmentController";
 import {
-    getAddMenu,
-    getAddSubMenu,
-    getDeleteMenu,
+  getAddMenu,
+  getAddSubMenu,
+  getDeleteMenu,
   getMenu,
   getMenuDetail,
   getSubMenuDelete,
@@ -37,7 +37,30 @@ import {
 } from "../controller/menuController";
 import { getAuth, getAuthDetail, postAuth } from "../controller/authController";
 import { home } from "../controller/homeController";
-import { customSchedule, customWeekSchedule, deleteSchedule, getSchedule, postAddSchedule, prevSchedule, updateSchedule } from "../controller/scheduleController";
+import {
+  customSchedule,
+  customWeekSchedule,
+  deleteSchedule,
+  getSchedule,
+  postAddSchedule,
+  prevSchedule,
+  updateSchedule,
+} from "../controller/scheduleController";
+import {
+  addPostComment,
+  customJournal,
+  customWeekJournal,
+  deleteComment,
+  deleteJournal,
+  downloadFile,
+  editPatchComment,
+  getJournal,
+  postAddJournal,
+} from "../controller/journalController";
+import multipart from "connect-multiparty";
+import { fileUpload } from "../middleware";
+
+const multipartMiddleware = multipart();
 
 const router = express.Router();
 
@@ -57,14 +80,18 @@ router
   .get(getJoinUpdate)
   .post(postJoinUpdate);
 
+router.route("/department").all(protectorMiddleware).get(getDepartment);
+
 router
-  .route("/department")
+  .route("/departmentAdd")
   .all(protectorMiddleware)
-  .get(getDepartment)
+  .get(getDepartmentAdd)
+  .post(postDepartmentAdd);
 
-router.route("/departmentAdd").all(protectorMiddleware).get(getDepartmentAdd).post(postDepartmentAdd);  
-
-router.route("/departmentDelete/:id([0-9a-f]{24})").all(protectorMiddleware).get(deleteDepartment);
+router
+  .route("/departmentDelete/:id([0-9a-f]{24})")
+  .all(protectorMiddleware)
+  .get(deleteDepartment);
 
 router
   .route("/departmentDetail/:id([0-9a-f]{24})")
@@ -79,9 +106,13 @@ router
   .all(protectorMiddleware)
   .get(getDeleteDepartmentDetail);
 
-router.route("/menu").all(protectorMiddleware).get(getMenu)
+router.route("/menu").all(protectorMiddleware).get(getMenu);
 
-router.route("/menuAdd").all(protectorMiddleware).get(getAddMenu).post(postAddMenu);
+router
+  .route("/menuAdd")
+  .all(protectorMiddleware)
+  .get(getAddMenu)
+  .post(postAddMenu);
 
 router.route("/menuDelete/:id([0-9a-f]{24})").get(getDeleteMenu);
 
@@ -91,20 +122,19 @@ router
   .get(getMenuDetail)
   .post(postAddSubMenu);
 
-  router
+router
   .route("/menuDetailDelete/:menuId([0-9a-f]{24})/:subMenuId([0-9a-f]{24})")
   .all(protectorMiddleware)
   .get(getSubMenuDelete);
 
-  router
+router
   .route("/menuDetailAuthAdd")
   .all(protectorMiddleware)
   .patch(subMenuAuthAdd);
 
+router.route("/auth").all(protectorMiddleware).get(getAuth).post(postAuth);
 
-  router.route("/auth").all(protectorMiddleware).get(getAuth).post(postAuth);
-
-  router
+router
   .route("/authDetail/:id([0-9a-f]{24})")
   .all(protectorMiddleware)
   .get(getAuthDetail);
@@ -114,4 +144,14 @@ router.route("/addSchedule").post(postAddSchedule);
 router.route("/deleteSchedule").delete(deleteSchedule);
 router.route("/customSchedule").get(customSchedule);
 router.route("/customWeekSchedule").get(customWeekSchedule);
+
+router.route("/journal").all(protectorMiddleware).get(getJournal);
+router.route("/addJournal").post(fileUpload.fields([{name:"singleFile"}]),postAddJournal);
+router.route("/deleteJournal").delete(deleteJournal);
+router.route("/customJournal").get(customJournal);
+router.route("/customWeekJournal").get(customWeekJournal);
+router.route("/download/:id([0-9a-f]{24})").get(downloadFile);
+router.route("/addComment").post(addPostComment);
+router.route("/editComment").patch(editPatchComment);
+router.route("/deleteComment").get(deleteComment);
 export default router;
