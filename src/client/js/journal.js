@@ -9,11 +9,7 @@ import "../css/main.css";
 import axios from "axios";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import moment from "moment";
-import { async } from "regenerator-runtime";
 
-//const modal = document.querySelector(".modal");
-//const coloseButton = document.querySelector(".close-button");
-//const cancelButton = document.querySelector("#cancel");
 const submitButton = document.querySelector("#submit");
 const commentSaveBtn = document.querySelector("#commentSaveBtn");
 const color = document.getElementById("color").value;
