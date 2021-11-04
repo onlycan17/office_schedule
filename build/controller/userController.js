@@ -83,20 +83,35 @@ var postLogin = /*#__PURE__*/function () {
           case 13:
             req.session.loggedIn = true;
             req.session.user = user;
+            console.log('부서확인');
+            console.log(user.department._id);
             req.flash("info", "로그인 성공!");
+
+            if (!(user.department._id + "" === '612490cc21f010838f50a41b')) {
+              _context.next = 22;
+              break;
+            }
+
             return _context.abrupt("return", res.redirect("/home"));
 
-          case 19:
-            _context.prev = 19;
+          case 22:
+            return _context.abrupt("return", res.redirect("/schedule"));
+
+          case 23:
+            _context.next = 28;
+            break;
+
+          case 25:
+            _context.prev = 25;
             _context.t0 = _context["catch"](2);
             return _context.abrupt("return", res.sendStatus(404));
 
-          case 22:
+          case 28:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[2, 19]]);
+    }, _callee, null, [[2, 25]]);
   }));
 
   return function postLogin(_x, _x2) {
@@ -339,7 +354,7 @@ exports.postJoinAdd = postJoinAdd;
 
 var postJoinUpdate = /*#__PURE__*/function () {
   var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(req, res) {
-    var partList, userList, _req$body3, id, name, oldEmail, email, password, password2, partId, color, pageTitle, department, exists, userId;
+    var partList, userList, _req$body3, id, name, oldEmail, email, password, password2, partId, color, pageTitle, department, exists, enPassword, userId;
 
     return regeneratorRuntime.wrap(function _callee6$(_context6) {
       while (1) {
@@ -400,30 +415,35 @@ var postJoinUpdate = /*#__PURE__*/function () {
           case 17:
             _context6.prev = 17;
             _context6.next = 20;
+            return _bcrypt["default"].hash(password, 5);
+
+          case 20:
+            enPassword = _context6.sent;
+            _context6.next = 23;
             return _user["default"].updateOne({
               _id: id
             }, {
               $set: {
                 name: name,
                 email: email,
-                password: password,
+                password: enPassword,
                 department: partId,
                 color: color
               }
             });
 
-          case 20:
+          case 23:
             userId = _context6.sent;
 
             if (!partId) {
-              _context6.next = 27;
+              _context6.next = 30;
               break;
             }
 
-            _context6.next = 24;
+            _context6.next = 27;
             return _department["default"].findById(partId);
 
-          case 24:
+          case 27:
             department = _context6.sent;
             // console.log("join:"+userId._id);
             // console.log(department);
@@ -431,11 +451,11 @@ var postJoinUpdate = /*#__PURE__*/function () {
             department.user.push(userId._id);
             department.save();
 
-          case 27:
+          case 30:
             return _context6.abrupt("return", res.redirect("/join"));
 
-          case 30:
-            _context6.prev = 30;
+          case 33:
+            _context6.prev = 33;
             _context6.t0 = _context6["catch"](17);
             return _context6.abrupt("return", res.status(400).render("join", {
               pageTitle: "회원수정",
@@ -444,12 +464,12 @@ var postJoinUpdate = /*#__PURE__*/function () {
               userList: userList
             }));
 
-          case 33:
+          case 36:
           case "end":
             return _context6.stop();
         }
       }
-    }, _callee6, null, [[17, 30]]);
+    }, _callee6, null, [[17, 33]]);
   }));
 
   return function postJoinUpdate(_x11, _x12) {

@@ -21,7 +21,13 @@ var _homeController = require("../controller/homeController");
 
 var _scheduleController = require("../controller/scheduleController");
 
+var _journalController = require("../controller/journalController");
+
+var _connectMultiparty = _interopRequireDefault(require("connect-multiparty"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var multipartMiddleware = (0, _connectMultiparty["default"])();
 
 var router = _express["default"].Router();
 
@@ -48,5 +54,17 @@ router.route("/schedule").all(_middleware.protectorMiddleware).get(_scheduleCont
 router.route("/addSchedule").post(_scheduleController.postAddSchedule);
 router.route("/deleteSchedule")["delete"](_scheduleController.deleteSchedule);
 router.route("/customSchedule").get(_scheduleController.customSchedule);
+router.route("/customWeekSchedule").get(_scheduleController.customWeekSchedule);
+router.route("/journal").all(_middleware.protectorMiddleware).get(_journalController.getJournal);
+router.route("/addJournal").post(_middleware.fileUpload.fields([{
+  name: "singleFile"
+}]), _journalController.postAddJournal);
+router.route("/deleteJournal")["delete"](_journalController.deleteJournal);
+router.route("/customJournal").get(_journalController.customJournal);
+router.route("/customWeekJournal").get(_journalController.customWeekJournal);
+router.route("/download/:id([0-9a-f]{24})").get(_journalController.downloadFile);
+router.route("/addComment").post(_journalController.addPostComment);
+router.route("/editComment").patch(_journalController.editPatchComment);
+router.route("/deleteComment").get(_journalController.deleteComment);
 var _default = router;
 exports["default"] = _default;

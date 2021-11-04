@@ -16,6 +16,8 @@ var _expressSession = _interopRequireDefault(require("express-session"));
 
 var _routers = _interopRequireDefault(require("./router/routers"));
 
+var _admin = _interopRequireDefault(require("./router/admin"));
+
 var _expressFlash = _interopRequireDefault(require("express-flash"));
 
 require("./pusher");
@@ -26,19 +28,19 @@ function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "functio
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-var ipfilter = require('express-ipfilter').IpFilter;
+var ipfilter = require("express-ipfilter").IpFilter;
 
 console.log(ipfilter);
 var PORT = process.env.PORT || 4500;
 var app = (0, _express["default"])();
 var logger = (0, _morgan["default"])("dev");
-var ips = ['0.126.0.1'];
+var ips = ["127.126.0.1"];
 app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views/");
 app.use(ipfilter(ips));
 app.use(function (err, req, res, _next) {
   //console.log('Error handler', err);
-  res.send('접속이 차단되었습니다. 관리자에게 문의하세요.'); // page view 'Access Denied'
+  res.send("접속이 차단되었습니다. 관리자에게 문의하세요."); // page view 'Access Denied'
 
   if (err instanceof IpDeniedError) {
     res.status(401).end();
@@ -61,10 +63,13 @@ app.use((0, _expressSession["default"])({
   store: _connectMongo["default"].create({
     mongoUrl: process.env.DB_URL
   })
-}));
+})); //app.use(fileUpload());
+
+app.use("/uploads", _express["default"]["static"]("uploads"));
 app.use((0, _expressFlash["default"])());
 app.use(logger);
-app.use("/", _routers["default"]);
+app.use("/", _routers["default"]); //app.use("/admin", admin);
+
 app.use("/static", _express["default"]["static"]("assets"));
 
 var handleListening = function handleListening() {
