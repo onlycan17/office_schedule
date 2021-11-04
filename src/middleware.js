@@ -4,12 +4,12 @@ import multer from "multer";
 import ActionLog from "./schema/actionLog";
 import Menu from "./schema/menu";
 import parse from "rss-to-json";
-let ObjectId = require('mongoose').Types.ObjectId;
+let ObjectId = require("mongoose").Types.ObjectId;
 
 const isHeroku = process.env.NODE_ENV === "production";
 
 export const publicOnlyMiddleware = (req, res, next) => {
-  console.log('~~~~~~~~~~~~~~~~');
+  console.log("~~~~~~~~~~~~~~~~");
   console.log(isHeroku);
   // await ActionLog.create({
   //   url: req.url,
@@ -28,7 +28,7 @@ export const publicOnlyMiddleware = (req, res, next) => {
 };
 
 export const localsMiddleware = async (req, res, next) => {
-  if(JSON.stringify(req.body) !== "{}"){
+  if (JSON.stringify(req.body) !== "{}") {
     await ActionLog.create({
       url: req.url,
       params: JSON.stringify(req.params),
@@ -50,13 +50,16 @@ export const protectorMiddleware = async (req, res, next) => {
   //console.log('-----미들웨어');
   //console.log(req.url);
   let url = req.url;
-  const arry = url.split("?");
-  const order = arry[1].split("=");
-  const startUrl = arry[0];
-  const lastOrder = order[1];
-  res.locals.startUrl = startUrl;
-  res.locals.lastOrder = lastOrder;
-  console.log(startUrl, lastOrder);
+  if (url !== "/home" && url !== "/joinAdd") {
+    const arry = url.split("?");
+    const order = arry[1].split("=");
+    const startUrl = arry[0];
+    const lastOrder = order[1];
+    res.locals.startUrl = startUrl;
+    res.locals.lastOrder = lastOrder;
+    console.log(startUrl, lastOrder);
+  }
+
   if (req.session.loggedIn) {
     let flag = false;
     // console.log(req.session.user.department._id);
@@ -70,19 +73,18 @@ export const protectorMiddleware = async (req, res, next) => {
       });
     });
     const menu = await Menu.find().populate("subMenu");
-    menu.forEach((menu)=>{
-      menu.subMenu.forEach(subMenu => {
-        if(req.url.indexOf(subMenu.subMenuUrl) != -1){
-          subMenu.department.forEach(department => {
+    menu.forEach((menu) => {
+      menu.subMenu.forEach((subMenu) => {
+        if (req.url.indexOf(subMenu.subMenuUrl) != -1) {
+          subMenu.department.forEach((department) => {
             //console.log('===================');
             //console.log(department);
             //console.log(req.session.user.department._id);
-            if(req.session.user.department._id+"" === department+""){
+            if (req.session.user.department._id + "" === department + "") {
               flag = true;
             }
           });
         }
-        
       });
     });
     // console.log('-----flag----');
@@ -90,10 +92,10 @@ export const protectorMiddleware = async (req, res, next) => {
     if (req.url !== "/home" && !flag) {
       res.sendStatus(404);
     }
-    
+
     const dep = {
-      _id: new ObjectId(req.session.user.department._id)
-    }
+      _id: new ObjectId(req.session.user.department._id),
+    };
     const menuList = await Menu.find({
       // $or: [
       //   { user: req.session.user._id },
@@ -101,10 +103,7 @@ export const protectorMiddleware = async (req, res, next) => {
       // ],
       subMenu: {
         $elemMatch: {
-          $or: [
-            { user: req.session.user._id },
-            { department: dep },
-          ],
+          $or: [{ user: req.session.user._id }, { department: dep }],
         },
       },
     });
@@ -114,7 +113,9 @@ export const protectorMiddleware = async (req, res, next) => {
     res.locals.siteName = "명작";
     res.locals.loggedInUser = req.session.user || {};
     res.locals.isHeroku = isHeroku;
-    const rss = await parse('https://www.kma.go.kr/wid/queryDFSRSS.jsp?zone=4471025000');
+    const rss = await parse(
+      "https://www.kma.go.kr/wid/queryDFSRSS.jsp?zone=4471025000"
+    );
     const temp = rss.items[0].description.body.data[0].wfEn;
     res.locals.weather = temp;
     console.log(temp);
@@ -126,10 +127,9 @@ export const protectorMiddleware = async (req, res, next) => {
   }
 };
 
-
 export const fileUpload = multer({
   dest: "uploads/files/",
   limits: {
-      fileSize: 9900000000,
+    fileSize: 9900000000,
   },
 });
