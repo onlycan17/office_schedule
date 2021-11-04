@@ -186,10 +186,12 @@ document.addEventListener("DOMContentLoaded", function () {
                       </div>
                     </div>
                 `);
+                if(data?.user?._id === user){
                   const editCommentBtn = document.querySelector("#edit_"+data._id);
                   const deleteCommentBtn = document.querySelector("#delete_"+data._id);
                   editCommentBtn.addEventListener("click",() => editCommentForm(data._id));
                   deleteCommentBtn.addEventListener("click",() => deleteComment(data._id));
+                }
                 }
               });
             }
@@ -557,7 +559,7 @@ function clickEdit() {
       <input type="file" id="singleFile" />
     `);
   $("#submitDiv").append(`
-      <button class="button" id="submit">보내기</button>
+      <button class="btn" id="submit">보내기</button>
     `);
   const submitBtn = document.querySelector("#submit");
   submitBtn.addEventListener("click", addParam);
@@ -658,7 +660,7 @@ $(function () {
       <input type="file" id="singleFile" />
     `);
     $("#submitDiv").append(`
-      <button id="submit">보내기</button>
+      <button id="submit" class="btn">보내기</button>
     `);
     const submitBtn = document.querySelector("#submit");
     submitBtn.addEventListener("click", addParam);
@@ -680,7 +682,7 @@ $(function () {
       <input type="file" id="singleFile" />
     `);
     $("#submitDiv").append(`
-      <button id="submit">보내기</button>
+      <button id="submit" class="btn">보내기</button>
     `);
     const submitBtn = document.querySelector("#submit");
     submitBtn.addEventListener("click", addParam);
