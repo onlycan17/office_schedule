@@ -16,11 +16,7 @@ var _timegrid = _interopRequireDefault(require("@fullcalendar/timegrid"));
 
 var _resourceTimeline = _interopRequireDefault(require("@fullcalendar/resource-timeline"));
 
-var _nodeFetch = _interopRequireDefault(require("node-fetch"));
-
 require("../css/main.css");
-
-var _regeneratorRuntime = require("regenerator-runtime");
 
 var _axios = _interopRequireDefault(require("axios"));
 
@@ -109,8 +105,11 @@ document.addEventListener("DOMContentLoaded", function () {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
+              //$("#calendar").fullCalendar("removeEvents", info._id);
+              info.jsEvent.preventDefault();
+
               if (!asyncValue) {
-                _context.next = 12;
+                _context.next = 13;
                 break;
               }
 
@@ -121,7 +120,7 @@ document.addEventListener("DOMContentLoaded", function () {
               event.remove();
               console.log("-----delete------");
               console.log(info.event.id);
-              _context.next = 9;
+              _context.next = 10;
               return (0, _axios["default"])({
                 method: "delete",
                 url: "/deleteSchedule",
@@ -131,7 +130,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 timeout: 15000
               });
 
-            case 9:
+            case 10:
               res = _context.sent;
 
               if (res.status === 200) {
@@ -140,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
               asyncValue = true;
 
-            case 12:
+            case 13:
             case "end":
               return _context.stop();
           }
@@ -149,6 +148,8 @@ document.addEventListener("DOMContentLoaded", function () {
     })));
   }), _defineProperty(_Calendar, "eventClick", function eventClick(e) {
     console.log(e); //description = e.description;
+
+    console.log(e.event.url);
 
     if (!deleteflag) {
       modal.style.display = "block";
@@ -169,6 +170,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     deleteflag = false;
+
+    if (e.event.url) {
+      e.jsEvent.preventDefault();
+      var _url = e.event.url;
+
+      if (_url.indexOf("http")) {
+        window.open("http://" + e.event.url, "_blank");
+      } else {
+        window.open(e.event.url, "_blank");
+      }
+    }
   }), _defineProperty(_Calendar, "select", function select(arg) {
     // 캘린더에서 드래그로 이벤트를 생성할 수 있다.
     //var title = prompt("제목:");

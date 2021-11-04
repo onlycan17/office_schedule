@@ -5,9 +5,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import listPlugin from "@fullcalendar/list";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
-import fetch from "node-fetch";
 import "../css/main.css";
-import { async } from "regenerator-runtime";
 import axios from "axios";
 
 const modal = document.querySelector(".modal");
@@ -96,6 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
       //info.el.innerText = `<span class='closeon'>x</span>`;
       $("#close_" + info.event.id).click(async function () {
         //$("#calendar").fullCalendar("removeEvents", info._id);
+        info.jsEvent.preventDefault();
         if(asyncValue){
           asyncValue = false;
           deleteflag = true;
@@ -121,6 +120,7 @@ document.addEventListener("DOMContentLoaded", function () {
     eventClick: function (e) {
       console.log(e);
       //description = e.description;
+      console.log(e.event.url);
       if (!deleteflag) {
         modal.style.display = "block";
         document.getElementById("title").value = e.event.title;
@@ -140,6 +140,15 @@ document.addEventListener("DOMContentLoaded", function () {
         toggleModal();
       }
       deleteflag = false;
+      if(e.event.url){
+        e.jsEvent.preventDefault();
+        const url = e.event.url;
+        if(url.indexOf("http")){
+          window.open("http://"+e.event.url, "_blank");  
+        }else{
+          window.open(e.event.url, "_blank");
+        }
+      }
     },
     select: function (arg) {
       // 캘린더에서 드래그로 이벤트를 생성할 수 있다.
