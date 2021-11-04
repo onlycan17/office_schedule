@@ -1,5 +1,5 @@
 import Menu from "../schema/menu";
-import Journal from "../schema/Journal";
+import Journal from "../schema/journal";
 import User from "../schema/user";
 import File from "../schema/file";
 import fs from "fs";
