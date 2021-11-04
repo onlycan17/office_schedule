@@ -1,4 +1,4 @@
-import mongoose, { now } from "mongoose";
+import mongoose from "mongoose";
 
 const journalSchema = new mongoose.Schema({
   id: { type: String },
