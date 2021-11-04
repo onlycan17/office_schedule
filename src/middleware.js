@@ -47,6 +47,16 @@ export const localsMiddleware = async (req, res, next) => {
 };
 
 export const protectorMiddleware = async (req, res, next) => {
+  //console.log('-----미들웨어');
+  //console.log(req.url);
+  let url = req.url;
+  const arry = url.split("?");
+  const order = arry[1].split("=");
+  const startUrl = arry[0];
+  const lastOrder = order[1];
+  res.locals.startUrl = startUrl;
+  res.locals.lastOrder = lastOrder;
+  console.log(startUrl, lastOrder);
   if (req.session.loggedIn) {
     let flag = false;
     // console.log(req.session.user.department._id);

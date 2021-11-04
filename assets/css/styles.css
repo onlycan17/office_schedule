@@ -125,7 +125,7 @@ q:after {
 }
 
 table {
-  width: 100%;  
+  width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
   margin: 0 auto;
@@ -136,37 +136,36 @@ table {
 }
 
 tr:nth-child(even) {
-    background-color: #ffffff;
-    color: rgb(95, 53, 245);
+  background-color: #ffffff;
+  color: rgb(95, 53, 245);
 }
-th{
-    background-color: rgb(160, 192, 250);
-    vertical-align: middle;
-    height: 40px;
+th {
+  background-color: rgb(160, 192, 250);
+  vertical-align: middle;
+  height: 40px;
 }
-td{
-    /* text-align: center; */
-    vertical-align: middle;
-    height: 10px;
-    
+td {
+  /* text-align: center; */
+  vertical-align: middle;
+  height: 10px;
 }
-td, th {
-    border: 1px solid #ddd;
-    text-align: left;
-    padding: 8px;
-}
-
-table input[type=color]{
-    margin: 0 auto;
-    border-radius: 5px;
-    border: 1px solid rgba(255, 255, 255, 0.952);
-    background-color: #f3f3f7;
-    font-size: 25px;
-    color: white;
-    width: 50%;
-    height: 30px;
+td,
+th {
+  border: 1px solid #ddd;
+  text-align: left;
+  padding: 8px;
 }
 
+table input[type="color"] {
+  margin: 0 auto;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.952);
+  background-color: #f3f3f7;
+  font-size: 25px;
+  color: white;
+  width: 50%;
+  height: 30px;
+}
 
 form {
   max-width: 420px;
@@ -179,8 +178,8 @@ form:not(.search__form) {
   border: 1px solid rgba(152, 205, 253, 0.1);
 }
 
-form input:not(input[type=range], form input[type=color]),
-form input[type=submit]{
+form input:not(input[type="range"], form input[type="color"]),
+form input[type="submit"] {
   all: unset;
   padding: 15px 20px;
   border-radius: 5px;
@@ -191,7 +190,7 @@ form input[type=submit]{
   color: white;
   width: 90%;
 }
-form > input[type=color]{
+form > input[type="color"] {
   border-radius: 5px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background-color: #4839c7;
@@ -202,29 +201,28 @@ form > input[type=color]{
   height: 30px;
 }
 
-
-
 select {
-    width: 100%;
-    background-color: #4839c7;
-    color: white;
-    font-size: 16px;
-    padding: 15px 20px;
-    border-radius: 5px;
-    margin-bottom: 5px;
+  width: 100%;
+  background-color: #4839c7;
+  color: white;
+  font-size: 16px;
+  padding: 15px 20px;
+  border-radius: 5px;
+  margin-bottom: 5px;
 }
 
-label{
-    display: block;
-    margin-bottom: 5px;
+label {
+  display: block;
+  margin-bottom: 5px;
 }
 
-input:not(input[type=range])::placeholder,
-input[type=submit]::placeholder, select::placeholder {
+input:not(input[type="range"])::placeholder,
+input[type="submit"]::placeholder,
+select::placeholder {
   color: rgba(255, 255, 255, 0.7);
 }
 
-input[type=submit],
+input[type="submit"],
 .social__btn {
   border-radius: 5px;
   padding: 12px 20px;
@@ -235,11 +233,11 @@ input[type=submit],
   display: block;
   border: none;
 }
-input[type=submit]:focus,
+input[type="submit"]:focus,
 .social__btn:focus {
   outline: none;
 }
-input[type=submit]:disabled,
+input[type="submit"]:disabled,
 .social__btn:disabled {
   opacity: 0.5;
   pointer-events: none;
@@ -298,12 +296,17 @@ a {
   text-decoration: none;
 }
 
-a:hover{
-    color: #831283;  
+a:hover {
+  color: #831283;
+}
+
+.selected {
+  color: #831283;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   background-color: #78a4fc;
   color: white;
 }
@@ -343,26 +346,26 @@ main {
   color: white;
 }
 
-.sidemenu{
-    width: 10vw;
-    position: absolute;
-    z-index: 1;
+.sidemenu {
+  width: 10vw;
+  position: absolute;
+  z-index: 1;
 }
 
 ul > li {
-    margin-left: 10px;
-    margin-top: 3px;
+  margin-left: 10px;
+  margin-top: 3px;
 }
 
-.button{
-    display: inline-block;
-    background: rgb(243, 92, 243);
-    margin: 10px;
-    padding: 10px;
-    border-radius: 5px;
+.button {
+  display: inline-block;
+  background: rgb(243, 92, 243);
+  margin: 10px;
+  padding: 10px;
+  border-radius: 5px;
 }
 
-.addButtonLayout{
-    max-width: 800px;
-    margin: 0 auto;
+.addButtonLayout {
+  max-width: 800px;
+  margin: 0 auto;
 }

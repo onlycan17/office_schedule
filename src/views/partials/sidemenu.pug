@@ -11,7 +11,13 @@ div.sidemenu
                                     if(dep == loggedInUser.department._id)
                                         if(loggedInUser.department._id === '612490cc21f010838f50a41b')
                                             li
-                                                a(href=`${subItem.subMenuUrl}?order=${subItem.order}`) #{subItem.subMenuName}
+                                                if(startUrl == subItem.subMenuUrl && lastOrder == subItem.order)
+                                                    a( href=`${subItem.subMenuUrl}?order=${subItem.order}`, class="selected") #{subItem.subMenuName}
+                                                else 
+                                                    a( href=`${subItem.subMenuUrl}?order=${subItem.order}`) #{subItem.subMenuName}    
                                         else 
                                             li
-                                                a(href=`${subItem.subMenuUrl}`) #{subItem.subMenuName}    
+                                                if(startUrl == subItem.subMenuUrl && lastOrder == subItem.order)
+                                                    a( href=`${subItem.subMenuUrl}` , class="selected") #{subItem.subMenuName}
+                                                else 
+                                                    a( href=`${subItem.subMenuUrl}`) #{subItem.subMenuName}                                                 
