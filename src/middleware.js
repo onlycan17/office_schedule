@@ -50,7 +50,7 @@ export const protectorMiddleware = async (req, res, next) => {
   //console.log('-----미들웨어');
   //console.log(req.url);
   let url = req.url;
-  if (url !== "/home" && url !== "/joinAdd") {
+  if (url.indexOf("?") !== -1) {
     const arry = url.split("?");
     const order = arry[1].split("=");
     const startUrl = arry[0];
