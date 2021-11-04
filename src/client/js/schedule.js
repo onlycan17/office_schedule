@@ -94,7 +94,6 @@ document.addEventListener("DOMContentLoaded", function () {
       //info.el.innerText = `<span class='closeon'>x</span>`;
       $("#close_" + info.event.id).click(async function () {
         //$("#calendar").fullCalendar("removeEvents", info._id);
-        info.jsEvent.preventDefault();
         if(asyncValue){
           asyncValue = false;
           deleteflag = true;
@@ -120,6 +119,7 @@ document.addEventListener("DOMContentLoaded", function () {
     eventClick: function (e) {
       console.log(e);
       //description = e.description;
+      e.jsEvent.preventDefault();
       console.log(e.event.url);
       if (!deleteflag) {
         modal.style.display = "block";
@@ -138,17 +138,16 @@ document.addEventListener("DOMContentLoaded", function () {
           updateParam(globalId);
         });
         toggleModal();
-      }
-      deleteflag = false;
-      if(e.event.url){
-        e.jsEvent.preventDefault();
-        const url = e.event.url;
-        if(url.indexOf("http")){
-          window.open("http://"+e.event.url, "_blank");  
-        }else{
-          window.open(e.event.url, "_blank");
+        if(e.event.url){
+          const url = e.event.url;
+          if(url.indexOf("http")){
+            window.open("http://"+e.event.url, "_blank");  
+          }else{
+            window.open(e.event.url, "_blank");
+          }
         }
       }
+      deleteflag = false;
     },
     select: function (arg) {
       // 캘린더에서 드래그로 이벤트를 생성할 수 있다.

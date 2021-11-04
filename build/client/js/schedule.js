@@ -105,11 +105,8 @@ document.addEventListener("DOMContentLoaded", function () {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              //$("#calendar").fullCalendar("removeEvents", info._id);
-              info.jsEvent.preventDefault();
-
               if (!asyncValue) {
-                _context.next = 13;
+                _context.next = 12;
                 break;
               }
 
@@ -120,7 +117,7 @@ document.addEventListener("DOMContentLoaded", function () {
               event.remove();
               console.log("-----delete------");
               console.log(info.event.id);
-              _context.next = 10;
+              _context.next = 9;
               return (0, _axios["default"])({
                 method: "delete",
                 url: "/deleteSchedule",
@@ -130,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 timeout: 15000
               });
 
-            case 10:
+            case 9:
               res = _context.sent;
 
               if (res.status === 200) {
@@ -139,7 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
               asyncValue = true;
 
-            case 13:
+            case 12:
             case "end":
               return _context.stop();
           }
@@ -149,6 +146,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }), _defineProperty(_Calendar, "eventClick", function eventClick(e) {
     console.log(e); //description = e.description;
 
+    e.jsEvent.preventDefault();
     console.log(e.event.url);
 
     if (!deleteflag) {
@@ -167,20 +165,19 @@ document.addEventListener("DOMContentLoaded", function () {
         updateParam(globalId);
       });
       toggleModal();
+
+      if (e.event.url) {
+        var _url = e.event.url;
+
+        if (_url.indexOf("http")) {
+          window.open("http://" + e.event.url, "_blank");
+        } else {
+          window.open(e.event.url, "_blank");
+        }
+      }
     }
 
     deleteflag = false;
-
-    if (e.event.url) {
-      e.jsEvent.preventDefault();
-      var _url = e.event.url;
-
-      if (_url.indexOf("http")) {
-        window.open("http://" + e.event.url, "_blank");
-      } else {
-        window.open(e.event.url, "_blank");
-      }
-    }
   }), _defineProperty(_Calendar, "select", function select(arg) {
     // 캘린더에서 드래그로 이벤트를 생성할 수 있다.
     //var title = prompt("제목:");
