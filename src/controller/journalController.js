@@ -5,7 +5,6 @@ import User from "../schema/user";
 import scheduleC from "node-schedule";
 import { async } from "regenerator-runtime";
 import File from "../schema/file";
-import mime from "mime";
 import fs from "fs";
 import iconv from "iconv-lite";
 import Comment from "../schema/comment";
