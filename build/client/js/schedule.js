@@ -44,13 +44,15 @@ var color = document.getElementById("color").value;
 var calValue = document.getElementById("calValue").value;
 var user = document.getElementById("user").value;
 var department = document.getElementById("department").value;
-coloseButton.addEventListener("click", toggleModal);
+coloseButton.addEventListener("click", cancel);
 submitButton.addEventListener("click", addParam);
-cancelButton.addEventListener("click", toggleModal);
+cancelButton.addEventListener("click", cancel);
 var globalId, title, description, url, start, end, allDay;
 var globalCalendar;
-var deleteflag = false;
 var monthCaculate = 0;
+var deleteflag = false;
+var dateType = "month";
+var asyncValue = true;
 var scheduleData = JSON.parse(calValue); // 캘린더 스케줄 데이터
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -59,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var calendarEl = document.getElementById("calendar");
   var calendar = new _core.Calendar(calendarEl, (_Calendar = {
     plugins: [_adaptive["default"], _interaction["default"], _daygrid["default"], _list["default"], _timegrid["default"], _resourceTimeline["default"]],
-    schedulerLicenseKey: "XXX",
+    schedulerLicenseKey: "GPL-My-Project-Is-Open-Source",
     themeSystem: "bootstrap",
     //now: "2018-02-07",
     now: new Date(),
@@ -99,31 +101,69 @@ document.addEventListener("DOMContentLoaded", function () {
 
     console.log(info.el); //info.el.append('<span class="closeon">x</span>');
 
-    info.el.insertAdjacentHTML("beforeend", '<span class="closeon">X</span>'); //info.el.innerText = `<span class='closeon'>x</span>`;
+    info.el.insertAdjacentHTML("beforeend", '<span id="close_' + info.event.id + '" class="closeon">X</span>'); //info.el.innerText = `<span class='closeon'>x</span>`;
 
-    $(info.el + ".closeon").click(function () {
-      //$("#calendar").fullCalendar("removeEvents", info._id);
-      deleteflag = true;
-      globalId = info.event.id;
-      var event = calendar.getEventById(info.event.id);
-      event.remove();
-    });
+    $("#close_" + info.event.id).click( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      var event, res;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              if (!asyncValue) {
+                _context.next = 12;
+                break;
+              }
+
+              asyncValue = false;
+              deleteflag = true; //globalId = info.event.id;
+
+              event = calendar.getEventById(info.event.id);
+              event.remove();
+              console.log("-----delete------");
+              console.log(info.event.id);
+              _context.next = 9;
+              return (0, _axios["default"])({
+                method: "delete",
+                url: "/deleteSchedule",
+                data: {
+                  id: info.event.id
+                },
+                timeout: 15000
+              });
+
+            case 9:
+              res = _context.sent;
+
+              if (res.status === 200) {
+                console.log("저장완료!");
+              }
+
+              asyncValue = true;
+
+            case 12:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    })));
   }), _defineProperty(_Calendar, "eventClick", function eventClick(e) {
     console.log(e); //description = e.description;
 
     if (!deleteflag) {
-      modal.style.display = 'block';
+      modal.style.display = "block";
       document.getElementById("title").value = e.event.title;
       document.getElementById("description").value = e.event.extendedProps.description;
       document.getElementById("url").value = e.event.url;
+      console.log("------update----");
+      console.log(e.event.id);
       globalId = e.event.id;
       start = e.event.start;
       end = e.event.end;
       allDay = e.event.allDay;
       submitButton.removeEventListener("click", addParam);
-      var event = calendar.getEventById(e.event.id);
       submitButton.addEventListener("click", function () {
-        updateParam(event);
+        updateParam(globalId);
       });
       toggleModal();
     }
@@ -135,67 +175,16 @@ document.addEventListener("DOMContentLoaded", function () {
     start = arg.start;
     end = arg.end;
     allDay = arg.allDay;
-    modal.style.display = 'block';
+    modal.style.display = "block";
     toggleModal();
   }), _defineProperty(_Calendar, "eventAdd", function () {
-    var _eventAdd = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(obj) {
-      var form_data, res;
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              // 이벤트가 추가되면 발생하는 이벤트
-              console.log("eventAdd");
-              console.log(obj);
-              form_data = {
-                title: title,
-                description: description,
-                url: url,
-                start: start,
-                end: end,
-                allDay: allDay,
-                color: color,
-                user: user,
-                department: department
-              };
-              _context.next = 5;
-              return (0, _axios["default"])({
-                method: "post",
-                url: "/addSchedule",
-                data: form_data,
-                timeout: 15000
-              });
-
-            case 5:
-              res = _context.sent;
-
-              if (res.status === 201) {
-                console.log(res.data.id);
-                calendar.refetchEvents();
-                console.log("저장완료!");
-              }
-
-            case 7:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }));
-
-    function eventAdd(_x) {
-      return _eventAdd.apply(this, arguments);
-    }
-
-    return eventAdd;
-  }()), _defineProperty(_Calendar, "eventChange", function () {
-    var _eventChange = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(obj) {
+    var _eventAdd = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(obj) {
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              // 이벤트가 수정되면 발생하는 이벤트(insert-> delete를 사용하기 때문에 필요 없음.)
-              console.log("eventEdit");
+              // 이벤트가 추가되면 발생하는 이벤트
+              console.log("eventAdd");
               console.log(obj);
 
             case 2:
@@ -206,44 +195,51 @@ document.addEventListener("DOMContentLoaded", function () {
       }, _callee2);
     }));
 
+    function eventAdd(_x) {
+      return _eventAdd.apply(this, arguments);
+    }
+
+    return eventAdd;
+  }()), _defineProperty(_Calendar, "eventChange", function () {
+    var _eventChange = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(obj) {
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              // 이벤트가 수정되면 발생하는 이벤트(insert-> delete를 사용하기 때문에 필요 없음.)
+              console.log("eventEdit");
+              console.log(obj);
+
+            case 2:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3);
+    }));
+
     function eventChange(_x2) {
       return _eventChange.apply(this, arguments);
     }
 
     return eventChange;
   }()), _defineProperty(_Calendar, "eventRemove", function () {
-    var _eventRemove = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(obj) {
-      var res;
-      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+    var _eventRemove = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(obj) {
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
         while (1) {
-          switch (_context3.prev = _context3.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
               // 이벤트가 삭제되면 발생하는 이벤트
               console.log("eventDelete");
               console.log(obj);
-              _context3.next = 4;
-              return (0, _axios["default"])({
-                method: "delete",
-                url: "/deleteSchedule",
-                data: {
-                  id: globalId
-                },
-                timeout: 15000
-              });
+              $('.tooltip').remove();
 
-            case 4:
-              res = _context3.sent;
-
-              if (res.status === 200) {
-                console.log("저장완료!");
-              }
-
-            case 6:
+            case 3:
             case "end":
-              return _context3.stop();
+              return _context4.stop();
           }
         }
-      }, _callee3);
+      }, _callee4);
     }));
 
     function eventRemove(_x3) {
@@ -255,42 +251,82 @@ document.addEventListener("DOMContentLoaded", function () {
     prev: {
       text: "Prev",
       click: function () {
-        var _click = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-          var res;
-          return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        var _click = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+          var temp, calendarDate, res, _calendarDate, startDate, calendarDateEnd, _end, endDate, _res;
+
+          return regeneratorRuntime.wrap(function _callee5$(_context5) {
             while (1) {
-              switch (_context4.prev = _context4.next) {
+              switch (_context5.prev = _context5.next) {
                 case 0:
                   console.log("PREV");
                   calendar.prev();
-                  --monthCaculate; //console.log(window.location.href);
+                  calendar.removeAllEvents(); //console.log(dateStart);
+
+                  if (!(dateType === 'month')) {
+                    _context5.next = 15;
+                    break;
+                  }
+
+                  temp = calendar.getDate();
+                  calendarDate = moment(temp).format('YYYY-MM');
+                  console.log(calendarDate); //console.log(window.location.href);
                   //console.log(window.location.pathname);
 
-                  _context4.next = 5;
+                  _context5.next = 9;
                   return (0, _axios["default"])({
                     method: "get",
                     url: "/customSchedule",
                     params: {
-                      monthCaculate: monthCaculate,
+                      calendarDate: calendarDate,
                       url: window.location.pathname
                     },
                     timeout: 15000
                   });
 
-                case 5:
-                  res = _context4.sent;
+                case 9:
+                  res = _context5.sent;
                   console.log(res.data.schedule);
                   res.data.schedule.forEach(function (element) {
                     calendar.addEvent(element);
                   });
                   calendar.unselect();
+                  _context5.next = 26;
+                  break;
 
-                case 9:
+                case 15:
+                  _calendarDate = calendar.getDate().toISOString();
+                  startDate = moment(_calendarDate).format('YYYY-MM-DD');
+                  calendarDateEnd = calendar.getDate();
+                  _end = calendarDateEnd.getDay() + 7;
+                  endDate = moment(_end).format('YYYY-MM-DD');
+                  _context5.next = 22;
+                  return (0, _axios["default"])({
+                    method: "get",
+                    url: "/customWeekSchedule",
+                    params: {
+                      startDate: startDate,
+                      endDate: endDate,
+                      url: window.location.pathname
+                    },
+                    timeout: 15000
+                  });
+
+                case 22:
+                  _res = _context5.sent;
+                  console.log(_res.data.schedule);
+
+                  _res.data.schedule.forEach(function (element) {
+                    calendar.addEvent(element);
+                  });
+
+                  calendar.unselect();
+
+                case 26:
                 case "end":
-                  return _context4.stop();
+                  return _context5.stop();
               }
             }
-          }, _callee4);
+          }, _callee5);
         }));
 
         function click() {
@@ -303,42 +339,84 @@ document.addEventListener("DOMContentLoaded", function () {
     next: {
       text: "Next",
       click: function () {
-        var _click2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-          var res;
-          return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        var _click2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+          var temp, calendarDate, res, _calendarDate2, startDate, calendarDateEnd, _end2, endDate, _res2;
+
+          return regeneratorRuntime.wrap(function _callee6$(_context6) {
             while (1) {
-              switch (_context5.prev = _context5.next) {
+              switch (_context6.prev = _context6.next) {
                 case 0:
                   console.log("NEXT");
-                  calendar.next();
-                  ++monthCaculate; //console.log(window.location.href);
+                  calendar.next(); //console.log(startDate);
+                  //console.log(dateStart);
+
+                  calendar.removeAllEvents();
+
+                  if (!(dateType === 'month')) {
+                    _context6.next = 15;
+                    break;
+                  }
+
+                  temp = calendar.getDate();
+                  calendarDate = moment(temp).format('YYYY-MM');
+                  console.log(calendarDate); //console.log(window.location.href);
                   //console.log(window.location.pathname);
 
-                  _context5.next = 5;
+                  _context6.next = 9;
                   return (0, _axios["default"])({
                     method: "get",
                     url: "/customSchedule",
                     params: {
-                      monthCaculate: monthCaculate,
+                      calendarDate: calendarDate,
                       url: window.location.pathname
                     },
                     timeout: 15000
                   });
 
-                case 5:
-                  res = _context5.sent;
+                case 9:
+                  res = _context6.sent;
                   console.log(res.data.schedule);
                   res.data.schedule.forEach(function (element) {
                     calendar.addEvent(element);
                   });
                   calendar.unselect();
+                  _context6.next = 26;
+                  break;
 
-                case 9:
+                case 15:
+                  _calendarDate2 = calendar.getDate().toISOString();
+                  startDate = moment(_calendarDate2).format('YYYY-MM-DD');
+                  calendarDateEnd = calendar.getDate();
+                  _end2 = calendarDateEnd.getDay() + 7;
+                  endDate = moment(_end2).format('YYYY-MM-DD');
+                  _context6.next = 22;
+                  return (0, _axios["default"])({
+                    method: "get",
+                    url: "/customWeekSchedule",
+                    params: {
+                      startDate: startDate,
+                      endDate: endDate,
+                      url: window.location.pathname
+                    },
+                    timeout: 15000
+                  });
+
+                case 22:
+                  _res2 = _context6.sent;
+                  console.log(_res2.data.schedule);
+
+                  _res2.data.schedule.forEach(function (element) {
+                    calendar.addEvent(element);
+                  });
+
+                  calendar.unselect();
+
+                case 26:
                 case "end":
-                  return _context5.stop();
+                  return _context6.stop();
               }
             }
-          }, _callee5);
+          }, _callee6);
         }));
 
         function click() {
@@ -347,6 +425,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
         return click;
       }()
+    },
+    timeGridWeek: {
+      text: "Week",
+      click: function click() {
+        calendar.changeView('timeGridWeek');
+        dateType = "week";
+      }
+    },
+    listWeek: {
+      text: "list week",
+      click: function click() {
+        calendar.changeView('listWeek');
+        dateType = "week";
+      }
+    },
+    dayGridMonth: {
+      text: "Month",
+      click: function click() {
+        calendar.changeView('dayGridMonth');
+        dateType = "month";
+      }
     }
   }), _defineProperty(_Calendar, "views", {
     resourceTimelineThreeDays: {
@@ -386,13 +485,82 @@ function toggleModal() {
   modal.classList.toggle("show-modal");
 }
 
-function addParam() {
-  title = document.getElementById("title").value;
-  description = document.getElementById("description").value;
-  url = document.getElementById("url").value;
+function cancel() {
+  title = "";
+  document.getElementById("title").value = "";
+  description = "";
+  document.getElementById("description").value = "";
+  url = "";
+  document.getElementById("url").value = "";
+  globalCalendar.unselect();
+  modal.classList.toggle("show-modal");
+}
 
+function addParam() {
+  return _addParam.apply(this, arguments);
+}
+
+function _addParam() {
+  _addParam = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+    var form_data, res;
+    return regeneratorRuntime.wrap(function _callee7$(_context7) {
+      while (1) {
+        switch (_context7.prev = _context7.next) {
+          case 0:
+            if (!asyncValue) {
+              _context7.next = 11;
+              break;
+            }
+
+            asyncValue = false;
+            title = document.getElementById("title").value;
+            description = document.getElementById("description").value;
+            url = document.getElementById("url").value;
+            form_data = {
+              title: title,
+              description: description,
+              url: url,
+              start: start,
+              end: end,
+              allDay: allDay,
+              color: color,
+              user: user,
+              department: department
+            };
+            _context7.next = 8;
+            return (0, _axios["default"])({
+              method: "post",
+              url: "/addSchedule",
+              data: form_data,
+              timeout: 15000
+            });
+
+          case 8:
+            res = _context7.sent;
+
+            if (res.status === 201) {
+              //console.log(res.data.id);
+              viewAddEvents(res.data.id); //calendar.refetchEvents();
+
+              console.log("저장완료! id:" + res.data.id);
+            }
+
+            asyncValue = true;
+
+          case 11:
+          case "end":
+            return _context7.stop();
+        }
+      }
+    }, _callee7);
+  }));
+  return _addParam.apply(this, arguments);
+}
+
+function viewAddEvents(id) {
   if (title) {
     globalCalendar.addEvent({
+      id: id,
       title: title,
       start: start,
       end: end,
@@ -403,28 +571,93 @@ function addParam() {
     });
   }
 
+  title = "";
+  document.getElementById("title").value = "";
+  description = "";
+  document.getElementById("description").value = "";
+  url = "";
+  document.getElementById("url").value = "";
   globalCalendar.unselect();
   toggleModal();
 }
 
-function updateParam(event) {
-  title = document.getElementById("title").value;
-  description = document.getElementById("description").value;
-  url = document.getElementById("url").value;
+function updateParam(_x4) {
+  return _updateParam.apply(this, arguments);
+}
 
-  if (title) {
-    globalCalendar.addEvent({
-      title: title,
-      description: description,
-      start: start,
-      end: end,
-      allDay: allDay,
-      url: url,
-      color: color
-    });
-  }
+function _updateParam() {
+  _updateParam = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(id) {
+    var resDel, element, form_data, res;
+    return regeneratorRuntime.wrap(function _callee8$(_context8) {
+      while (1) {
+        switch (_context8.prev = _context8.next) {
+          case 0:
+            if (!asyncValue) {
+              _context8.next = 17;
+              break;
+            }
 
-  globalCalendar.unselect();
-  event.remove();
-  toggleModal();
+            asyncValue = false;
+            console.log('updateParam----');
+            console.log(id);
+            _context8.next = 6;
+            return (0, _axios["default"])({
+              method: "delete",
+              url: "/deleteSchedule",
+              data: {
+                id: id
+              },
+              timeout: 15000
+            });
+
+          case 6:
+            resDel = _context8.sent;
+
+            if (resDel.status === 200) {
+              console.log("삭제완료!");
+              element = globalCalendar.getEventById(id);
+              element.remove();
+            }
+
+            title = document.getElementById("title").value;
+            description = document.getElementById("description").value;
+            url = document.getElementById("url").value;
+            form_data = {
+              title: title,
+              description: description,
+              url: url,
+              start: start,
+              end: end,
+              allDay: allDay,
+              color: color,
+              user: user,
+              department: department
+            };
+            _context8.next = 14;
+            return (0, _axios["default"])({
+              method: "post",
+              url: "/addSchedule",
+              data: form_data,
+              timeout: 15000
+            });
+
+          case 14:
+            res = _context8.sent;
+
+            if (res.status === 201) {
+              console.log(res.data.id);
+              viewAddEvents(res.data.id);
+              console.log("저장완료! id:" + res.data.id);
+            }
+
+            asyncValue = true;
+
+          case 17:
+          case "end":
+            return _context8.stop();
+        }
+      }
+    }, _callee8);
+  }));
+  return _updateParam.apply(this, arguments);
 }
