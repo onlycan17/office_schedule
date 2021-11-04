@@ -5,6 +5,7 @@ import File from "../schema/file";
 import fs from "fs";
 import iconv from "iconv-lite";
 import Comment from "../schema/comment";
+import { async } from "regenerator-runtime";
 
 let ObjectId = require("mongoose").Types.ObjectId;
 
@@ -364,3 +365,7 @@ export const deleteComment = async (req, res) => {
   await Comment.findByIdAndDelete(commentId);
   res.sendStatus(200);
 };
+
+export const getSearchJournal = async (req, res) => {
+  const journal = await Journal.find();
+}
