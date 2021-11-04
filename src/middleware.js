@@ -1,5 +1,6 @@
 import { async } from "regenerator-runtime";
 import requestIp from "request-ip";
+import multer from "multer";
 import ActionLog from "./schema/actionLog";
 import Menu from "./schema/menu";
 import parse from "rss-to-json";
@@ -27,14 +28,16 @@ export const publicOnlyMiddleware = (req, res, next) => {
 };
 
 export const localsMiddleware = async (req, res, next) => {
-  await ActionLog.create({
-    url: req.url,
-    params: JSON.stringify(req.params),
-    body: JSON.stringify(req.body),
-    ip: requestIp.getClientIp(req),
-    bigo: JSON.stringify(req.__peername),
-    header: JSON.stringify(req.rawHeaders),
-  });
+  if(JSON.stringify(req.body) !== "{}"){
+    await ActionLog.create({
+      url: req.url,
+      params: JSON.stringify(req.params),
+      body: JSON.stringify(req.body),
+      ip: requestIp.getClientIp(req),
+      bigo: JSON.stringify(req.__peername),
+      header: JSON.stringify(req.rawHeaders),
+    });
+  }
   res.locals.loggedIn = Boolean(req.session.loggedIn);
   res.locals.siteName = "명작";
   res.locals.loggedInUser = req.session.user || {};
@@ -114,3 +117,9 @@ export const protectorMiddleware = async (req, res, next) => {
 };
 
 
+export const fileUpload = multer({
+  dest: "uploads/files/",
+  limits: {
+      fileSize: 9900000000,
+  },
+});

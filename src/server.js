@@ -44,6 +44,8 @@ app.use(
     }),
   })
 );
+//app.use(fileUpload());
+app.use("/uploads", express.static("uploads"));
 app.use(flash());
 app.use(logger);
 app.use("/", router);

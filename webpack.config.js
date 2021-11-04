@@ -8,7 +8,9 @@ module.exports = {
       main: BASE_JS + "main.js",
       department: BASE_JS + "department.js",
       schedule: BASE_JS + "schedule.js",
-     // menu: BASE_JS + "menu.js",
+      journal: BASE_JS + "journal.js",
+      // CKEditorLoad: BASE_JS + "CKEditorLoad.js",
+      //sideBar: BASE_JS + "sideBar.js",
   },
   // resolve: {
   //   extensions: ['.js'],

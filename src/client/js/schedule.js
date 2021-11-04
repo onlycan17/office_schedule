@@ -164,6 +164,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // 이벤트가 삭제되면 발생하는 이벤트
       console.log("eventDelete");
       console.log(obj);
+      $('.tooltip').remove();
     },
     customButtons: {
       prev: {
