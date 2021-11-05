@@ -60,7 +60,7 @@ export const getJoin = async (req, res) => {
 };
 
 export const getJoinAdd = async (req, res) => {
-  const partList = await Department.find();
+  const partList = await Department.find().sort("order");
   const userList = await User.find();
   console.log("partList = ");
   console.log(partList);
@@ -69,13 +69,13 @@ export const getJoinAdd = async (req, res) => {
 
 export const getJoinUpdate = async(req,res) => {
   const { id } = req.params;
-  const partList = await Department.find();
+  const partList = await Department.find().sort("order");
   const user = await User.findById(id);
   return res.render("joinUpdate", {pageTitle:"회원수정", partList, user});
 }
 
 export const postJoinAdd = async (req, res) => {
-  const partList = await Department.find();
+  const partList = await Department.find().sort("order");
   const userList = await User.find();
   const { name, email, password, password2, partId, color } = req.body;
   const pageTitle = "회원등록";
