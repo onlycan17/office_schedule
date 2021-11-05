@@ -2,6 +2,8 @@ mixin departments(item)
     tr
         td
             a(href=`/departmentDetail/${item._id}`) #{item.name}
+        td
+            a(href=`/departmentDetail/${item._id}`) #{item.order}
         td(style="text-align:center")
             a(href=`/departmentDelete/${item._id}`) ❌ 
             

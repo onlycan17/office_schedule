@@ -4,7 +4,7 @@ import { async } from "regenerator-runtime";
 import { Mongoose } from "mongoose";
 
 export const getDepartment = async (req, res) =>{
-  const departments = await Department.find().populate("user");
+  const departments = await Department.find().sort("order").populate("user");
   console.log('getDepartment');
   console.log(departments);
   return res.render("department", { pageTitle: "부서관리 페이지", departments});
@@ -16,7 +16,8 @@ export const getDepartmentAdd = async(req,res) => {
 }
 
 export const postDepartmentAdd = async(req, res) =>{
-  const {name,user} = req.body;
+  const {name,user,order} = req.body;
+  console.log(order);
   const check = await Department.findOne({name});
   console.log(check);
   if(check){
@@ -33,6 +34,7 @@ export const postDepartmentAdd = async(req, res) =>{
     const department = await Department.create({
       name,
       user: user ? user : null,
+      order, 
     });
     if(user){
       await User.findByIdAndUpdate(user,{department:department._id});
@@ -70,7 +72,7 @@ export const getDepartmentDetail = async(req,res) => {
 }
 
 export const postDepartmentDetail = async(req,res)=> {
-  const {name,userId} = req.body;
+  const {name,userId,order} = req.body;
   const {id} = req.params;
   console.log(id);
   console.log('test!');
@@ -81,7 +83,7 @@ export const postDepartmentDetail = async(req,res)=> {
     });
   }
   try{
-    const departmentObj = await Department.findByIdAndUpdate(id,{name});
+    const departmentObj = await Department.findByIdAndUpdate(id,{name,order});
     //console.log('departmentDetail - post - - - ');
     //console.log(departmentObj);
     const check = await Department.find({_id:id,user:{$eq:userId}});

@@ -6,6 +6,7 @@ block content
         span=errorMessage
     form(method="post")
         input(placeholder="부서명", name="name", type="text", required, value=detail.name)
+        input(placeholder="순서", name="order", type="number", required, value=detail.order)
         select(name="userId")
             option(value="") 선택
             each item in userList

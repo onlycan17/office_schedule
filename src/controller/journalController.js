@@ -92,7 +92,7 @@ export const getJournal = async (req, res) => {
   const color = req.session.user.color;
   console.log(color);
   return res.render("journal", {
-    pageTitle: req.session.user.department.name + "스케줄",
+    pageTitle: req.session.user.department.name + "일일업무",
     journal,
     color,
   });
@@ -366,6 +366,44 @@ export const deleteComment = async (req, res) => {
   res.sendStatus(200);
 };
 
-export const getSearchJournal = async (req, res) => {
-  const journal = await Journal.find();
+export const getSearchJournalForm = (req,res) => {
+  return res.render("searchJournal", {
+    pageTitle: "일일업무조회",
+  });
+}
+
+export const postSearchJournal = async (req, res) => {
+  console.log('params');
+  console.log(req.params);
+  console.log('body');
+  console.log(req.body);
+  const {start,draw,length,saerch} = req.body;
+  let departmentName="";
+  let userName="";
+
+  const pageNum = (start / length) + 1; //Calculate page number
+
+  const journal = await Journal.find().sort("-start -end").populate({
+    path: "department",
+    match: {
+      "name": {$regex: '.*'+ departmentName +".*"}
+    },
+  })
+  .populate({
+    path: "user",
+    match:{
+      $or:[
+            {"name":  {$regex: '.*'+ userName +".*"}},
+            {"email": {$regex: '.*'+ userName +".*"}},
+          ]
+    }
+  });
+  console.log(journal);
+  return res.status(200).json({
+    draw,
+    start,
+    recordsTotal:journal.length,
+    recordsFiltered:journal.length,
+    data:journal,
+  });
 }
