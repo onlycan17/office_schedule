@@ -158,6 +158,12 @@ export const downloadFile = async (req, res) => {
   //const fileDown = file.path + '/'
   //const mimetype = mime.getType(file.originalname);
   try {
+    const fileCheck = fs.readFileSync(file.path,'utf-8');
+    console.log(fileCheck);
+    if(!fileCheck){
+      res.send("서버재기동으로 파일이 사라졌습니다.");
+      return ;
+    }
     if (fs.existsSync(file.path)) {
       res.setHeader(
         "Content-disposition",
