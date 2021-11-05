@@ -29,12 +29,12 @@ export const postLogin = async (req, res) => {
     }
     req.session.loggedIn = true;
     req.session.user = user;
-    console.log('부서확인');
+    console.log("부서확인");
     console.log(user.department._id);
     req.flash("info", "로그인 성공!");
-    if(user.department._id+"" === '612490cc21f010838f50a41b'){
+    if (user.department._id + "" === "612490cc21f010838f50a41b") {
       return res.redirect("/home");
-    }else{
+    } else {
       return res.redirect("/schedule");
     }
   } catch (error) {
@@ -55,27 +55,27 @@ export const getJoin = async (req, res) => {
   //   const dep = element.department;
   //   console.log(dep.name);
   // })
-  
+
   return res.render("join", { pageTitle: "회원관리", userList });
 };
 
 export const getJoinAdd = async (req, res) => {
-  const partList = await Department.find().sort("order");
+  const partList = await Department.find().sort({order:1});
   const userList = await User.find();
   console.log("partList = ");
   console.log(partList);
   return res.render("joinAdd", { pageTitle: "회원등록", partList, userList });
 };
 
-export const getJoinUpdate = async(req,res) => {
+export const getJoinUpdate = async (req, res) => {
   const { id } = req.params;
-  const partList = await Department.find().sort("order");
+  const partList = await Department.find().sort({order:1});
   const user = await User.findById(id);
-  return res.render("joinUpdate", {pageTitle:"회원수정", partList, user});
-}
+  return res.render("joinUpdate", { pageTitle: "회원수정", partList, user });
+};
 
 export const postJoinAdd = async (req, res) => {
-  const partList = await Department.find().sort("order");
+  const partList = await Department.find().sort({order:1});
   const userList = await User.find();
   const { name, email, password, password2, partId, color } = req.body;
   const pageTitle = "회원등록";
@@ -126,12 +126,12 @@ export const postJoinAdd = async (req, res) => {
   }
 };
 
-
 export const postJoinUpdate = async (req, res) => {
   const partList = await Department.find();
   const userList = await User.find();
-  const {id ,name, oldEmail, email, password, password2, partId, color } = req.body;
-  console.log("color~~~~ : "+ color);
+  const { id, name, oldEmail, email, password, password2, partId, color } =
+    req.body;
+  console.log("color~~~~ : " + color);
   const pageTitle = "회원수정";
   let department;
   if (password !== password2) {
@@ -142,7 +142,7 @@ export const postJoinUpdate = async (req, res) => {
       userList,
     });
   }
-  if(oldEmail !== email){
+  if (oldEmail !== email) {
     const exists = await User.find({ email });
     // console.log('findUserEmail~~~~')
     // console.log(exists.length);
@@ -155,18 +155,23 @@ export const postJoinUpdate = async (req, res) => {
       });
     }
   }
-  
+
   try {
     const enPassword = await bcrypt.hash(password, 5);
-    const userId = await User.updateOne({
-      _id:id
-    },{$set: {
-      name,
-      email,
-      password:enPassword,
-      department: partId,
-      color,
-    }});
+    const userId = await User.updateOne(
+      {
+        _id: id,
+      },
+      {
+        $set: {
+          name,
+          email,
+          password: enPassword,
+          department: partId,
+          color,
+        },
+      }
+    );
     if (partId) {
       department = await Department.findById(partId);
       // console.log("join:"+userId._id);

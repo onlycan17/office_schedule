@@ -4,7 +4,7 @@ import Menu from "../schema/menu";
 import User from "../schema/user";
 
 export const getMenu = async (req, res) => {
-  const menuList = await Menu.find().sort("order")
+  const menuList = await Menu.find().sort({order:1})
     .populate({ path: "user" })
     .populate({ path: "department" });
   console.log(menuList);
