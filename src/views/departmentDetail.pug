@@ -13,7 +13,8 @@ block content
                 option(value=`${item._id}`) #{item.name}_#{item.email}
         input(type="submit", value="저장")    
     ul.list
-        each item in detail.user.reverse()
-            span #{item.name}
-            span #{item.email}
-            a(href=`/departmentDetailDelete/${detail._id}/${item._id}`) ❌    
+        if(detail.user)
+            each item in detail.user.reverse()
+                span #{item.name}
+                span #{item.email}
+                a(href=`/departmentDetailDelete/${detail._id}/${item._id}`) ❌    
