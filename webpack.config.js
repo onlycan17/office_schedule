@@ -9,6 +9,7 @@ module.exports = {
       department: BASE_JS + "department.js",
       schedule: BASE_JS + "schedule.js",
       journal: BASE_JS + "journal.js",
+      searchJournal: BASE_JS + "searchJournal.js",
       // CKEditorLoad: BASE_JS + "CKEditorLoad.js",
       //sideBar: BASE_JS + "sideBar.js",
   },

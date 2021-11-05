@@ -4,7 +4,7 @@ import Menu from "../schema/menu";
 import User from "../schema/user";
 
 export const getMenu = async (req, res) => {
-  const menuList = await Menu.find()
+  const menuList = await Menu.find().sort("order")
     .populate({ path: "user" })
     .populate({ path: "department" });
   console.log(menuList);
@@ -110,6 +110,7 @@ export const getMenuDetail = async (req, res) => {
     subMenuDetail = await Menu.findById(id)
       .populate({
         path: "subMenu",
+        sort: "order",
         populate: { path: "user", select: "_id name email" },
       })
       .populate({
@@ -118,6 +119,7 @@ export const getMenuDetail = async (req, res) => {
       })
       .populate({
         path: "department",
+        sort:"order",
       })
       .populate({
         path: "user",

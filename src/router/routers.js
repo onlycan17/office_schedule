@@ -55,7 +55,9 @@ import {
   downloadFile,
   editPatchComment,
   getJournal,
+  getSearchJournalForm,
   postAddJournal,
+  postSearchJournal,
 } from "../controller/journalController";
 import multipart from "connect-multiparty";
 import { fileUpload } from "../middleware";
@@ -144,6 +146,9 @@ router.route("/addSchedule").post(postAddSchedule);
 router.route("/deleteSchedule").delete(deleteSchedule);
 router.route("/customSchedule").get(customSchedule);
 router.route("/customWeekSchedule").get(customWeekSchedule);
+
+router.route("/searchJournal").all(protectorMiddleware).get(getSearchJournalForm);
+router.route("/postSearchJournal").post(postSearchJournal);
 
 router.route("/journal").all(protectorMiddleware).get(getJournal);
 router.route("/addJournal").post(fileUpload.fields([{name:"singleFile"}]),postAddJournal);
