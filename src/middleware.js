@@ -73,8 +73,12 @@ export const protectorMiddleware = async (req, res, next) => {
       });
     });
     const menu = await Menu.find().populate({
-      path:"subMenu",
-      sort:"order",
+      path: "subMenu",
+      options: {
+        sort: {
+          "order": 1,
+        },
+      },
     });
     menu.forEach((menu) => {
       menu.subMenu.forEach((subMenu) => {
@@ -106,11 +110,12 @@ export const protectorMiddleware = async (req, res, next) => {
       // ],
       subMenu: {
         $elemMatch: {
-          $or: [{ user: req.session.user._id }, { department: dep }],
+          $or: [{ user: req.session.user._id }, { department: dep }],    
         },
       },
     });
-    //console.log(menuList);
+    console.log("menutest-----------------");
+    console.log(menuList);
     res.locals.menuList = menuList;
     res.locals.loggedIn = req.session.loggedIn;
     res.locals.siteName = "명작";
