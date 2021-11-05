@@ -72,7 +72,10 @@ export const protectorMiddleware = async (req, res, next) => {
         }
       });
     });
-    const menu = await Menu.find().populate("subMenu");
+    const menu = await Menu.find().populate({
+      path:"subMenu",
+      sort:"order",
+    });
     menu.forEach((menu) => {
       menu.subMenu.forEach((subMenu) => {
         if (req.url.indexOf(subMenu.subMenuUrl) != -1) {
