@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log(e.event.id);
         globalId = e.event.id;
         start = moment(e.event.start).format("YYYY-MM-DD HH:mm:SS");
-        end = moment(e.event.event).format("YYYY-MM-DD HH:mm:SS");
+        end = moment(e.event.end).format("YYYY-MM-DD HH:mm:SS");
         //console.log(e.event.start);
         document.getElementById("start").value = start;
         document.getElementById("end").value = end;
@@ -554,7 +554,7 @@ function clickEdit() {
   $(".pull-right > .btn").remove();
   editor.isReadOnly = false;
   //editor.setData(contentDescription);
-  $(".file > a").remove();
+  $(".file a").remove();
   $(".file").append(`
       <input type="file" id="singleFile" />
     `);
