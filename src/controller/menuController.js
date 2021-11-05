@@ -4,11 +4,11 @@ import Menu from "../schema/menu";
 import User from "../schema/user";
 
 export const getMenu = async (req, res) => {
-  const menuList = await Menu.find().sort({order:1})
+  const menuList = await Menu.find()
     .populate({ path: "user" })
-    .populate({ path: "department" });
+    .populate({ path: "department", options:{sort:"order"}});
   console.log(menuList);
-  const departmentList = await Department.find();
+  const departmentList = await Department.find().sort("order");
   const userList = await User.find();
   return res.render("menu", {
     pageTitle: "메뉴관리",
@@ -19,7 +19,7 @@ export const getMenu = async (req, res) => {
 };
 
 export const getAddMenu = async (req, res) => {
-  const departmentList = await Department.find();
+  const departmentList = await Department.find().sort("order");
   const userList = await User.find();
   return res.render("menuAdd", {
     pageTitle: "메뉴등록",
@@ -31,7 +31,7 @@ export const getAddMenu = async (req, res) => {
 export const getDeleteMenu = async (req, res) => {
   const { id } = req.params;
   const checkMenu = await Menu.findById(id).populate("subMenu");
-  const departmentList = await Department.find();
+  const departmentList = await Department.find().sort("order");
   const userList = await User.find();
   const menuList = await Menu.find()
     .populate({ path: "user" })
@@ -84,7 +84,7 @@ export const postAddMenu = async (req, res) => {
     const menuList = await Menu.find()
       .populate({ path: "user" })
       .populate({ path: "department" });
-    const departmentList = await Department.find();
+    const departmentList = await Department.find().sort("order");
     const userList = await User.find();
     console.log(error);
     return res.status(400).render("menu", {
@@ -103,7 +103,7 @@ export const getMenuDetail = async (req, res) => {
   const { id } = req.params;
   const menucheck = await Menu.findById(id);
   //console.log(menucheck.user.length);
-  const departmentList = await Department.find();
+  const departmentList = await Department.find().sort("order");
   const userList = await User.find();
   let subMenuDetail;
   if (menucheck.subMenu) {
@@ -172,7 +172,7 @@ export const postAddSubMenu = async (req, res) => {
 
     if (checkSubMenu) {
       const menucheck = await Menu.findById(id);
-      const departmentList = await Department.find();
+      const departmentList = await Department.find().sort("order");
       const userList = await User.find();
       let subMenuDetail;
       if (menucheck.subMenu) {
@@ -223,7 +223,7 @@ export const postAddSubMenu = async (req, res) => {
     return res.redirect("/menuDetail/" + id);
   } catch (error) {
     console.log(error);
-    const departmentList = await Department.find();
+    const departmentList = await Department.find().sort("order");
     const userList = await User.find();
     let subMenuDetail;
     if (menucheck.subMenu) {
@@ -255,7 +255,7 @@ export const getSubMenuDelete = async (req, res) => {
     const user = await User.findById();
     return res.redirect("/menuDetail/" + menuId);
   } catch (error) {
-    const departmentList = await Department.find();
+    const departmentList = await Department.find().sort("order");
     const userList = await User.find();
     let subMenuDetail;
     if (menucheck.subMenu) {
