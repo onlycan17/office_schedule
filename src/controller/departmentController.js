@@ -4,7 +4,7 @@ import { async } from "regenerator-runtime";
 import { Mongoose } from "mongoose";
 
 export const getDepartment = async (req, res) =>{
-  const departments = await Department.find().sort("order").populate("user");
+  const departments = await Department.find().sort({order:1}).populate("user");
   console.log('getDepartment');
   console.log(departments);
   return res.render("department", { pageTitle: "부서관리 페이지", departments});
