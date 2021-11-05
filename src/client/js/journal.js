@@ -163,14 +163,18 @@ document.addEventListener("DOMContentLoaded", function () {
               `
             );
             const editCk = document.querySelector("#edit");
-            editCk.addEventListener("click", clickEdit);
+            editCk.addEventListener("click", () => clickEdit(e.event.id));
           }
           $("#submit").remove();
 
           let index = 0;
+          let fileYn = false;
           scheduleData.forEach((element, idx) => {
             if (element._id === e.event.id) {
               index = idx;
+              fileYn = true;
+            }else{
+              fileYn = false;
             }
 
             if(element.comments){
@@ -196,7 +200,8 @@ document.addEventListener("DOMContentLoaded", function () {
               });
             }
           });
-          if (scheduleData[index].file) {
+          console.log(index);
+          if (fileYn && scheduleData[index].file) {
             $("#singleFile").replaceWith(
               `<a href='/download/${scheduleData[index].file._id}'>${scheduleData[index].file.originalname}</a>`
             );
@@ -435,6 +440,26 @@ async function addParam() {
       viewAddEvents(res.data.id);
       //calendar.refetchEvents();
       console.log("저장완료! id:" + res.data.id);
+      console.log(res.data.filePath);
+      console.log(res.data.fileName);
+      const pushData = {
+        _id: res.data.id,
+        id: res.data.id,
+        text: description,
+        start,
+        end,
+        allDay,
+        department,
+        user,
+        color,
+        file: {
+          _id: res.data.fileId,
+          originalname: res.data.fileName,
+          path: res.data.filePath,
+        },
+        comments:[],
+      };
+      scheduleData.push(pushData);
     }
     asyncValue = true;
   }
@@ -466,6 +491,7 @@ function viewAddEvents(id) {
   $("#end").val("");
   editor.setData("");
   $(".pull-right > .btn").remove();
+  $('.file a').remove();
   editor.isReadOnly = false;
 }
 
@@ -488,22 +514,24 @@ async function updateParam(id) {
 
     //title = document.getElementById("title").value;
     description = editor.getData();
-    //url = document.getElementById("url").value;
-    const form_data = {
-      //title:userName,
-      description,
-      //url,
-      start,
-      end,
-      allDay,
-      color,
-      user,
-      department,
-    };
+    const singleFile = document.getElementById("singleFile");
+    console.log(singleFile.files[0]);
+    let formData = new FormData();
+    formData.append("start", start);
+    formData.append("end", end);
+    formData.append("allDay", allDay);
+    formData.append("color", color);
+    formData.append("user", user);
+    formData.append("department", department);
+    formData.append("description", description);
+    formData.append("singleFile", singleFile.files[0]);
     const res = await axios({
       method: "post",
       url: "/addJournal",
-      data: form_data,
+      data: formData,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
       timeout: 15000,
     });
 
@@ -550,11 +578,12 @@ async function addComment(){
   }
 }
 
-function clickEdit() {
+function clickEdit(id) {
   $(".pull-right > .btn").remove();
   editor.isReadOnly = false;
   //editor.setData(contentDescription);
   $(".file a").remove();
+  $("#singleFile").remove();
   $(".file").append(`
       <input type="file" id="singleFile" />
     `);
@@ -562,7 +591,8 @@ function clickEdit() {
       <button class="btn" id="submit">보내기</button>
     `);
   const submitBtn = document.querySelector("#submit");
-  submitBtn.addEventListener("click", addParam);
+  submitBtn.removeEventListener("click",addParam);
+  submitBtn.addEventListener("click", () => updateParam(id));
 }
 
 function editCommentForm(replyId){

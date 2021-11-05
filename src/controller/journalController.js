@@ -108,21 +108,23 @@ const isUrl = (element, index) => {
 
 export const postAddJournal = async (req, res) => {
   const { description, start, end, allDay, color, user, department } = req.body;
-  let journal;
+  let journal,fileId,filePath,strFileName;
   const departmentInfo = JSON.parse(department);
   console.log(req.files);
 
   if (req.files.singleFile) {
     const { singleFile } = req.files;
     const { originalname, mimetype, filename, path, size } = singleFile[0];
-
-    const file = await File.create({
+    filePath = path;
+    strFileName = originalname;
+   const file = await File.create({
       originalname,
       mimetype,
       filename,
       path,
       size,
     });
+    fileId = file._id;
     journal = await Journal.create({
       title: req.session.user.name,
       description,
@@ -148,8 +150,8 @@ export const postAddJournal = async (req, res) => {
   }
 
   const userInfo = await User.findById(user);
-
-  return res.status(201).json({ id: journal._id });
+  console.log(filePath);
+  return res.status(201).json({ id: journal._id, filePath,fileName:strFileName,fileId, });
 };
 
 export const downloadFile = async (req, res) => {
