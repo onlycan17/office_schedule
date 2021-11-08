@@ -54,6 +54,7 @@ import {
   deleteJournal,
   downloadFile,
   editPatchComment,
+  excelDownload,
   getJournal,
   getSearchJournalForm,
   postAddJournal,
@@ -149,6 +150,7 @@ router.route("/customWeekSchedule").get(customWeekSchedule);
 
 router.route("/searchJournal").all(protectorMiddleware).get(getSearchJournalForm);
 router.route("/postSearchJournal").post(postSearchJournal);
+router.route("/excelDownload").post(excelDownload);
 
 router.route("/journal").all(protectorMiddleware).get(getJournal);
 router.route("/addJournal").post(fileUpload.fields([{name:"singleFile"}]),postAddJournal);

@@ -51,7 +51,7 @@ app.use(logger);
 app.use("/", router);
 //app.use("/admin", admin);
 app.use("/static", express.static("assets"));
-
+app.use("/excel", express.static("excel"));
 const handleListening = () =>
   console.log(`Server listening on port http://localhost:${PORT} ❤️‍🔥`);
 app.listen(PORT, handleListening);
