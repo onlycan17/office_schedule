@@ -6,6 +6,9 @@ import fs from "fs";
 import iconv from "iconv-lite";
 import Comment from "../schema/comment";
 import { async } from "regenerator-runtime";
+import Department from "../schema/department";
+import excel from "exceljs";
+import moment from "moment";
 
 let ObjectId = require("mongoose").Types.ObjectId;
 
@@ -108,7 +111,7 @@ const isUrl = (element, index) => {
 
 export const postAddJournal = async (req, res) => {
   const { description, start, end, allDay, color, user, department } = req.body;
-  let journal,fileId,filePath,strFileName;
+  let journal, fileId, filePath, strFileName;
   const departmentInfo = JSON.parse(department);
   console.log(req.files);
 
@@ -117,7 +120,7 @@ export const postAddJournal = async (req, res) => {
     const { originalname, mimetype, filename, path, size } = singleFile[0];
     filePath = path;
     strFileName = originalname;
-   const file = await File.create({
+    const file = await File.create({
       originalname,
       mimetype,
       filename,
@@ -151,7 +154,9 @@ export const postAddJournal = async (req, res) => {
 
   const userInfo = await User.findById(user);
   console.log(filePath);
-  return res.status(201).json({ id: journal._id, filePath,fileName:strFileName,fileId, });
+  return res
+    .status(201)
+    .json({ id: journal._id, filePath, fileName: strFileName, fileId });
 };
 
 export const downloadFile = async (req, res) => {
@@ -160,11 +165,11 @@ export const downloadFile = async (req, res) => {
   //const fileDown = file.path + '/'
   //const mimetype = mime.getType(file.originalname);
   try {
-    const fileCheck = fs.readFileSync(file.path,'utf-8');
+    const fileCheck = fs.readFileSync(file.path, "utf-8");
     console.log(fileCheck);
-    if(!fileCheck){
+    if (!fileCheck) {
       res.send("서버재기동으로 파일이 사라졌습니다.");
-      return ;
+      return;
     }
     if (fs.existsSync(file.path)) {
       res.setHeader(
@@ -374,44 +379,202 @@ export const deleteComment = async (req, res) => {
   res.sendStatus(200);
 };
 
-export const getSearchJournalForm = (req,res) => {
+export const getSearchJournalForm = async (req, res) => {
+  const partList = await Department.find().sort({ order: 1 });
   return res.render("searchJournal", {
     pageTitle: "일일업무조회",
+    partList,
   });
-}
+};
 
 export const postSearchJournal = async (req, res) => {
-  console.log('params');
-  console.log(req.params);
-  console.log('body');
-  console.log(req.body);
-  const {start,draw,length,saerch} = req.body;
-  let departmentName="";
-  let userName="";
+  // console.log('params');
+  // console.log(req.params);
+  // console.log('body');
+  //console.log(req.body);
+  //console.log(req.params);
+  const {
+    start,
+    draw,
+    length,
+    startDate,
+    endDate,
+    userName,
+    email,
+    departmentId,
+  } = req.body;
+  const pageNum = start * length; //Calculate page number
+  let journal, journalCount;
+  if (!departmentId) {
+    journalCount = await Journal.find({
+      $or: [
+        { start: { $gte: startDate, $lte: endDate } },
+        { end: { $gte: startDate, $lte: endDate } },
+      ],
+    })
+      .countDocuments()
+      .populate("department")
+      .populate({
+        path: "user",
+        match: {
+          $or: [
+            { name: { $regex: ".*" + userName + ".*" } },
+            { email: { $regex: ".*" + email + ".*" } },
+          ],
+        },
+      });
+    console.log(journalCount);
 
-  const pageNum = (start / length) + 1; //Calculate page number
+    journal = await Journal.find({
+      $or: [
+        { start: { $gte: startDate, $lte: endDate } },
+        { end: { $gte: startDate, $lte: endDate } },
+      ],
+    })
+      .sort("-start -end")
+      .skip(Number(start))
+      .limit(pageNum)
+      .populate("department")
+      .populate({
+        path: "user",
+        match: {
+          $or: [
+            { name: { $regex: ".*" + userName + ".*" } },
+            { email: { $regex: ".*" + email + ".*" } },
+          ],
+        },
+      });
+  } else {
+    journalCount = await Journal.find({
+      department: new ObjectId(departmentId),
+      $or: [
+        { start: { $gte: startDate, $lte: endDate } },
+        { end: { $gte: startDate, $lte: endDate } },
+      ],
+    })
+      .countDocuments()
+      .populate("department")
+      .populate({
+        path: "user",
+        match: {
+          $or: [
+            { name: { $regex: ".*" + userName + ".*" } },
+            { email: { $regex: ".*" + email + ".*" } },
+          ],
+        },
+      });
+    console.log(journalCount);
 
-  const journal = await Journal.find().sort("-start -end").populate({
-    path: "department",
-    match: {
-      "name": {$regex: '.*'+ departmentName +".*"}
-    },
-  })
-  .populate({
-    path: "user",
-    match:{
-      $or:[
-            {"name":  {$regex: '.*'+ userName +".*"}},
-            {"email": {$regex: '.*'+ userName +".*"}},
-          ]
-    }
-  });
-  console.log(journal);
+    journal = await Journal.find({
+      department: new ObjectId(departmentId),
+      $or: [
+        { start: { $gte: startDate, $lte: endDate } },
+        { end: { $gte: startDate, $lte: endDate } },
+      ],
+    })
+      .sort("-start -end")
+      .skip(Number(start))
+      .limit(pageNum)
+      .populate("department")
+      .populate({
+        path: "user",
+        match: {
+          $or: [
+            { name: { $regex: ".*" + userName + ".*" } },
+            { email: { $regex: ".*" + email + ".*" } },
+          ],
+        },
+      });
+  }
+
+  //console.log(journal);
   return res.status(200).json({
     draw,
     start,
-    recordsTotal:journal.length,
-    recordsFiltered:journal.length,
-    data:journal,
+    recordsTotal: journalCount,
+    recordsFiltered: journalCount,
+    data: journal,
   });
-}
+};
+
+export const excelDownload = async (req, res) => {
+  //console.log(req.body);
+  //console.log(req.params);
+  const { startDate, endDate, userName, email, departmentId } = req.body;
+
+  const workbook = new excel.Workbook();
+  const sheet = workbook.addWorksheet("일일업무조회");
+  sheet.columns = [
+    { header: "작성자", key: "title" },
+    { header: "부서", key: "departmentName" },
+    { header: "업무내용", key: "description" },
+    { header: "시작일자", key: "start" },
+    { header: "종료일자", key: "end" },
+    { header: "생성일자", key: "createdAtFormat" },
+  ];
+  
+  let journal;
+  if (!departmentId) {
+    journal = await Journal.find({
+      $or: [
+        { start: { $gte: startDate, $lte: endDate } },
+        { end: { $gte: startDate, $lte: endDate } },
+      ],
+    })
+      .sort("-start -end")
+      .populate("department")
+      .populate({
+        path: "user",
+        match: {
+          $or: [
+            { name: { $regex: ".*" + userName + ".*" } },
+            { email: { $regex: ".*" + email + ".*" } },
+          ],
+        },
+      });
+  } else {
+    journal = await Journal.find({
+      department: new ObjectId(departmentId),
+      $or: [
+        { start: { $gte: startDate, $lte: endDate } },
+        { end: { $gte: startDate, $lte: endDate } },
+      ],
+    })
+      .sort("-start -end")
+      .populate("department")
+      .populate({
+        path: "user",
+        match: {
+          $or: [
+            { name: { $regex: ".*" + userName + ".*" } },
+            { email: { $regex: ".*" + email + ".*" } },
+          ],
+        },
+      });
+  }
+  journal.forEach((element) => {
+    //console.log(element.department.name);
+    const { name } = element.department;
+    const {createdAt}  = element;
+    element.departmentName = name;
+    element.createdAtFormat = moment(createdAt).format('YYYY-MM-DD hh:mm:ss');
+  });
+  const newRows =  sheet.addRows(journal);
+  //console.log(newRows);
+  res.setHeader("Content-Type","application/octet-stream;charset=utf-8");
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  );
+  res.setHeader("Content-Disposition", "attachment; filename=" + "Report.xlsx");
+  // return workbook.xlsx.write(res).then(() => {
+  //   console.log('완료');
+  //   res.status(200).end();
+  // });
+  return workbook.xlsx.writeFile("./excel/temp.xlsx").then(function(){
+      console.log('엑셀생성');
+      res.download('./excel/temp.xlsx',function(err){
+          console.log('error:'+err);
+      });
+  });
+};
