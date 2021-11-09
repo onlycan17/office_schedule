@@ -55,7 +55,7 @@ export const getJoinForm = (req, res) => {
 export const joinList = async (req, res) => {
   const { start, draw, length } = req.body;
   console.log(start,draw,length);
-  const pageNum = Number(start) * Number(length); //Calculate page number
+  const pageNum = Number(start) + Number(length); //Calculate page number
   const userCount = await User.find().countDocuments();
   console.log(pageNum);
   console.log(userCount);
