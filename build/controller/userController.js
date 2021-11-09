@@ -83,11 +83,11 @@ var postLogin = /*#__PURE__*/function () {
           case 13:
             req.session.loggedIn = true;
             req.session.user = user;
-            console.log('부서확인');
+            console.log("부서확인");
             console.log(user.department._id);
             req.flash("info", "로그인 성공!");
 
-            if (!(user.department._id + "" === '612490cc21f010838f50a41b')) {
+            if (!(user.department._id + "" === "612490cc21f010838f50a41b")) {
               _context.next = 22;
               break;
             }
@@ -169,7 +169,9 @@ var getJoinAdd = /*#__PURE__*/function () {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.next = 2;
-            return _department["default"].find();
+            return _department["default"].find().sort({
+              order: 1
+            });
 
           case 2:
             partList = _context3.sent;
@@ -210,7 +212,9 @@ var getJoinUpdate = /*#__PURE__*/function () {
           case 0:
             id = req.params.id;
             _context4.next = 3;
-            return _department["default"].find();
+            return _department["default"].find().sort({
+              order: 1
+            });
 
           case 3:
             partList = _context4.sent;
@@ -249,7 +253,9 @@ var postJoinAdd = /*#__PURE__*/function () {
         switch (_context5.prev = _context5.next) {
           case 0:
             _context5.next = 2;
-            return _department["default"].find();
+            return _department["default"].find().sort({
+              order: 1
+            });
 
           case 2:
             partList = _context5.sent;

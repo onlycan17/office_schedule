@@ -55,6 +55,9 @@ router.route("/addSchedule").post(_scheduleController.postAddSchedule);
 router.route("/deleteSchedule")["delete"](_scheduleController.deleteSchedule);
 router.route("/customSchedule").get(_scheduleController.customSchedule);
 router.route("/customWeekSchedule").get(_scheduleController.customWeekSchedule);
+router.route("/searchJournal").all(_middleware.protectorMiddleware).get(_journalController.getSearchJournalForm);
+router.route("/postSearchJournal").post(_journalController.postSearchJournal);
+router.route("/excelDownload").post(_journalController.excelDownload);
 router.route("/journal").all(_middleware.protectorMiddleware).get(_journalController.getJournal);
 router.route("/addJournal").post(_middleware.fileUpload.fields([{
   name: "singleFile"
