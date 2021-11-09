@@ -5,7 +5,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import listPlugin from "@fullcalendar/list";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
-import "../css/main.css";
+import "../css/calendar.css";
 import axios from "axios";
 
 const modal = document.querySelector(".modal");

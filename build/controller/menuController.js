@@ -32,14 +32,17 @@ var getMenu = /*#__PURE__*/function () {
             return _menu3["default"].find().populate({
               path: "user"
             }).populate({
-              path: "department"
+              path: "department",
+              options: {
+                sort: "order"
+              }
             });
 
           case 2:
             menuList = _context.sent;
             console.log(menuList);
             _context.next = 6;
-            return _department["default"].find();
+            return _department["default"].find().sort("order");
 
           case 6:
             departmentList = _context.sent;
@@ -78,7 +81,7 @@ var getAddMenu = /*#__PURE__*/function () {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.next = 2;
-            return _department["default"].find();
+            return _department["default"].find().sort("order");
 
           case 2:
             departmentList = _context2.sent;
@@ -122,7 +125,7 @@ var getDeleteMenu = /*#__PURE__*/function () {
           case 3:
             checkMenu = _context4.sent;
             _context4.next = 6;
-            return _department["default"].find();
+            return _department["default"].find().sort("order");
 
           case 6:
             departmentList = _context4.sent;
@@ -279,7 +282,7 @@ var postAddMenu = /*#__PURE__*/function () {
           case 26:
             menuList = _context5.sent;
             _context5.next = 29;
-            return _department["default"].find();
+            return _department["default"].find().sort("order");
 
           case 29:
             departmentList = _context5.sent;
@@ -328,7 +331,7 @@ var getMenuDetail = /*#__PURE__*/function () {
           case 5:
             menucheck = _context6.sent;
             _context6.next = 8;
-            return _department["default"].find();
+            return _department["default"].find().sort("order");
 
           case 8:
             departmentList = _context6.sent;
@@ -346,6 +349,7 @@ var getMenuDetail = /*#__PURE__*/function () {
             _context6.next = 15;
             return _menu3["default"].findById(id).populate({
               path: "subMenu",
+              sort: "order",
               populate: {
                 path: "user",
                 select: "_id name email"
@@ -357,7 +361,8 @@ var getMenuDetail = /*#__PURE__*/function () {
                 select: "_id name"
               }
             }).populate({
-              path: "department"
+              path: "department",
+              sort: "order"
             }).populate({
               path: "user"
             });
@@ -444,7 +449,7 @@ var postAddSubMenu = /*#__PURE__*/function () {
           case 10:
             _menucheck = _context7.sent;
             _context7.next = 13;
-            return _department["default"].find();
+            return _department["default"].find().sort("order");
 
           case 13:
             departmentList = _context7.sent;
@@ -570,7 +575,7 @@ var postAddSubMenu = /*#__PURE__*/function () {
             _context7.t3 = _context7["catch"](2);
             console.log(_context7.t3);
             _context7.next = 60;
-            return _department["default"].find();
+            return _department["default"].find().sort("order");
 
           case 60:
             _departmentList = _context7.sent;
@@ -657,7 +662,7 @@ var getSubMenuDelete = /*#__PURE__*/function () {
             _context8.prev = 13;
             _context8.t0 = _context8["catch"](1);
             _context8.next = 17;
-            return _department["default"].find();
+            return _department["default"].find().sort("order");
 
           case 17:
             departmentList = _context8.sent;

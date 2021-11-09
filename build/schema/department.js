@@ -21,7 +21,11 @@ var departmentSchema = new _mongoose["default"].Schema({
   menu: [{
     type: _mongoose["default"].Schema.Types.ObjectId,
     ref: "Menu"
-  }]
+  }],
+  order: {
+    type: Number,
+    require: true
+  }
 });
 
 var Department = _mongoose["default"].model("Department", departmentSchema);

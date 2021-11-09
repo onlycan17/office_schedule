@@ -27,7 +27,9 @@ var getDepartment = /*#__PURE__*/function () {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return _department["default"].find().populate("user");
+            return _department["default"].find().sort({
+              order: 1
+            }).populate("user");
 
           case 2:
             departments = _context.sent;
@@ -87,36 +89,37 @@ exports.getDepartmentAdd = getDepartmentAdd;
 
 var postDepartmentAdd = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(req, res) {
-    var _req$body, name, user, check, departments, userList, department;
+    var _req$body, name, user, order, check, departments, userList, department;
 
     return regeneratorRuntime.wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            _req$body = req.body, name = _req$body.name, user = _req$body.user;
-            _context3.next = 3;
+            _req$body = req.body, name = _req$body.name, user = _req$body.user, order = _req$body.order;
+            console.log(order);
+            _context3.next = 4;
             return _department["default"].findOne({
               name: name
             });
 
-          case 3:
+          case 4:
             check = _context3.sent;
             console.log(check);
 
             if (!check) {
-              _context3.next = 13;
+              _context3.next = 14;
               break;
             }
 
-            _context3.next = 8;
+            _context3.next = 9;
             return _department["default"].find().populate("user");
 
-          case 8:
+          case 9:
             departments = _context3.sent;
-            _context3.next = 11;
+            _context3.next = 12;
             return _user["default"].find();
 
-          case 11:
+          case 12:
             userList = _context3.sent;
             return _context3.abrupt("return", res.status(404).render("department", {
               pageTitle: "부서등록",
@@ -125,44 +128,45 @@ var postDepartmentAdd = /*#__PURE__*/function () {
               userList: userList
             }));
 
-          case 13:
-            _context3.prev = 13;
-            _context3.next = 16;
+          case 14:
+            _context3.prev = 14;
+            _context3.next = 17;
             return _department["default"].create({
               name: name,
-              user: user ? user : null
+              user: user ? user : null,
+              order: order
             });
 
-          case 16:
+          case 17:
             department = _context3.sent;
 
             if (!user) {
-              _context3.next = 20;
+              _context3.next = 21;
               break;
             }
 
-            _context3.next = 20;
+            _context3.next = 21;
             return _user["default"].findByIdAndUpdate(user, {
               department: department._id
             });
 
-          case 20:
+          case 21:
             return _context3.abrupt("return", res.redirect("/department"));
 
-          case 23:
-            _context3.prev = 23;
-            _context3.t0 = _context3["catch"](13);
+          case 24:
+            _context3.prev = 24;
+            _context3.t0 = _context3["catch"](14);
             return _context3.abrupt("return", res.status(400).render("/department", {
               pageTitle: "부서등록",
               errorMessage: _context3.t0._message
             }));
 
-          case 26:
+          case 27:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[13, 23]]);
+    }, _callee3, null, [[14, 24]]);
   }));
 
   return function postDepartmentAdd(_x5, _x6) {
@@ -270,13 +274,13 @@ exports.getDepartmentDetail = getDepartmentDetail;
 
 var postDepartmentDetail = /*#__PURE__*/function () {
   var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(req, res) {
-    var _req$body2, name, userId, id, departmentObj, check, userObj, detail, userList;
+    var _req$body2, name, userId, order, id, departmentObj, check, userObj, detail, userList;
 
     return regeneratorRuntime.wrap(function _callee6$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
           case 0:
-            _req$body2 = req.body, name = _req$body2.name, userId = _req$body2.userId;
+            _req$body2 = req.body, name = _req$body2.name, userId = _req$body2.userId, order = _req$body2.order;
             id = req.params.id;
             console.log(id);
             console.log('test!');
@@ -295,7 +299,8 @@ var postDepartmentDetail = /*#__PURE__*/function () {
             _context6.prev = 7;
             _context6.next = 10;
             return _department["default"].findByIdAndUpdate(id, {
-              name: name
+              name: name,
+              order: order
             });
 
           case 10:

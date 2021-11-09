@@ -5,6 +5,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import listPlugin from "@fullcalendar/list";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
+import "../css/calendar.css";
 import axios from "axios";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import moment from "moment";

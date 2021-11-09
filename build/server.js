@@ -71,6 +71,7 @@ app.use(logger);
 app.use("/", _routers["default"]); //app.use("/admin", admin);
 
 app.use("/static", _express["default"]["static"]("assets"));
+app.use("/excel", _express["default"]["static"]("excel"));
 
 var handleListening = function handleListening() {
   return console.log("Server listening on port http://localhost:".concat(PORT, " \u2764\uFE0F\u200D\uD83D\uDD25"));

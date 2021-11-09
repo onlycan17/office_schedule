@@ -16,7 +16,7 @@ var _timegrid = _interopRequireDefault(require("@fullcalendar/timegrid"));
 
 var _resourceTimeline = _interopRequireDefault(require("@fullcalendar/resource-timeline"));
 
-require("../css/main.css");
+require("../css/calendar.css");
 
 var _axios = _interopRequireDefault(require("axios"));
 
