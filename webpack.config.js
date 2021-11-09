@@ -10,6 +10,7 @@ module.exports = {
       schedule: BASE_JS + "schedule.js",
       journal: BASE_JS + "journal.js",
       searchJournal: BASE_JS + "searchJournal.js",
+      join: BASE_JS + "join.js",
       // CKEditorLoad: BASE_JS + "CKEditorLoad.js",
       //sideBar: BASE_JS + "sideBar.js",
   },

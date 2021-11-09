@@ -7,6 +7,7 @@ import {
 import {
   getJoin,
   getJoinAdd,
+  getJoinForm,
   getJoinUpdate,
   getLogin,
   logout,
@@ -70,7 +71,9 @@ const router = express.Router();
 router.route("/").all(localsMiddleware).get(getLogin).post(postLogin);
 router.route("/home").all(localsMiddleware).all(protectorMiddleware).get(home);
 router.route("/logout").all(localsMiddleware).get(logout);
-router.route("/join").all(protectorMiddleware).get(getJoin);
+router.route("/join").all(protectorMiddleware).get(getJoinForm);
+router.route("/getJoin").get(getJoin);
+
 router
   .route("/joinAdd")
   .all(protectorMiddleware)

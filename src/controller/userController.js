@@ -48,19 +48,35 @@ export const logout = (req, res) => {
   return res.redirect("/");
 };
 
+export const getJoinForm = (req, res) => {
+  return res.render("join", { pageTitle: "회원관리" });
+};
+
 export const getJoin = async (req, res) => {
-  const userList = await User.find().populate("department");
+  const { start, draw, length } = req.body;
+  const pageNum = start * length; //Calculate page number
+  const userCount = await User.countDocuments();
+  const userList = await User.find()
+    .skip(Number(start))
+    .limit(pageNum)
+    .populate("department");
   // userList.forEach(element => {
   //   console.log(element.department);
   //   const dep = element.department;
   //   console.log(dep.name);
   // })
 
-  return res.render("join", { pageTitle: "회원관리", userList });
+  return res.status(200).json({
+    draw,
+    start,
+    recordsTotal: userCount,
+    recordsFiltered: userCount,
+    data: userList,
+  });
 };
 
 export const getJoinAdd = async (req, res) => {
-  const partList = await Department.find().sort({order:1});
+  const partList = await Department.find().sort({ order: 1 });
   const userList = await User.find();
   console.log("partList = ");
   console.log(partList);
@@ -69,13 +85,13 @@ export const getJoinAdd = async (req, res) => {
 
 export const getJoinUpdate = async (req, res) => {
   const { id } = req.params;
-  const partList = await Department.find().sort({order:1});
+  const partList = await Department.find().sort({ order: 1 });
   const user = await User.findById(id);
   return res.render("joinUpdate", { pageTitle: "회원수정", partList, user });
 };
 
 export const postJoinAdd = async (req, res) => {
-  const partList = await Department.find().sort({order:1});
+  const partList = await Department.find().sort({ order: 1 });
   const userList = await User.find();
   const { name, email, password, password2, partId, color } = req.body;
   const pageTitle = "회원등록";
