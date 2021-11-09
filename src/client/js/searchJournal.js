@@ -100,10 +100,11 @@ $(document).ready(function () {
     //console.log(blob);
     let a = document.createElement("a");
     //let url = window.URL.createObjectURL(blob);
-    let url  = './excel/temp.xlsx';
+    let url = "./excel/temp.xlsx";
     a.href = url;
     //Set the file name
-    a.download = "일일업무조회_" + moment(new Date()).format("YYYY-MM-DD") + ".xlsx";
+    a.download =
+      "일일업무조회_" + moment(new Date()).format("YYYY-MM-DD") + ".xlsx";
     a.click();
   });
 });
@@ -111,7 +112,7 @@ $(document).ready(function () {
 function s2ab(s) {
   var buf = new ArrayBuffer(s.length);
   var view = new Uint8Array(buf);
-  for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+  for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xff;
   return buf;
 }
 
@@ -148,6 +149,8 @@ async function tableSearch() {
     startDate,
     endDate,
   };
+
+  console.log(form_data);
 
   $("#journal").DataTable({
     paging: true,
