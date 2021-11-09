@@ -9,8 +9,8 @@ $(document).ready(function(){
         language: lang_kor,
         ajax: {
           data: "json",
-          type: "get",
-          url: "/getJoin",
+          type: "post",
+          url: "/joinList",
           dataSrc: function (res) {
             console.log(res);
             return res.data;
