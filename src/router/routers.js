@@ -5,7 +5,7 @@ import {
   protectorMiddleware,
 } from "../middleware";
 import {
-  getJoin,
+  joinList,
   getJoinAdd,
   getJoinForm,
   getJoinUpdate,
@@ -72,7 +72,7 @@ router.route("/").all(localsMiddleware).get(getLogin).post(postLogin);
 router.route("/home").all(localsMiddleware).all(protectorMiddleware).get(home);
 router.route("/logout").all(localsMiddleware).get(logout);
 router.route("/join").all(protectorMiddleware).get(getJoinForm);
-router.route("/getJoin").get(getJoin);
+router.route("/joinList").post(joinList);
 
 router
   .route("/joinAdd")

@@ -15,7 +15,6 @@ import {
 import { getJoin, getJoinAdd, postJoinAdd } from "../controller/userController";
 
 const admin = express.Router();
-admin.route("/join").get(getJoin);
 
 admin.route("/joinAdd").get(getJoinAdd).post(postJoinAdd);
 

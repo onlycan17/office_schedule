@@ -52,7 +52,7 @@ export const getJoinForm = (req, res) => {
   return res.render("join", { pageTitle: "회원관리" });
 };
 
-export const getJoin = async (req, res) => {
+export const joinList = async (req, res) => {
   const { start, draw, length } = req.body;
   const pageNum = start * length; //Calculate page number
   const userCount = await User.countDocuments();
@@ -60,11 +60,6 @@ export const getJoin = async (req, res) => {
     .skip(Number(start))
     .limit(pageNum)
     .populate("department");
-  // userList.forEach(element => {
-  //   console.log(element.department);
-  //   const dep = element.department;
-  //   console.log(dep.name);
-  // })
 
   return res.status(200).json({
     draw,
