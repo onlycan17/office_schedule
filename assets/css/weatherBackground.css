@@ -5,8 +5,8 @@ html {
 body {
   height: 100%;
   margin: 0;
-  overflow: hidden;
-  background: linear-gradient(to bottom, #8fe2f7, #2d2db8);
+  overflow-y: scroll;
+  /* background: linear-gradient(to bottom, #8fe2f7, #2d2db8); */
 }
 
 body.back-row-toggle .rain.back-row {
@@ -176,10 +176,6 @@ body.back-row-toggle .rain.back-row {
 
 *{ margin: 0; padding: 0;}
 
-body {
-	/*To hide the horizontal scroller appearing during the animation*/
-	overflow: hidden;
-}
 
 #clouds{
 	padding: 100px 0;
