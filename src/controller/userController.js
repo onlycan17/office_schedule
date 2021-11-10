@@ -62,7 +62,8 @@ export const joinList = async (req, res) => {
   
   const userList = await User.find()
     .skip(Number(start))
-    .limit(pageNum)
+    .limit(Number(length))
+    .sort("name")
     .populate("department");
 
   console.log(userList);
