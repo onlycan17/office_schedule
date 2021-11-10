@@ -39,25 +39,25 @@ channel.bind(department._id + "", function (data) {
   //alert(JSON.stringify(data));
   const options = {
     body: data.message,
-    icon: '/static/img/alamPush.png',
-    image: '/static/img/animalPush.png',  
-  }
+    icon: "/static/img/alamPush.png",
+    image: "/static/img/animalPush.png",
+  };
   const notification = new Notification("일정등록알림", options);
   alam.play();
   setTimeout(function () {
     notification.close();
   }, 999000);
-  location.href="/schedule";
+  location.href = "/schedule";
 });
 
-var channelMorning = pusher.subscribe("morningAllDay_"+department._id);
-  channelMorning.bind("morningAllDay_+"+department._id, function(data){
+var channelMorning = pusher.subscribe("morningAllDay_" + department._id);
+channelMorning.bind("morningAllDay_+" + department._id, function (data) {
   console.log(data);
   const options = {
     body: data.message,
-    icon: '/static/img/alamPush.png',
-    image: '/static/img/animalPush.png',  
-  }
+    icon: "/static/img/alamPush.png",
+    image: "/static/img/animalPush.png",
+  };
   const notification = new Notification("일정알림", options);
   alam.play();
   setTimeout(function () {
@@ -65,14 +65,14 @@ var channelMorning = pusher.subscribe("morningAllDay_"+department._id);
   }, 999000);
 });
 
-var channelTime = pusher.subscribe("timeAlram_"+department._id);
-  channelTime.bind("timeAlram_+"+department._id, function(data){
+var channelTime = pusher.subscribe("timeAlram_" + department._id);
+channelTime.bind("timeAlram_+" + department._id, function (data) {
   console.log(data);
   const options = {
     body: data.message,
-    icon: '/static/img/alamPush.png',
-    image: '/static/img/animalPush.png',  
-  }
+    icon: "/static/img/alamPush.png",
+    image: "/static/img/animalPush.png",
+  };
   const notification = new Notification("일정알림", options);
   alam.play();
   setTimeout(function () {
@@ -94,27 +94,29 @@ function weather() {
     const cloud = document.querySelector("#clouds");
     cloud.style.display = "block";
     makeItRain();
-  }else if(weatherStr === "Snow" || weatherStr === "Rain/Snow" || weatherStr === "Shower"){
+  } else if (
+    weatherStr === "Snow" ||
+    weatherStr === "Rain/Snow" ||
+    weatherStr === "Shower"
+  ) {
     $(document).snowfall({
-      image :"/static/img/flake.png", 
-      minSize: 3, 
-      maxSize:10, 
-      flakeCount : 120
+      image: "/static/img/flake.png",
+      minSize: 3,
+      maxSize: 10,
+      flakeCount: 120,
     });
     //snonwSound.play();
-  }else if(weatherStr === "Cloudy"){
+  } else if (weatherStr === "Cloudy") {
     const cloud = document.querySelector("#clouds");
     cloud.style.display = "block";
-  }else if(weatherStr === "Mostly Cloudy"){
+  } else if (weatherStr === "Mostly Cloudy") {
     const cloud = document.querySelector("#clouds");
     cloud.style.display = "block";
-    $('.container-sun').css('display','block');
-  }else if(weatherStr === 'Clear'){
-    $('.container-sun').css('display','block');
+    $(".container-sun").css("display", "block");
+  } else if (weatherStr === "Clear") {
+    $(".container-sun").css("display", "block");
   }
 }
-
-
 
 function makeItRain() {
   //clear out everything
@@ -123,7 +125,7 @@ function makeItRain() {
   var increment = 0;
   var drops = "";
   var backDrops = "";
-  $('body').css('background','linear-gradient(to bottom, #5821f0, #080847)');
+  $("body").css("background", "linear-gradient(to bottom, #5821f0, #080847)");
   while (increment < 100) {
     //couple random numbers to use for various randomizations
     //random number between 98 and 1
@@ -173,6 +175,12 @@ function makeItRain() {
 
   $(".rain.front-row").append(drops);
   $(".rain.back-row").append(backDrops);
-  
 }
 
+const currentPosition = parseInt($(".sidemenu").css("top"));
+$(window).scroll(function () {
+  const position = $(window).scrollTop();
+  $(".sidemenu")
+    .stop()
+    .animate({ top: position + currentPosition + "px" }, 1000);
+});

@@ -297,11 +297,13 @@ a {
 }
 
 a:hover {
-  color: #831283;
+  color: #0e8f4e;
+  background-color: #f8f8fa;
+  border-radius: 2px;
 }
 
 .selected {
-  color: #831283;
+  color: #33a747;
 }
 
 body {
@@ -319,10 +321,11 @@ body {
 }
 
 main {
-  max-width: 1200px;
-  width: 100%;
+  /* max-width: 1200px; */
+  width: 80%;
   margin: 0 auto;
   margin-top: 50px;
+  margin-left: 14vw;
 }
 
 @keyframes goAway {
@@ -356,12 +359,20 @@ main {
 .sidemenu {
   width: 10vw;
   position: absolute;
+  background: rgba(246, 248, 250, 0.7);
+  border-radius: 10px;
   z-index: 1;
+  margin-top: 10vh;
+  margin-left: 20px;
+  padding: 10px;
+  box-shadow: 2px 2px 2px 2px rgba(1, 53, 3, 0.7);
 }
 
 ul > li {
   margin-left: 10px;
-  margin-top: 3px;
+  margin-top: 10px;
+  color: black;
+  font-size: 20px;
 }
 
 .button {
@@ -377,45 +388,3 @@ ul > li {
   margin: 0 auto;
 }
 
-/* */
-div#menu {
-  width: 184px;
-  background: url(menu_1.gif) top no-repeat;
-  padding-top: 44px;
-}
-
-div#menubody {
-  background: url(menu_2.gif) repeat-y;
-  padding-left: 21px;
-}
-
-div#menubottom {
-  height: 26px;
-  background: url(menu_4.gif) bottom no-repeat;
-}
-
-ul#menulist {
-  width: 144px;
-  list-style-type: none;
-}
-
-ul#menulist li {
-  height: 27px;
-  background: url(menu_3.gif) bottom repeat-x;
-}
-
-ul#menulist a {
-  width: 122px;
-  height: 20px;
-  border-left: #75c5de 10px solid;
-  font: bold 10px Verdana, Arial, sans-serif;
-  color: #ffffff;
-  text-decoration: none;
-  padding: 5px 0 0 10px;
-  display: block !important;
-  display: inline-block;
-}
-
-ul#menulist a:hover {
-  background: url(menu_5.jpg) left repeat-y;
-}

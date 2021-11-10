@@ -167,11 +167,7 @@ async function tableSearch() {
       data: form_data,
       dataSrc: function (res) {
         console.log(res);
-        if(res.data.length > 10){
-          $('body').css("overflow-y","scroll");
-        }else{
-          $('body').css("overflow-y","hidden");
-        }
+        
         return res.data;
       },
     },
