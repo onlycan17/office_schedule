@@ -9,8 +9,8 @@ let ObjectId = require("mongoose").Types.ObjectId;
 const isHeroku = process.env.NODE_ENV === "production";
 
 export const publicOnlyMiddleware = (req, res, next) => {
-  console.log("~~~~~~~~~~~~~~~~");
-  console.log(isHeroku);
+  //console.log("~~~~~~~~~~~~~~~~");
+  //console.log(isHeroku);
   // await ActionLog.create({
   //   url: req.url,
   //   params: JSON.stringify(req.params),
@@ -42,7 +42,7 @@ export const localsMiddleware = async (req, res, next) => {
   res.locals.siteName = "명작";
   res.locals.loggedInUser = req.session.user || {};
   res.locals.isHeroku = isHeroku;
-  console.log(res.locals.loggedInUser);
+  //console.log(res.locals.loggedInUser);
   next();
 };
 
@@ -57,7 +57,7 @@ export const protectorMiddleware = async (req, res, next) => {
     const lastOrder = order[1];
     res.locals.startUrl = startUrl;
     res.locals.lastOrder = lastOrder;
-    console.log(startUrl, lastOrder);
+    //console.log(startUrl, lastOrder);
   }
 
   if (req.session.loggedIn) {
@@ -114,8 +114,8 @@ export const protectorMiddleware = async (req, res, next) => {
         },
       },
     });
-    console.log("menutest-----------------");
-    console.log(menuList);
+    //console.log("menutest-----------------");
+    //console.log(menuList);
     res.locals.menuList = menuList;
     res.locals.loggedIn = req.session.loggedIn;
     res.locals.siteName = "명작";
@@ -126,7 +126,7 @@ export const protectorMiddleware = async (req, res, next) => {
     );
     const temp = rss.items[0].description.body.data[0].wfEn;
     res.locals.weather = temp;
-    console.log(temp);
+    //console.log(temp);
     //console.log(JSON.stringify(rss, null, 3));
     return next();
   } else {

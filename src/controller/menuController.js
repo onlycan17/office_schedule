@@ -7,7 +7,7 @@ export const getMenu = async (req, res) => {
   const menuList = await Menu.find()
     .populate({ path: "user" })
     .populate({ path: "department", options:{sort:"order"}});
-  console.log(menuList);
+  //console.log(menuList);
   const departmentList = await Department.find().sort("order");
   const userList = await User.find();
   return res.render("menu", {
@@ -58,7 +58,7 @@ export const getDeleteMenu = async (req, res) => {
 };
 
 export const postAddMenu = async (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
   const { menuName, menuUrl, order, userId, departmentId } = req.body;
   try {
     const menu = await Menu.create({
@@ -86,7 +86,7 @@ export const postAddMenu = async (req, res) => {
       .populate({ path: "department" });
     const departmentList = await Department.find().sort("order");
     const userList = await User.find();
-    console.log(error);
+    //console.log(error);
     return res.status(400).render("menu", {
       pageTitle: "menu 등록",
       errorMessage: error._message,
@@ -98,8 +98,8 @@ export const postAddMenu = async (req, res) => {
 };
 
 export const getMenuDetail = async (req, res) => {
-  console.log("---------getMenuDetail------------");
-  console.log(req.params);
+  //console.log("---------getMenuDetail------------");
+  //console.log(req.params);
   const { id } = req.params;
   const menucheck = await Menu.findById(id);
   //console.log(menucheck.user.length);
@@ -124,9 +124,9 @@ export const getMenuDetail = async (req, res) => {
       .populate({
         path: "user",
       });
-    console.log(subMenuDetail);
+    //console.log(subMenuDetail);
   }
-  console.log(res);
+  //console.log(res);
   return res.render("menuDetail", {
     pageTitle: "서브메뉴관리",
     subMenuDetail,
@@ -168,7 +168,7 @@ export const postAddSubMenu = async (req, res) => {
         },
       },
     });
-    console.log(checkSubMenu);
+    //console.log(checkSubMenu);
 
     if (checkSubMenu) {
       const menucheck = await Menu.findById(id);
@@ -182,7 +182,7 @@ export const postAddSubMenu = async (req, res) => {
           populate: { path: "user", select: "_id name email" },
         });
       }
-      console.log("------?------");
+      //console.log("------?------");
       return res.status(404).render("menuDetail", {
         pageTitle: "메뉴등록 상세페이지",
         errorMessage: "이미 등록된 메뉴정보(메뉴명,정렬순서) 입니다.",
@@ -233,8 +233,8 @@ export const postAddSubMenu = async (req, res) => {
         populate: { path: "user", select: "_id name email" },
       });
     }
-    console.log("--------------------------");
-    console.log(subMenuDetail);
+    //console.log("--------------------------");
+    //console.log(subMenuDetail);
     return res.status(400).render("menuDetail", {
       pageTitle: "menu 등록 상세페이지",
       errorMessage: error._message,
@@ -277,8 +277,8 @@ export const getSubMenuDelete = async (req, res) => {
 };
 
 export const subMenuAuthAdd = async (req, res) => {
-  console.log("subMenuAuthAdd");
-  console.log(req.body);
+  //console.log("subMenuAuthAdd");
+  //console.log(req.body);
   const { menuId, subMenuId, idx, userId, departmentId } = req.body;
   const menu = await Menu.findById(menuId).populate(subMenuId);
   if (userId) {
