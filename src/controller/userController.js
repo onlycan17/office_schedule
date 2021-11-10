@@ -4,6 +4,8 @@ import { async } from "regenerator-runtime";
 import Department from "../schema/department";
 import bcrypt from "bcrypt";
 
+let ObjectId = require("mongoose").Types.ObjectId;
+
 export const getLogin = (req, res) =>
   res.render("login", { pageTitle: "Login" });
 
