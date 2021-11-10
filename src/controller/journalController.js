@@ -433,7 +433,7 @@ export const postSearchJournal = async (req, res) => {
     })
       .sort("-start -end")
       .skip(Number(start))
-      .limit(pageNum)
+      .limit(Number(length))
       .populate("department")
       .populate({
         path: "user",
@@ -474,7 +474,7 @@ export const postSearchJournal = async (req, res) => {
     })
       .sort("-start -end")
       .skip(Number(start))
-      .limit(pageNum)
+      .limit(Number(length))
       .populate("department")
       .populate({
         path: "user",

@@ -13,6 +13,11 @@ $(document).ready(function(){
           url: "/joinList",
           dataSrc: function (res) {
             console.log(res);
+            if(res.data.length > 10){
+              $('body').css("overflow-y","scroll");
+            }else{
+              $('body').css("overflow-y","hidden");
+            }
             return res.data;
           },
         },
