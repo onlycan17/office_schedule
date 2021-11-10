@@ -311,6 +311,13 @@ body {
   color: white;
 }
 
+.loginLayout{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
 main {
   max-width: 1200px;
   width: 100%;

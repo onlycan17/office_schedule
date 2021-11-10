@@ -14,15 +14,15 @@ let ObjectId = require("mongoose").Types.ObjectId;
 
 let urlParam, urlStr, orderParam;
 export const getJournal = async (req, res) => {
-  console.log("getJournal!");
+  //console.log("getJournal!");
   let journal;
-  console.log(urlParam);
+  //console.log(urlParam);
   const now = new Date();
   const dateMonth =
     now.getFullYear() +
     "-" +
     (now.getMonth() + 1 < 10 ? "0" + (now.getMonth() + 1) : now.getMonth() + 1);
-  console.log(dateMonth);
+  //console.log(dateMonth);
 
   //console.log(JSON.stringify(req.session.user.department._id));
   //관리자일 경우
@@ -31,10 +31,10 @@ export const getJournal = async (req, res) => {
     urlStr = urlStr.split("?");
     urlParam = urlStr[0];
     const { order } = req.query;
-    console.log(urlParam);
-    console.log("------order---");
-    console.log(req.query);
-    console.log(order);
+    //console.log(urlParam);
+    //console.log("------order---");
+    //console.log(req.query);
+    //console.log(order);
     orderParam = order;
     const menu = await Menu.findOne({
       subMenu: {
@@ -44,7 +44,7 @@ export const getJournal = async (req, res) => {
         },
       },
     }).populate("subMenu");
-    console.log(menu);
+    //console.log(menu);
     if (!menu) {
       return res.sendStatus(500);
     }
@@ -52,15 +52,15 @@ export const getJournal = async (req, res) => {
     if (!subMenu) {
       return res.sendStatus(500);
     }
-    console.log("------submenufilter-----");
-    console.log(subMenu);
+    //console.log("------submenufilter-----");
+    //console.log(subMenu);
     const department = subMenu.department[0];
-    console.log(department._id);
+    //console.log(department._id);
     const dep = {
       _id: new ObjectId(department._id),
     };
-    console.log("-------------");
-    console.log(dep);
+    //console.log("-------------");
+    //console.log(dep);
     journal = await Journal.find({
       department: dep,
       $or: [{ start: new RegExp(dateMonth) }, { end: new RegExp(dateMonth) }],
@@ -91,9 +91,9 @@ export const getJournal = async (req, res) => {
       })
       .populate("file");
   }
-  console.log(typeof journal);
+  //console.log(typeof journal);
   const color = req.session.user.color;
-  console.log(color);
+  //console.log(color);
   return res.render("journal", {
     pageTitle: req.session.user.department.name + "일일업무",
     journal,
@@ -102,8 +102,8 @@ export const getJournal = async (req, res) => {
 };
 
 const isUrl = (element, index) => {
-  console.log("-----isUrl------");
-  console.log(element.order);
+  //console.log("-----isUrl------");
+  //console.log(element.order);
   if (element.subMenuUrl === urlParam && element.order === Number(orderParam)) {
     return true;
   }
@@ -113,7 +113,7 @@ export const postAddJournal = async (req, res) => {
   const { description, start, end, allDay, color, user, department } = req.body;
   let journal, fileId, filePath, strFileName;
   const departmentInfo = JSON.parse(department);
-  console.log(req.files);
+  //console.log(req.files);
 
   if (req.files.singleFile) {
     const { singleFile } = req.files;
@@ -153,7 +153,7 @@ export const postAddJournal = async (req, res) => {
   }
 
   const userInfo = await User.findById(user);
-  console.log(filePath);
+  //console.log(filePath);
   return res
     .status(201)
     .json({ id: journal._id, filePath, fileName: strFileName, fileId });
@@ -166,7 +166,7 @@ export const downloadFile = async (req, res) => {
   //const mimetype = mime.getType(file.originalname);
   try {
     const fileCheck = fs.readFileSync(file.path, "utf-8");
-    console.log(fileCheck);
+    //console.log(fileCheck);
     if (!fileCheck) {
       res.send("서버재기동으로 파일이 사라졌습니다.");
       return;
@@ -182,7 +182,7 @@ export const downloadFile = async (req, res) => {
       return;
     }
   } catch (e) {
-    console.log(e);
+    //console.log(e);
     res.send("파일을 다운로드하는 중에 에러가 발생했습니다.");
     return;
   }
@@ -206,11 +206,11 @@ function getDownloadFilename(req, filename) {
 }
 
 export const deleteJournal = async (req, res) => {
-  console.log("deleteJournal~~~!");
-  console.log(req.params);
-  console.log(req.body);
+  //console.log("deleteJournal~~~!");
+  //console.log(req.params);
+  //console.log(req.body);
   const { id } = req.body;
-  console.log(id);
+  //console.log(id);
   const result = await Journal.findByIdAndDelete(id);
   return res.sendStatus(200);
 };
@@ -220,8 +220,8 @@ export const customJournal = async (req, res) => {
   //url = req.url;
   //console.log(req);
   const { url, calendarDate } = req.query;
-  console.log(req.query);
-  console.log(url);
+  //console.log(req.query);
+  //console.log(url);
 
   //console.log(JSON.stringify(req.session.user.department._id));
   //관리자일 경우
@@ -270,7 +270,7 @@ export const customJournal = async (req, res) => {
       })
       .populate("file");
   }
-  // console.log(Journal);
+   //console.log(journal);
   const color = req.session.user.color;
   //console.log(color);
   return res.status(200).json({
@@ -283,8 +283,8 @@ export const customWeekJournal = async (req, res) => {
   //url = req.url;
   //console.log(req);
   const { url, startDate, endDate } = req.query;
-  console.log(req.query);
-  console.log(url);
+  //console.log(req.query);
+  //console.log(url);
   const now = new Date();
   // const dateMonth =
   //   now.getFullYear() +
@@ -423,7 +423,7 @@ export const postSearchJournal = async (req, res) => {
           ],
         },
       });
-    console.log(journalCount);
+    //console.log(journalCount);
 
     journal = await Journal.find({
       $or: [
@@ -463,7 +463,7 @@ export const postSearchJournal = async (req, res) => {
           ],
         },
       });
-    console.log(journalCount);
+    //console.log(journalCount);
 
     journal = await Journal.find({
       department: new ObjectId(departmentId),
@@ -572,7 +572,7 @@ export const excelDownload = async (req, res) => {
   //   res.status(200).end();
   // });
   return workbook.xlsx.writeFile("./excel/temp.xlsx").then(function(){
-      console.log('엑셀생성');
+      //console.log('엑셀생성');
       res.download('./excel/temp.xlsx',function(err){
           console.log('error:'+err);
       });

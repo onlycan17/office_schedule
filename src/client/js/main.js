@@ -6,7 +6,6 @@ import { async } from "regenerator-runtime";
 const department = JSON.parse(document.getElementById("department").value);
 const weatherStr = document.getElementById("weather").value;
 const alam = document.getElementById("sound");
-const snonwSound = document.getElementById("snowSound");
 
 getNotificationPermission();
 //알림 권한 요청
@@ -90,7 +89,7 @@ function weather() {
   // ⑥ Snow
   // ⑦ Shower
 
-  console.log(weatherStr);
+  //console.log(weatherStr);
   if (weatherStr === "Rain") {
     const cloud = document.querySelector("#clouds");
     cloud.style.display = "block";
@@ -102,7 +101,7 @@ function weather() {
       maxSize:10, 
       flakeCount : 120
     });
-    snonwSound.play();
+    //snonwSound.play();
   }else if(weatherStr === "Cloudy"){
     const cloud = document.querySelector("#clouds");
     cloud.style.display = "block";
