@@ -369,10 +369,18 @@ main {
 }
 
 ul > li {
-  margin-left: 5px;
-  margin-top: 5px;
+  margin-left: 10px;
+  margin-top: 10px;
   color: black;
-  font-size: 13px;
+  font-size: 16px;
+}
+
+ul.mainmenu > li ul.submenu{
+  display: none;
+}
+
+ul.mainmenu > li:hover ul.submenu{
+  display: block;
 }
 
 .button {
