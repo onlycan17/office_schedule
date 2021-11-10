@@ -48,26 +48,77 @@ export const logout = (req, res) => {
   return res.redirect("/");
 };
 
-export const getJoinForm = (req, res) => {
-  return res.render("join", { pageTitle: "회원관리" });
+export const getJoinForm = async (req, res) => {
+  const partList = await Department.find().sort({ order: 1 });
+  return res.render("join", { pageTitle: "회원관리", partList });
 };
 
 export const joinList = async (req, res) => {
-  const { start, draw, length } = req.body;
-  console.log(start,draw,length);
-  const pageNum = Number(start) + Number(length); //Calculate page number
-  const userCount = await User.find().countDocuments();
-  console.log(pageNum);
-  console.log(userCount);
-  
-  const userList = await User.find()
-    .skip(Number(start))
-    .limit(Number(length))
-    .sort("name")
-    .populate("department");
+  const {
+    start,
+    draw,
+    length,
+    order: { column, dir },
+    userName,
+    email,
+    departmentId,
+  } = req.body;
+  //console.log(req.body);
+  console.log(start, draw, length);
+  console.log(userName, email, departmentId);
+  let sort, dirTemp;
+  if (column === "1") {
+    sort = "name";
+  } else if (column === "2") {
+    sort = "email";
+  } else {
+    sort = "deportment.name";
+  }
+  if (dir === "desc") {
+    dirTemp = -1;
+  } else {
+    dirTemp = 1;
+  }
 
-  console.log(userList);
-  
+  let userCount, userList;
+  if (departmentId) {
+    userCount = await User.find({
+      department: new ObjectId(departmentId),
+      name: { $regex: ".*" + userName + ".*" },
+      email: { $regex: ".*" + email + ".*" },
+    }).countDocuments();
+    //console.log(pageNum);
+    //console.log(userCount);
+
+    userList = await User.find({
+      department: new ObjectId(departmentId),
+      name: { $regex: ".*" + userName + ".*" },
+      email: { $regex: ".*" + email + ".*" },
+    })
+      .skip(Number(start))
+      .limit(Number(length))
+      .sort({ sort: dirTemp })
+      .populate("department");
+  } else {
+    userCount = await User.find({
+      name: { $regex: ".*" + userName + ".*" },
+      email: { $regex: ".*" + email + ".*" },
+    }).countDocuments();
+    //console.log(pageNum);
+    //console.log(userCount);
+
+    userList = await User.find({
+      name: { $regex: ".*" + userName + ".*" },
+      email: { $regex: ".*" + email + ".*" },
+    })
+      .skip(Number(start))
+      .limit(Number(length))
+      .sort({ sort: dirTemp })
+      .populate("department");
+  }
+
+  //console.log(userList);
+
   return res.status(200).json({
     draw,
     start,
