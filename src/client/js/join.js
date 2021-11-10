@@ -1,64 +1,90 @@
 $(document).ready(function(){
-    $("#join").DataTable({
-        paging: true,
-        pageLength: 10,
-        processing: true,
-        serverSide: true,
-        destroy: true,
-        searching: false,
-        language: lang_kor,
-        ajax: {
-          data: "json",
-          type: "post",
-          url: "/joinList",
-          dataSrc: function (res) {
-            console.log(res);
-            if(res.data.length > 10){
-              $('body').css("overflow-y","scroll");
-            }else{
-              $('body').css("overflow-y","hidden");
-            }
-            return res.data;
+  $("#searchBtn").click(function () {
+    tableSearch();
+  });
+  $("#partId").change(function () {
+    tableSearch();
+  });
+  $("#name").keydown(function (key) {
+    if (key.keyCode == 13) {
+      tableSearch();
+    }
+  });
+  $("#email").keydown(function (key) {
+    if (key.keyCode == 13) {
+      tableSearch();
+    }
+  });
+});
+
+function tableSearch(){
+  const form_data = {
+    departmentId: $("#partId option:selected").val(),
+    userName: $("#name").val(),
+    email: $("#email").val(),
+  };
+  console.log(form_data);
+  $("#join").DataTable({
+    paging: true,
+    pageLength: 10,
+    processing: true,
+    serverSide: true,
+    destroy: true,
+    searching: false,
+    language: lang_kor,
+    ajax: {
+      data: "json",
+      type: "post",
+      url: "/joinList",
+      data: form_data,
+      dataSrc: function (res) {
+        console.log(res);
+        if(res.data.length > 10){
+          $('body').css("overflow-y","scroll");
+        }else{
+          $('body').css("overflow-y","hidden");
+        }
+        return res.data;
+      },
+    },
+    columnDefs: [  
+        {
+          targets: [0],
+          orderable: false,
+          searchable: false,
+          render: function (data, type, row, meta) {
+            console.log('----------------');
+            console.log(row);
+            return (
+              `<a href="/join/${row._id}">${row.name}</a>`
+            );
           },
         },
-        columnDefs: [  
-            {
-              targets: [0],
-              orderable: false,
-              searchable: false,
-              render: function (data, type, row, meta) {
-                console.log('----------------');
-                console.log(row);
-                return (
-                  `<a href="/join/${row._id}">${row.name}</a>`
-                );
-              },
-            },
-            {
-              targets: [1],
-              orderable: false,
-              searchable: false,
-              render: function (data, type, row, meta) {
-                console.log('----------------');
-                console.log(row);
-                return (
-                  `<a href="/join/${row._id}">${row.email}</a>`
-                );
-              },
-            },
-          ],
-        columns: [
-          { data: "name", title: "성명" },
-          { data: "email", title: "이메일" },
-          { data: "department.name", title: "업무내용" },
-          { data: "color", title: "컬러" },
-        ],
-        error: function (xhr, error, code) {
-          console.log(xhr);
-          console.log(code);
+        {
+          targets: [1],
+          orderable: false,
+          searchable: false,
+          render: function (data, type, row, meta) {
+            console.log('----------------');
+            console.log(row);
+            return (
+              `<a href="/join/${row._id}">${row.email}</a>`
+            );
+          },
         },
-      });
-});
+      ],
+    columns: [
+      { data: "name", title: "성명" },
+      { data: "email", title: "이메일" },
+      { data: "department.name", title: "업무내용" },
+      { data: "color", title: "컬러" },
+    ],
+    error: function (xhr, error, code) {
+      console.log(xhr);
+      console.log(code);
+    },
+  });
+}
 
 const lang_kor = {
     decimal: "",

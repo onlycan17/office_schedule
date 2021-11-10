@@ -5,24 +5,22 @@ block content
         span=errorMessage
     div 
         a.button(href="/joinAdd") 사용자등록
-    table(id="join")
-        //- tr 
-        //-     th 이름
-        //-     th 이메일
-        //-     th 부서
-        //-     th 색상
-        //- each j in userList 
-        //-     tr
-        //-         td 
-        //-             a(href=`/join/${j._id}`) #{j.name}     
-        //-         td
-        //-             a(href=`/join/${j._id}`) #{j.email}     
-        //-         if(j.department)
-        //-             td #{j.department.name}
-        //-         if(!j.department)
-        //-             td 
-        //-         td  
-        //-             input(type="color", disable, value=j.color, style="display:block; with:100px;")        
+    div(class="search")
+        div(class="searchComponent")
+            label(for="partId") 부서선택
+            select(class="searchSelect" name="partId" id="partId")
+                option(value="") 전체
+                each item in partList
+                    option(value=`${item._id}`) #{item.name}
+        div(class="searchComponent")
+            label(for="name") 성명
+            input(class="searchInput" name="name" id="name" type="text")            
+        div(class="searchComponent")
+            label(for="email") 이메일
+            input(class="searchInput" name="email" id="email" type="text")                    
+        div(class="searchButton")
+            button(id="searchBtn" type="button") 검색
+    table(id="join")   
 
 block scripts
     link(rel="stylesheet", href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css")
