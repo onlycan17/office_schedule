@@ -76,7 +76,7 @@ function tableSearch(){
     columns: [
       { data: "name", title: "성명" },
       { data: "email", title: "이메일" },
-      { data: "department.name", title: "업무내용" },
+      { data: "department.name", title: "부서" },
       { data: "color", title: "컬러" },
     ],
     error: function (xhr, error, code) {
