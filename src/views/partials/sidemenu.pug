@@ -1,25 +1,43 @@
 div.sidemenu
-    ul#navigation
+    ul.mainmenu
         if(menuList)
             each item in menuList 
                 li
                     a(href=`${item.menuUrl}`) #{item.menuName}
                     if(item.subMenu)
-                        ul
-                            each subItem in item.subMenu
-                                each dep in subItem.department
-                                    if(dep == loggedInUser.department._id)
-                                        if(loggedInUser.department._id === '612490cc21f010838f50a41b')
-                                            li
-                                                if(startUrl == subItem.subMenuUrl && lastOrder == subItem.order)
-                                                    a( href=`${subItem.subMenuUrl}?order=${subItem.order}`, class="selected") #{subItem.subMenuName}
-                                                else 
-                                                    a( href=`${subItem.subMenuUrl}?order=${subItem.order}`) #{subItem.subMenuName}    
-                                        else 
-                                            li
-                                                if(startUrl == subItem.subMenuUrl && lastOrder == subItem.order)
-                                                    a( href=`${subItem.subMenuUrl}` , class="selected") #{subItem.subMenuName}
-                                                else 
-                                                    a( href=`${subItem.subMenuUrl}`) #{subItem.subMenuName}
+                        if(menuName == item.menuName)
+                            ul
+                                each subItem in item.subMenu
+                                    each dep in subItem.department
+                                        if(dep == loggedInUser.department._id)
+                                            if(loggedInUser.department._id === '612490cc21f010838f50a41b')
+                                                li
+                                                    if(startUrl == subItem.subMenuUrl && lastOrder == subItem.order)
+                                                        a( href=`${subItem.subMenuUrl}?order=${subItem.order}`, class="selected") #{subItem.subMenuName}
+                                                    else 
+                                                        a( href=`${subItem.subMenuUrl}?order=${subItem.order}`) #{subItem.subMenuName}    
+                                            else 
+                                                li
+                                                    if(startUrl == subItem.subMenuUrl)
+                                                        a( href=`${subItem.subMenuUrl}` , class="selected") #{subItem.subMenuName}
+                                                    else 
+                                                        a( href=`${subItem.subMenuUrl}`) #{subItem.subMenuName}
+                        else 
+                            ul.submenu
+                                each subItem in item.subMenu
+                                    each dep in subItem.department
+                                        if(dep == loggedInUser.department._id)
+                                            if(loggedInUser.department._id === '612490cc21f010838f50a41b')
+                                                li
+                                                    if(startUrl == subItem.subMenuUrl && lastOrder == subItem.order)
+                                                        a( href=`${subItem.subMenuUrl}?order=${subItem.order}`, class="selected") #{subItem.subMenuName}
+                                                    else 
+                                                        a( href=`${subItem.subMenuUrl}?order=${subItem.order}`) #{subItem.subMenuName}    
+                                            else 
+                                                li
+                                                    if(startUrl == subItem.subMenuUrl)
+                                                        a( href=`${subItem.subMenuUrl}` , class="selected") #{subItem.subMenuName}
+                                                    else 
+                                                        a( href=`${subItem.subMenuUrl}`) #{subItem.subMenuName}
         li 
             a(href='https://paint-quiz.herokuapp.com/' target="_blank") 우리끼리 게임

@@ -58,6 +58,8 @@ export const protectorMiddleware = async (req, res, next) => {
     res.locals.startUrl = startUrl;
     res.locals.lastOrder = lastOrder;
     //console.log(startUrl, lastOrder);
+  }else{
+    res.locals.startUrl = url;
   }
 
   if (req.session.loggedIn) {
@@ -83,6 +85,7 @@ export const protectorMiddleware = async (req, res, next) => {
     menu.forEach((menu) => {
       menu.subMenu.forEach((subMenu) => {
         if (req.url.indexOf(subMenu.subMenuUrl) != -1) {
+          res.locals.menuName = menu.menuName;
           subMenu.department.forEach((department) => {
             //console.log('===================');
             //console.log(department);
