@@ -12,46 +12,55 @@ div.sidemenu
                                         if(dep == loggedInUser.department._id)
                                             if(loggedInUser.department._id === '612490cc21f010838f50a41b')
                                                 li
-                                                    if(startUrl == subItem.subMenuUrl && lastOrder == subItem.order)
+                                                    if(startUrl === subItem.subMenuUrl && lastOrder == subItem.order)
                                                         a( href=`${subItem.subMenuUrl}?order=${subItem.order}`, class="selected") #{subItem.subMenuName}
                                                     else 
                                                         a( href=`${subItem.subMenuUrl}?order=${subItem.order}`) #{subItem.subMenuName}    
                                             else 
                                                 li
-                                                    if(startUrl == subItem.subMenuUrl)
-                                                        a( href=`${subItem.subMenuUrl}` , class="selected") #{subItem.subMenuName}
+                                                    if(startUrl === subItem.subMenuUrl && lastOrder == subItem.order)
+                                                        a( href=`${subItem.subMenuUrl}?order=${subItem.order}`, class="selected") #{subItem.subMenuName}
                                                     else 
-                                                        a( href=`${subItem.subMenuUrl}`) #{subItem.subMenuName}
+                                                        a( href=`${subItem.subMenuUrl}?order=${subItem.order}`) #{subItem.subMenuName}
+                                                        //- span #{startUrl}_#{subItem.subMenuUrl}__#{lastOrder}_#{subItem.order}    
                                     each user in subItem.user
                                         if(user == loggedInUser._id)
                                             li
-                                                if(startUrl == subItem.subMenuUrl)
-                                                    a( href=`${subItem.subMenuUrl}` , class="selected") #{subItem.subMenuName}
+                                                if(startUrl === subItem.subMenuUrl && lastOrder == subItem.order)
+                                                        a( href=`${subItem.subMenuUrl}?order=${subItem.order}`, class="selected") #{subItem.subMenuName}
+                                                        //- span #{lastOrder}_#{subItem.order}
                                                 else 
-                                                    a( href=`${subItem.subMenuUrl}`) #{subItem.subMenuName}               
+                                                        a( href=`${subItem.subMenuUrl}?order=${subItem.order}`) #{subItem.subMenuName}                  
+                                        //- else 
+                                        //-     if(flag === true)
+                                        //-         li
+                                        //-             if(startUrl === subItem.subMenuUrl && lastOrder == subItem.order)
+                                        //-                 a( href=`${subItem.subMenuUrl}?order=${subItem.order}`, class="selected") #{subItem.subMenuName}
+                                        //-             else 
+                                        //-                 a( href=`${subItem.subMenuUrl}?order=${subItem.order}`) #{subItem.subMenuName}    
                         else 
                             ul.submenu
                                 each subItem in item.subMenu
                                     each dep in subItem.department
                                         if(dep == loggedInUser.department._id)
-                                            if(loggedInUser.department._id === '612490cc21f010838f50a41b')
-                                                li
-                                                    if(startUrl == subItem.subMenuUrl && lastOrder == subItem.order)
-                                                        a( href=`${subItem.subMenuUrl}?order=${subItem.order}`, class="selected") #{subItem.subMenuName}
-                                                    else 
-                                                        a( href=`${subItem.subMenuUrl}?order=${subItem.order}`) #{subItem.subMenuName}    
-                                            else 
-                                                li
-                                                    if(startUrl == subItem.subMenuUrl)
-                                                        a( href=`${subItem.subMenuUrl}` , class="selected") #{subItem.subMenuName}
-                                                    else 
-                                                        a( href=`${subItem.subMenuUrl}`) #{subItem.subMenuName}
+                                            li
+                                                if(startUrl === subItem.subMenuUrl && lastOrder == subItem.order)
+                                                    a( href=`${subItem.subMenuUrl}?order=${subItem.order}`, class="selected") #{subItem.subMenuName}
+                                                else 
+                                                    a( href=`${subItem.subMenuUrl}?order=${subItem.order}`) #{subItem.subMenuName}    
                                     each user in subItem.user
                                         if(user == loggedInUser._id)
                                             li
-                                                if(startUrl == subItem.subMenuUrl)
-                                                    a( href=`${subItem.subMenuUrl}` , class="selected") #{subItem.subMenuName}
+                                                if(startUrl === subItem.subMenuUrl && lastOrder == subItem.order)
+                                                    a( href=`${subItem.subMenuUrl}?order=${subItem.order}`, class="selected") #{subItem.subMenuName}
                                                 else 
-                                                    a( href=`${subItem.subMenuUrl}`) #{subItem.subMenuName}                                   
+                                                    a( href=`${subItem.subMenuUrl}?order=${subItem.order}`) #{subItem.subMenuName}
+                                        //- else 
+                                        //-     if(flag === true)
+                                        //-         li
+                                        //-             if(startUrl === subItem.subMenuUrl && lastOrder == subItem.order)
+                                        //-                 a( href=`${subItem.subMenuUrl}?order=${subItem.order}`, class="selected") #{subItem.subMenuName}
+                                        //-             else 
+                                        //-                 a( href=`${subItem.subMenuUrl}?order=${subItem.order}`) #{subItem.subMenuName}                                                 
         li 
             a(href='https://paint-quiz.herokuapp.com/' target="_blank") 우리끼리 게임
