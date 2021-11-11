@@ -288,7 +288,7 @@ export const customWeekSchedule = async (req, res) => {
       },
     }).populate("subMenu");
     // console.log(menu);
-    const auth = await Auth.findOne({subUrl:url,order}).select("department");
+    const auth = await Auth.findOne({subUrl:url,order:orderParam}).select("department");
     console.log('-----auth-departmentId-------');
     console.log(auth);
     
