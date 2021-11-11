@@ -229,7 +229,7 @@ export const customJournal = async (req, res) => {
   const flagTemp = JSON.parse(flag);
   //console.log(JSON.stringify(req.session.user.department._id));
   //관리자일 경우
-  if (req.session.user.department._id === "612490cc21f010838f50a41b") {
+  if (req.session.user.department._id === "612490cc21f010838f50a41b"||(menuName && flagTemp === true && order)) {
     const menu = await Menu.findOne({
       subMenu: {
         $elemMatch: {
@@ -302,6 +302,8 @@ export const customWeekJournal = async (req, res) => {
   //   (now.getMonth()+ Number(monthCaculate) + 1 < 10 ? "0" + (now.getMonth()+ Number(monthCaculate) + 1) : now.getMonth() + Number(monthCaculate) + 1);
   // console.log(dateMonth);
   //console.log(JSON.stringify(req.session.user.department._id));
+  orderParam = Number(order);
+  const flagTemp = JSON.parse(flag);
   //관리자일 경우
   if (req.session.user.department._id === "612490cc21f010838f50a41b" || (menuName && flagTemp === true && order)) {
     const menu = await Menu.findOne({
@@ -312,7 +314,7 @@ export const customWeekJournal = async (req, res) => {
       },
     }).populate("subMenu");
     // console.log(menu);
-    const auth = await Auth.findOne({subUrl:url,order}).select("department");
+    const auth = await Auth.findOne({subUrl:url,order:orderParam}).select("department");
     console.log('-----auth-departmentId-------');
     console.log(auth);
     
