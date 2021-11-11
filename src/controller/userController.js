@@ -16,6 +16,7 @@ export const postLogin = async (req, res) => {
     const user = await User.findOne({ email })
       .populate("department")
       .populate({ path: "menu", populate: { path: "subMenu" } });
+      //.populate("menu");
     if (!user) {
       return res.status(400).render("login", {
         pageTitle,
@@ -29,6 +30,7 @@ export const postLogin = async (req, res) => {
         errorMessage: "아이디/패스워드 입력을 다시 확인해 주세요.",
       });
     }
+    console.log(user);
     req.session.loggedIn = true;
     req.session.user = user;
     console.log("부서확인");

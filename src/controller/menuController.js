@@ -6,7 +6,7 @@ import User from "../schema/user";
 export const getMenu = async (req, res) => {
   const menuList = await Menu.find()
     .populate({ path: "user" })
-    .populate({ path: "department", options:{sort:"order"}});
+    .populate({ path: "department", options: { sort: "order" } });
   //console.log(menuList);
   const departmentList = await Department.find().sort("order");
   const userList = await User.find();
@@ -26,7 +26,7 @@ export const getAddMenu = async (req, res) => {
     departmentList,
     userList,
   });
-}
+};
 
 export const getDeleteMenu = async (req, res) => {
   const { id } = req.params;
@@ -53,7 +53,7 @@ export const getDeleteMenu = async (req, res) => {
     });
   }
   await Menu.findByIdAndDelete(id);
-  
+
   return res.redirect("/menu");
 };
 
@@ -119,7 +119,7 @@ export const getMenuDetail = async (req, res) => {
       })
       .populate({
         path: "department",
-        sort:"order",
+        sort: "order",
       })
       .populate({
         path: "user",
@@ -147,7 +147,7 @@ export const getMenuDetail = async (req, res) => {
 //     id,
 //     departmentList,
 //     userList,
-//   }); 
+//   });
 // }
 
 export const postAddSubMenu = async (req, res) => {
@@ -212,10 +212,13 @@ export const postAddSubMenu = async (req, res) => {
     if (department) {
       menudetailObj.subMenu[submenuLength - 1].department.push(department._id);
       department.menu.push(menudetailObj.subMenu[submenuLength - 1]._id);
+      department.save();
     }
     if (user) {
       menudetailObj.subMenu[submenuLength - 1].user.push(user._id);
-      user.menu.push(menudetailObj.subMenu[submenuLength - 1]._id);
+      user.menu.push(menudetailObj._id);
+      console.log(user);
+      user.save();
     }
     menudetailObj.save();
     //console.log('---test---');
@@ -284,12 +287,16 @@ export const subMenuAuthAdd = async (req, res) => {
   if (userId) {
     menu.subMenu[idx].user.push(userId);
     const user = await User.findById(userId);
+    console.log(user);
     user.menu.push(menu.subMenu[idx]._id);
+    console.log(user);
+    user.save();
   }
   if (departmentId) {
     menu.subMenu[idx].department.push(departmentId);
     const department = await Department.findById(departmentId);
     department.menu.push(menu.subMenu[idx]._id);
+    department.save();
   }
   menu.save();
   res.json({
