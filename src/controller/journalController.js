@@ -9,6 +9,7 @@ import { async } from "regenerator-runtime";
 import Department from "../schema/department";
 import excel from "exceljs";
 import moment from "moment";
+import Auth from "../schema/auth";
 
 let ObjectId = require("mongoose").Types.ObjectId;
 
@@ -26,7 +27,7 @@ export const getJournal = async (req, res) => {
 
   //console.log(JSON.stringify(req.session.user.department._id));
   //관리자일 경우
-  if (req.session.user.department._id === "612490cc21f010838f50a41b") {
+  if (req.session.user.department._id === "612490cc21f010838f50a41b"|| (res.locals.menuName && res.locals.flag === true && res.locals.lastOrder)) {
     urlStr = req.url;
     urlStr = urlStr.split("?");
     urlParam = urlStr[0];
@@ -54,10 +55,12 @@ export const getJournal = async (req, res) => {
     }
     //console.log("------submenufilter-----");
     //console.log(subMenu);
-    const department = subMenu.department[0];
-    //console.log(department._id);
+    const auth = await Auth.findOne({subUrl:urlParam,order}).select("department");
+    console.log('-----auth-departmentId-------');
+    console.log(auth);
+    
     const dep = {
-      _id: new ObjectId(department._id),
+      _id: new ObjectId(auth.department._id),
     };
     //console.log("-------------");
     //console.log(dep);
@@ -219,10 +222,11 @@ export const customJournal = async (req, res) => {
   let journal;
   //url = req.url;
   //console.log(req);
-  const { url, calendarDate } = req.query;
+  const { url, calendarDate,order,menuName,flag } = req.query;
   //console.log(req.query);
   //console.log(url);
-
+  orderParam = Number(order);
+  const flagTemp = JSON.parse(flag);
   //console.log(JSON.stringify(req.session.user.department._id));
   //관리자일 경우
   if (req.session.user.department._id === "612490cc21f010838f50a41b") {
@@ -238,10 +242,16 @@ export const customJournal = async (req, res) => {
     if (!subMenu) {
       return res.sendStatus(500);
     }
-    const department = subMenu.department[0];
+    const auth = await Auth.findOne({subUrl:url, order:orderParam}).select("department");
+    //console.log('-----auth-departmentId-------');
+    console.log(auth);
+    
+    const dep = {
+      _id: new ObjectId(auth.department._id),
+    };
     // console.log(department);
     journal = await Journal.find({
-      department,
+      department:dep,
       $or: [
         { start: new RegExp(calendarDate) },
         { end: new RegExp(calendarDate) },
@@ -282,7 +292,7 @@ export const customWeekJournal = async (req, res) => {
   let journal;
   //url = req.url;
   //console.log(req);
-  const { url, startDate, endDate } = req.query;
+  const { url, startDate, endDate,order,menuName,flag } = req.query;
   //console.log(req.query);
   //console.log(url);
   const now = new Date();
@@ -293,7 +303,7 @@ export const customWeekJournal = async (req, res) => {
   // console.log(dateMonth);
   //console.log(JSON.stringify(req.session.user.department._id));
   //관리자일 경우
-  if (req.session.user.department._id === "612490cc21f010838f50a41b") {
+  if (req.session.user.department._id === "612490cc21f010838f50a41b" || (menuName && flagTemp === true && order)) {
     const menu = await Menu.findOne({
       subMenu: {
         $elemMatch: {
@@ -302,11 +312,16 @@ export const customWeekJournal = async (req, res) => {
       },
     }).populate("subMenu");
     // console.log(menu);
-    const subMenu = await menu.subMenu.find(isUrl);
-    const department = subMenu.department[0];
+    const auth = await Auth.findOne({subUrl:url,order}).select("department");
+    console.log('-----auth-departmentId-------');
+    console.log(auth);
+    
+    const dep = {
+      _id: new ObjectId(auth.department._id),
+    };
     // console.log(department);
     journal = await Journal.find({
-      department,
+      department:dep,
       $or: [{ start: { $gte: startDate } }, { start: { $lte: endDate } }],
       $or: [{ end: { $gte: startDate } }, { end: { $lte: endDate } }],
     })

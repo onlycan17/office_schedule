@@ -18,6 +18,9 @@ const user = document.getElementById("user").value;
 const userName = document.getElementById("userName").value;
 const department = document.getElementById("department").value;
 const menu = document.querySelector("menu");
+const order  = document.getElementById("order").value;
+const menuName  = document.getElementById("menuName").value;
+const flag  = document.getElementById("flag").value;
 
 //coloseButton.addEventListener("click", cancel);
 submitButton.addEventListener("click", addParam);
@@ -279,7 +282,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const res = await axios({
               method: "get",
               url: "/customJournal",
-              params: { calendarDate, url: window.location.pathname },
+              params: { calendarDate, url: window.location.pathname, order,menuName,flag},
               timeout: 15000,
             });
             console.log(res.data.journal);
@@ -296,7 +299,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const res = await axios({
               method: "get",
               url: "/customWeekJournal",
-              params: { startDate, endDate, url: window.location.pathname },
+              params: { startDate, endDate, url: window.location.pathname,order,menuName,flag },
               timeout: 15000,
             });
             console.log(res.data.journal);
@@ -325,7 +328,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const res = await axios({
               method: "get",
               url: "/customJournal",
-              params: { calendarDate, url: window.location.pathname },
+              params: { calendarDate, url: window.location.pathname,order,menuName,flag },
               timeout: 15000,
             });
             console.log(res.data.journal);
@@ -342,7 +345,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const res = await axios({
               method: "get",
               url: "/customWeekJournal",
-              params: { startDate, endDate, url: window.location.pathname },
+              params: { startDate, endDate, url: window.location.pathname,order,menuName,flag },
               timeout: 15000,
             });
             console.log(res.data.journal);

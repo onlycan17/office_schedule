@@ -57,7 +57,7 @@ export const protectorMiddleware = async (req, res, next) => {
     const lastOrder = order[1];
     res.locals.startUrl = startUrl;
     res.locals.lastOrder = lastOrder;
-    //console.log(startUrl, lastOrder);
+    console.log(startUrl, lastOrder);
   }else{
     res.locals.startUrl = url;
   }
@@ -88,6 +88,7 @@ export const protectorMiddleware = async (req, res, next) => {
             subMenu.user.forEach((user) => {
               if(req.session.user._id+"" === user+""){
                 flag = true;
+                //res.locals.lastOrder = subMenu.order;
               }
             });
           }
@@ -123,6 +124,7 @@ export const protectorMiddleware = async (req, res, next) => {
     res.locals.loggedIn = req.session.loggedIn;
     res.locals.siteName = "명작";
     res.locals.loggedInUser = req.session.user || {};
+    res.locals.flag = flag;
     res.locals.isHeroku = isHeroku;
     const rss = await parse(
       "https://www.kma.go.kr/wid/queryDFSRSS.jsp?zone=4471025000"

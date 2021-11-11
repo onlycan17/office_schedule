@@ -3,6 +3,7 @@ import session from "express-session";
 import { async } from "regenerator-runtime";
 import Department from "../schema/department";
 import bcrypt from "bcrypt";
+import Menu from "../schema/menu";
 
 let ObjectId = require("mongoose").Types.ObjectId;
 
@@ -30,6 +31,22 @@ export const postLogin = async (req, res) => {
         errorMessage: "아이디/패스워드 입력을 다시 확인해 주세요.",
       });
     }
+    const menu = await Menu.find().populate("subMenu");
+    let objOrder;
+    menu.forEach(menu => {
+      menu.subMenu.forEach(subMenu => {
+          subMenu?.department.forEach(dep => {
+            console.log(dep._id);
+            console.log('-------------');
+            console.log(user?.department?._id);
+            if(subMenu.subMenuUrl ==='/schedule' && (dep._id+"" === user?.department?._id+"")){
+              console.log('test----------');
+              objOrder = subMenu.order;
+            }
+          });
+      });
+    });
+    console.log('order -- '+objOrder);
     console.log(user);
     req.session.loggedIn = true;
     req.session.user = user;
@@ -39,7 +56,7 @@ export const postLogin = async (req, res) => {
     if (user.department._id + "" === "612490cc21f010838f50a41b") {
       return res.redirect("/home");
     } else {
-      return res.redirect("/schedule");
+      return res.redirect("/schedule?order="+objOrder);
     }
   } catch (error) {
     return res.sendStatus(404);
