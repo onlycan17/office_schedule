@@ -61,19 +61,9 @@ export const protectorMiddleware = async (req, res, next) => {
   }else{
     res.locals.startUrl = url;
   }
-
+  console.log(req.session.loggedIn);
   if (req.session.loggedIn) {
     let flag = false;
-    // console.log(req.session.user.department._id);
-    req.session.user.menu.forEach((menu) => {
-      // console.log(menu);
-      menu.subMenu.forEach((subMenu) => {
-        // console.log(subMenu);
-        if (req.url.indexOf(subMenu.subMenuUrl) != -1) {
-          flag = true;
-        }
-      });
-    });
     const menu = await Menu.find().populate({
       path: "subMenu",
       options: {
@@ -94,6 +84,13 @@ export const protectorMiddleware = async (req, res, next) => {
               flag = true;
             }
           });
+          if(subMenu.user){
+            subMenu.user.forEach((user) => {
+              if(req.session.user._id+"" === user+""){
+                flag = true;
+              }
+            });
+          }
         }
       });
     });
@@ -106,6 +103,9 @@ export const protectorMiddleware = async (req, res, next) => {
     const dep = {
       _id: new ObjectId(req.session.user.department._id),
     };
+    const userId = {
+      _id: new ObjectId(req.session.user._id),
+    }
     const menuList = await Menu.find({
       // $or: [
       //   { user: req.session.user._id },
@@ -113,7 +113,7 @@ export const protectorMiddleware = async (req, res, next) => {
       // ],
       subMenu: {
         $elemMatch: {
-          $or: [{ user: req.session.user._id }, { department: dep }],    
+          $or: [{ user: userId }, { department: dep }],    
         },
       },
     });

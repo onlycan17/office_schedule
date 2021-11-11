@@ -22,6 +22,13 @@ div.sidemenu
                                                         a( href=`${subItem.subMenuUrl}` , class="selected") #{subItem.subMenuName}
                                                     else 
                                                         a( href=`${subItem.subMenuUrl}`) #{subItem.subMenuName}
+                                    each user in subItem.user
+                                        if(user == loggedInUser._id)
+                                            li
+                                                if(startUrl == subItem.subMenuUrl)
+                                                    a( href=`${subItem.subMenuUrl}` , class="selected") #{subItem.subMenuName}
+                                                else 
+                                                    a( href=`${subItem.subMenuUrl}`) #{subItem.subMenuName}               
                         else 
                             ul.submenu
                                 each subItem in item.subMenu
@@ -39,5 +46,12 @@ div.sidemenu
                                                         a( href=`${subItem.subMenuUrl}` , class="selected") #{subItem.subMenuName}
                                                     else 
                                                         a( href=`${subItem.subMenuUrl}`) #{subItem.subMenuName}
+                                    each user in subItem.user
+                                        if(user == loggedInUser._id)
+                                            li
+                                                if(startUrl == subItem.subMenuUrl)
+                                                    a( href=`${subItem.subMenuUrl}` , class="selected") #{subItem.subMenuName}
+                                                else 
+                                                    a( href=`${subItem.subMenuUrl}`) #{subItem.subMenuName}                                   
         li 
             a(href='https://paint-quiz.herokuapp.com/' target="_blank") 우리끼리 게임
