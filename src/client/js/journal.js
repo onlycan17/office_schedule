@@ -18,9 +18,9 @@ const user = document.getElementById("user").value;
 const userName = document.getElementById("userName").value;
 const department = document.getElementById("department").value;
 const menu = document.querySelector("menu");
-const order  = document.getElementById("order").value;
-const menuName  = document.getElementById("menuName").value;
-const flag  = document.getElementById("flag").value;
+const order = document.getElementById("order").value;
+const menuName = document.getElementById("menuName").value;
+const flag = document.getElementById("flag").value;
 
 //coloseButton.addEventListener("click", cancel);
 submitButton.addEventListener("click", addParam);
@@ -114,8 +114,17 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log(info.event);
       //info.el.append('<span class="closeon">x</span>');
       const month = moment(info.event.start).format("YYYYMM");
+      const startDay = moment(info.event.start).format("DD");
       const todayMonth = moment(new Date()).format("YYYYMM");
-      if(Number(month) === Number(todayMonth)){
+      const today = moment(new Date()).format("DD");
+      // console.log(info.event._def.extendedProps.user === user);
+      if (
+        (Number(month) === Number(todayMonth) ||
+          (Number(month) + 1 === Number(todayMonth) &&
+            Number(today) <= 7) ||
+          (Number(todayMonth) - Number(month) === 89 && Number(today) <= 7)  ) &&
+        info.event._def.extendedProps.user === user
+      ) {
         info.el.insertAdjacentHTML(
           "beforeend",
           '<span id="close_' + info.event.id + '" class="closeon">X</span>'
@@ -137,7 +146,7 @@ document.addEventListener("DOMContentLoaded", function () {
               data: { id: info.event.id },
               timeout: 15000,
             });
-  
+
             if (res.status === 200) {
               console.log("저장완료!");
             }
@@ -145,20 +154,27 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         });
       }
-      
     },
     eventClick: function (e) {
       console.log(e);
       //description = e.description;
       if (!deleteflag) {
-        $('#commentTextarea').css("display","flex");
+        $("#commentTextarea").css("display", "flex");
         if (e.event.extendedProps.description) {
           editor.setData(e.event.extendedProps.description);
           editor.isReadOnly = true;
           //console.log(editor.state);
           const month = moment(e.event.start).format("YYYYMM");
+          const startDay = moment(e.event.start).format("DD");
           const todayMonth = moment(new Date()).format("YYYYMM");
-          if(Number(month) === Number(todayMonth)){
+          const today = moment(new Date()).format("DD");
+          if (
+            (Number(month) === Number(todayMonth) ||
+              (Number(month) + 1 === Number(todayMonth) &&
+                Number(today) <= 7) ||
+              Number(todayMonth) - Number(month) === 89 && Number(today) <= 7  ) &&
+            e.event._def.extendedProps.user === user
+          ) {
             $(".editorCK").append(
               `<div class="pull-right">
                 <button class="btn" id="edit">수정</button>
@@ -167,6 +183,8 @@ document.addEventListener("DOMContentLoaded", function () {
             );
             const editCk = document.querySelector("#edit");
             editCk.addEventListener("click", () => clickEdit(e.event.id));
+          }else{
+            $('#divFile').css("display","none");
           }
           $("#submit").remove();
 
@@ -176,35 +194,54 @@ document.addEventListener("DOMContentLoaded", function () {
             if (element._id === e.event.id) {
               index = idx;
               fileYn = true;
-            }else{
+            } else {
               fileYn = false;
             }
 
-            if(element.comments){
-              element.comments.forEach(data => {
-                if(data.journal === e.event.id){
-                  $('#comment').append(`
+            if (element.comments) {
+              element.comments.forEach((data) => {
+                if (data.journal === e.event.id) {
+                  $("#comment").append(`
                     <div id="lv1_${data._id}" class="commentColumn bolder">
                       <div id="lv2_${data._id}" class="row">${data?.text}</div>
                       <div class="row">
                         <span>${data?.user?.name}</span>&nbsp;&nbsp;
-                        <span>${moment(data?.createdAt).format("YYYY-MM-DD HH:mm:SS")}</span>
-                        ${data?.user?._id === user ? '<a id="edit_'+`${data._id}`+'" class="commentBtn" href="#">수정</a><a id="delete_'+`${data._id}`+'" class="commentBtn" href="#">삭제</a>' : '' }
+                        <span>${moment(data?.createdAt).format(
+                          "YYYY-MM-DD HH:mm:SS"
+                        )}</span>
+                        ${
+                          data?.user?._id === user
+                            ? '<a id="edit_' +
+                              `${data._id}` +
+                              '" class="commentBtn" href="#">수정</a><a id="delete_' +
+                              `${data._id}` +
+                              '" class="commentBtn" href="#">삭제</a>'
+                            : ""
+                        }
                       </div>
                     </div>
                 `);
-                if(data?.user?._id === user){
-                  const editCommentBtn = document.querySelector("#edit_"+data._id);
-                  const deleteCommentBtn = document.querySelector("#delete_"+data._id);
-                  editCommentBtn.addEventListener("click",() => editCommentForm(data._id));
-                  deleteCommentBtn.addEventListener("click",() => deleteComment(data._id));
-                }
+                  if (data?.user?._id === user) {
+                    const editCommentBtn = document.querySelector(
+                      "#edit_" + data._id
+                    );
+                    const deleteCommentBtn = document.querySelector(
+                      "#delete_" + data._id
+                    );
+                    editCommentBtn.addEventListener("click", () =>
+                      editCommentForm(data._id)
+                    );
+                    deleteCommentBtn.addEventListener("click", () =>
+                      deleteComment(data._id)
+                    );
+                  }
                 }
               });
             }
           });
           console.log(index);
           if (fileYn && scheduleData[index].file) {
+            $('#divFile').css("display","flex");
             $("#singleFile").replaceWith(
               `<a href='/download/${scheduleData[index].file._id}'>${scheduleData[index].file.originalname}</a>`
             );
@@ -237,7 +274,7 @@ document.addEventListener("DOMContentLoaded", function () {
     select: function (arg) {
       // 캘린더에서 드래그로 이벤트를 생성할 수 있다.
       //var title = prompt("제목:");
-      $('#commentTextarea').css("display","none");
+      $("#commentTextarea").css("display", "none");
       console.log("selecte");
       start = moment(arg.start).format("YYYY-MM-DD HH:mm:SS");
       end = moment(arg.end).format("YYYY-MM-DD HH:mm:SS");
@@ -282,7 +319,13 @@ document.addEventListener("DOMContentLoaded", function () {
             const res = await axios({
               method: "get",
               url: "/customJournal",
-              params: { calendarDate, url: window.location.pathname, order,menuName,flag},
+              params: {
+                calendarDate,
+                url: window.location.pathname,
+                order,
+                menuName,
+                flag,
+              },
               timeout: 15000,
             });
             console.log(res.data.journal);
@@ -299,7 +342,14 @@ document.addEventListener("DOMContentLoaded", function () {
             const res = await axios({
               method: "get",
               url: "/customWeekJournal",
-              params: { startDate, endDate, url: window.location.pathname,order,menuName,flag },
+              params: {
+                startDate,
+                endDate,
+                url: window.location.pathname,
+                order,
+                menuName,
+                flag,
+              },
               timeout: 15000,
             });
             console.log(res.data.journal);
@@ -328,7 +378,13 @@ document.addEventListener("DOMContentLoaded", function () {
             const res = await axios({
               method: "get",
               url: "/customJournal",
-              params: { calendarDate, url: window.location.pathname,order,menuName,flag },
+              params: {
+                calendarDate,
+                url: window.location.pathname,
+                order,
+                menuName,
+                flag,
+              },
               timeout: 15000,
             });
             console.log(res.data.journal);
@@ -345,7 +401,14 @@ document.addEventListener("DOMContentLoaded", function () {
             const res = await axios({
               method: "get",
               url: "/customWeekJournal",
-              params: { startDate, endDate, url: window.location.pathname,order,menuName,flag },
+              params: {
+                startDate,
+                endDate,
+                url: window.location.pathname,
+                order,
+                menuName,
+                flag,
+              },
               timeout: 15000,
             });
             console.log(res.data.journal);
@@ -460,7 +523,7 @@ async function addParam() {
           originalname: res.data.fileName,
           path: res.data.filePath,
         },
-        comments:[],
+        comments: [],
       };
       scheduleData.push(pushData);
     }
@@ -494,7 +557,7 @@ function viewAddEvents(id) {
   $("#end").val("");
   editor.setData("");
   $(".pull-right > .btn").remove();
-  $('.file a').remove();
+  $(".file a").remove();
   editor.isReadOnly = false;
 }
 
@@ -547,13 +610,13 @@ async function updateParam(id) {
   }
 }
 
-async function addComment(){
-  if(globalId){
+async function addComment() {
+  if (globalId) {
     const form_data = {
       user,
-      journalId:globalId,
-      commentText:document.getElementById("content").value,
-    }
+      journalId: globalId,
+      commentText: document.getElementById("content").value,
+    };
     const res = await axios({
       method: "post",
       url: "/addComment",
@@ -563,20 +626,24 @@ async function addComment(){
 
     if (res.status === 201) {
       console.log("저장완료! id:" + res.data.id);
-      $('#comment').append(
+      $("#comment").append(
         ` 
           <div class="commentColumn bolder">
             <div class="row">${form_data.commentText}</div>
             <div class="row">
             <span>${res.data.user?.name}</span>&nbsp;&nbsp;
             <span>${moment(new Date()).format("YYYY-MM-DD HH:mm:ss")}</span>
-            <a class="commentBtn" href="#" onclick="editCommentForm('${res.data.id}');">수정</a>
-            <a class="commentBtn" href="#" onclick="deleteComment('${res.data.id}');">삭제</a>
+            <a class="commentBtn" href="#" onclick="editCommentForm('${
+              res.data.id
+            }');">수정</a>
+            <a class="commentBtn" href="#" onclick="deleteComment('${
+              res.data.id
+            }');">삭제</a>
             </div>
           </div>
         `
       );
-      $('#content').val('');
+      $("#content").val("");
     }
   }
 }
@@ -594,67 +661,71 @@ function clickEdit(id) {
       <button class="btn" id="submit">보내기</button>
     `);
   const submitBtn = document.querySelector("#submit");
-  submitBtn.removeEventListener("click",addParam);
+  submitBtn.removeEventListener("click", addParam);
   submitBtn.addEventListener("click", () => updateParam(id));
 }
 
-function editCommentForm(replyId){
+function editCommentForm(replyId) {
   console.log(replyId);
-  let content = $('#lv2_'+replyId).text();
-  $('#lv1_'+replyId).empty();
-  $('#lv1_'+replyId).append(`
+  let content = $("#lv2_" + replyId).text();
+  $("#lv1_" + replyId).empty();
+  $("#lv1_" + replyId).append(`
     <div id="commentSaveBtn">
       <textarea name="content" id="content_${replyId}" cols="30%" rows="5">${content}</textarea>
       <button id="commentSaveBtn_${replyId}" class="button"> 답변하기</button>
     </div>  
   `);
-  const commentSaveBtn = document.querySelector("#commentSaveBtn_"+replyId);
+  const commentSaveBtn = document.querySelector("#commentSaveBtn_" + replyId);
   commentSaveBtn.addEventListener("click", () => editComment(replyId));
 }
 
-async function editComment(replyId){
-  if(replyId){
+async function editComment(replyId) {
+  if (replyId) {
     const form_data = {
       user,
-      journalId:globalId,
-      commentText:document.getElementById("content_"+replyId).value,
-      commentId:replyId,
-    }
+      journalId: globalId,
+      commentText: document.getElementById("content_" + replyId).value,
+      commentId: replyId,
+    };
     const res = await axios({
       method: "patch",
       url: "/editComment",
       data: form_data,
       timeout: 15000,
     });
-    if(res.status === 200){
-      $('#lv1_'+replyId).empty();
-      $('#lv1_'+replyId).append(`
+    if (res.status === 200) {
+      $("#lv1_" + replyId).empty();
+      $("#lv1_" + replyId).append(`
         <div id="lv2_${replyId}" class="row">${form_data.commentText}</div>
         <div class="row">
           <span>${userName}</span>&nbsp;&nbsp;
-          <span>${moment(new Date()).format('YYYY-mm-DD hh:MM:ss')}</span>
-          <a class="commentBtn" href="#" onclick="editCommentForm('${res.data.id}');">수정</a>
-          <a class="commentBtn" href="#" onclick="deleteComment('${res.data.id}');">삭제</a>
+          <span>${moment(new Date()).format("YYYY-mm-DD hh:MM:ss")}</span>
+          <a class="commentBtn" href="#" onclick="editCommentForm('${
+            res.data.id
+          }');">수정</a>
+          <a class="commentBtn" href="#" onclick="deleteComment('${
+            res.data.id
+          }');">삭제</a>
         </div>
       `);
     }
   }
 }
 
-async function deleteComment(replyId){
+async function deleteComment(replyId) {
   console.log(replyId);
   const form_data = {
-    commentId:replyId,
-  }
+    commentId: replyId,
+  };
   const res = await axios({
     method: "get",
     url: "/deleteComment",
     data: form_data,
     timeout: 15000,
   });
-  if(res.status === 200){
-    console.log('삭제성공!');
-    $('#lv1_'+replyId).remove();
+  if (res.status === 200) {
+    console.log("삭제성공!");
+    $("#lv1_" + replyId).remove();
   }
 }
 
@@ -698,7 +769,7 @@ $(function () {
     const submitBtn = document.querySelector("#submit");
     submitBtn.addEventListener("click", addParam);
     globalId = null;
-    $('#comment').empty();
+    $("#comment").empty();
   });
 
   $("#overlay").click(function () {
@@ -720,7 +791,7 @@ $(function () {
     const submitBtn = document.querySelector("#submit");
     submitBtn.addEventListener("click", addParam);
     globalId = null;
-    $('#comment').empty();
+    $("#comment").empty();
   });
 
   // $("#file").change(function (event) {

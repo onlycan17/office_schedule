@@ -89,11 +89,14 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       }
       console.log(info.el);
-      //info.el.append('<span class="closeon">x</span>');
-      info.el.insertAdjacentHTML(
-        "beforeend",
-        '<span id="close_' + info.event.id + '" class="closeon">X</span>'
-      );
+      console.log(info.event);
+      console.log('test----user : '+info.event._def.extendedProps.user);
+      if(info.event._def.extendedProps.user === user){
+        info.el.insertAdjacentHTML(
+          "beforeend",
+          '<span id="close_' + info.event.id + '" class="closeon">X</span>'
+        );
+      }
       //info.el.innerText = `<span class='closeon'>x</span>`;
       $("#close_" + info.event.id).click(async function () {
         //$("#calendar").fullCalendar("removeEvents", info._id);
@@ -123,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log(e);
       //description = e.description;
       e.jsEvent.preventDefault();
-      console.log(e.event.url);
+      console.log(e.event);
       if (!deleteflag) {
         modal.style.display = "block";
         document.getElementById("title").value = e.event.title;
@@ -136,10 +139,6 @@ document.addEventListener("DOMContentLoaded", function () {
         start = e.event.start;
         end = e.event.end;
         allDay = e.event.allDay;
-        submitButton.removeEventListener("click", addParam);
-        submitButton.addEventListener("click", function () {
-          updateParam(globalId);
-        });
         toggleModal();
         if(e.event.url){
           const url = e.event.url;
@@ -148,6 +147,20 @@ document.addEventListener("DOMContentLoaded", function () {
           }else{
             window.open(e.event.url, "_blank");
           }
+        }
+        if(e.event._def.extendedProps.user === user){
+          submitButton.removeEventListener("click", addParam);
+          submitButton.addEventListener("click", function () {
+            updateParam(globalId);
+          });
+        }else{
+          const title = document.getElementById('title');
+          const description = document.getElementById('description');
+          const url =  document.getElementById('url');
+          title.disabled = true;
+          description.disabled = true;
+          url.disabled = true;
+          submitButton.style.display = 'none';
         }
       }
       deleteflag = false;
