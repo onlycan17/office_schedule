@@ -4,6 +4,7 @@ import multer from "multer";
 import ActionLog from "./schema/actionLog";
 import Menu from "./schema/menu";
 import parse from "rss-to-json";
+import Auth from "./schema/auth";
 let ObjectId = require("mongoose").Types.ObjectId;
 
 const isHeroku = process.env.NODE_ENV === "production";
@@ -50,51 +51,131 @@ export const protectorMiddleware = async (req, res, next) => {
   //console.log('-----미들웨어');
   //console.log(req.url);
   let url = req.url;
+  let startUrl, lastOrder;
+
   if (url.indexOf("?") !== -1) {
     const arry = url.split("?");
     const order = arry[1].split("=");
-    const startUrl = arry[0];
-    const lastOrder = order[1];
+    startUrl = arry[0];
+    lastOrder = order[1];
     res.locals.startUrl = startUrl;
     res.locals.lastOrder = lastOrder;
     console.log(startUrl, lastOrder);
-  }else{
+  } else {
     res.locals.startUrl = url;
   }
   console.log(req.session.loggedIn);
   if (req.session.loggedIn) {
     let flag = false;
-    const menu = await Menu.find().populate({
-      path: "subMenu",
-      options: {
-        sort: {
-          "order": 1,
-        },
-      },
-    });
-    menu.forEach((menu) => {
-      menu.subMenu.forEach((subMenu) => {
-        if (req.url.indexOf(subMenu.subMenuUrl) != -1) {
-          res.locals.menuName = menu.menuName;
-          subMenu.department.forEach((department) => {
-            //console.log('===================');
-            //console.log(department);
-            //console.log(req.session.user.department._id);
-            if (req.session.user.department._id + "" === department + "") {
-              flag = true;
+    console.log("urltest-----------");
+    console.log(startUrl);
+    console.log(typeof lastOrder);
+    if (startUrl === "/schedule" || startUrl === "/journal") {
+      if (lastOrder) {
+        const auth = await Auth.findOne({
+          subUrl: startUrl,
+          order: Number(lastOrder),
+        });
+        console.log(auth);
+        console.log("++++++++++++++++++++++");
+        console.log(req.session.user.department._id);
+        if (
+          req.session.user.department._id + "" !==
+          "612490cc21f010838f50a41b"
+        ) {
+          const menufind = await Menu.findOne({
+            subMenu: {
+              $elemMatch: {
+                subMenuUrl: startUrl,
+              },
+            },
+          });
+          console.log("submenu-------");
+          const subMenu = menufind.subMenu.filter(
+            (subMenu) =>
+              subMenu.subMenuUrl === startUrl &&
+              subMenu.order === Number(lastOrder)
+          );
+          console.log(subMenu[0].user);
+          const result = subMenu[0].user.filter((userParam) => {
+            console.log("usercheck");
+            console.log(userParam, req.session.user._id);
+            console.log("+++++++++++");
+            if (userParam + "" === req.session.user._id + "") {
+              return true;
+            }
+            return false;
+          });
+          const result2 = subMenu[0].department.filter((departmentParam) => {
+            console.log("departmentcheck");
+            console.log(departmentParam, req.session.user.department._id);
+            console.log("+++++++++++");
+            if (departmentParam + "" === req.session.user.department._id + "") {
+              return true;
             }
           });
-          if(subMenu.user){
-            subMenu.user.forEach((user) => {
-              if(req.session.user._id+"" === user+""){
-                flag = true;
-                //res.locals.lastOrder = subMenu.order;
-              }
-            });
+          console.log(result, result2);
+          if (result.length > 0 || result2.length > 0) {
+            flag = true;
+          } else {
+            flag = false;
           }
         }
+        const menu = await Menu.find().populate({
+          path: "subMenu",
+          options: {
+            sort: {
+              order: 1,
+            },
+          },
+        });
+        menu.forEach((menu) => {
+          menu.subMenu.forEach((subMenu) => {
+            if (req.url.indexOf(subMenu.subMenuUrl) != -1) {
+              res.locals.menuName = menu.menuName;
+            }
+          });
+        });
+      }
+    } else {
+      //일일업무 , 부서별 일정이 아니면
+      const menu = await Menu.find().populate({
+        path: "subMenu",
+        options: {
+          sort: {
+            order: 1,
+          },
+        },
       });
-    });
+      menu.forEach((menu) => {
+        menu.subMenu.forEach((subMenu) => {
+          if (req.url.indexOf(subMenu.subMenuUrl) != -1) {
+            res.locals.menuName = menu.menuName;
+            subMenu.department.forEach((department) => {
+              //console.log('===================');
+              //console.log(department);
+              //console.log(req.session.user.department._id);
+              if (req.session.user.department._id + "" === department + "") {
+                flag = true;
+              }
+            });
+            if (subMenu.user) {
+              subMenu.user.forEach((user) => {
+                console.log(req.session.user._id);
+                console.log(user);
+                if (req.session.user._id + "" === user + "") {
+                  flag = true;
+                  //res.locals.lastOrder = subMenu.order;
+                }
+              });
+            }
+          }
+        });
+      });
+    }
+    console.log("---------flag");
+    console.log(flag);
+
     // console.log('-----flag----');
     // console.log(flag);
     if (req.url !== "/home" && !flag) {
@@ -106,7 +187,7 @@ export const protectorMiddleware = async (req, res, next) => {
     };
     const userId = {
       _id: new ObjectId(req.session.user._id),
-    }
+    };
     const menuList = await Menu.find({
       // $or: [
       //   { user: req.session.user._id },
@@ -114,7 +195,7 @@ export const protectorMiddleware = async (req, res, next) => {
       // ],
       subMenu: {
         $elemMatch: {
-          $or: [{ user: userId }, { department: dep }],    
+          $or: [{ user: userId }, { department: dep }],
         },
       },
     });

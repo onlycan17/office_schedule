@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
   name: { type: String, require: true },
   password: { type: String, require: true },
   department: { type: mongoose.Schema.Types.ObjectId, ref: "Department" },
+  position: {type: String},
   menu: [{ type: mongoose.Schema.Types.ObjectId, ref: "Menu"}],
   color: {type: String, require: true},
 });

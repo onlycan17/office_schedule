@@ -17,7 +17,7 @@ export const postLogin = async (req, res) => {
     const user = await User.findOne({ email })
       .populate("department")
       .populate({ path: "menu", populate: { path: "subMenu" } });
-      //.populate("menu");
+    //.populate("menu");
     if (!user) {
       return res.status(400).render("login", {
         pageTitle,
@@ -33,20 +33,23 @@ export const postLogin = async (req, res) => {
     }
     const menu = await Menu.find().populate("subMenu");
     let objOrder;
-    menu.forEach(menu => {
-      menu.subMenu.forEach(subMenu => {
-          subMenu?.department.forEach(dep => {
-            console.log(dep._id);
-            console.log('-------------');
-            console.log(user?.department?._id);
-            if(subMenu.subMenuUrl ==='/schedule' && (dep._id+"" === user?.department?._id+"")){
-              console.log('test----------');
-              objOrder = subMenu.order;
-            }
-          });
+    menu.forEach((menu) => {
+      menu.subMenu.forEach((subMenu) => {
+        subMenu?.department.forEach((dep) => {
+          console.log(dep._id);
+          console.log("-------------");
+          console.log(user?.department?._id);
+          if (
+            subMenu.subMenuUrl === "/schedule" &&
+            dep._id + "" === user?.department?._id + ""
+          ) {
+            console.log("test----------");
+            objOrder = subMenu.order;
+          }
+        });
       });
     });
-    console.log('order -- '+objOrder);
+    console.log("order -- " + objOrder);
     console.log(user);
     req.session.loggedIn = true;
     req.session.user = user;
@@ -56,7 +59,7 @@ export const postLogin = async (req, res) => {
     if (user.department._id + "" === "612490cc21f010838f50a41b") {
       return res.redirect("/home");
     } else {
-      return res.redirect("/schedule?order="+objOrder);
+      return res.redirect("/schedule?order=" + objOrder);
     }
   } catch (error) {
     return res.sendStatus(404);
@@ -75,32 +78,20 @@ export const getJoinForm = async (req, res) => {
 };
 
 export const joinList = async (req, res) => {
-  const {
-    start,
-    draw,
-    length,
-    order: { column, dir },
-    userName,
-    email,
-    departmentId,
-  } = req.body;
-  //console.log(req.body);
-  console.log(start, draw, length);
-  console.log(userName, email, departmentId);
-  let sort, dirTemp;
-  if (column === "1") {
-    sort = "name";
-  } else if (column === "2") {
-    sort = "email";
-  } else {
-    sort = "deportment.name";
-  }
-  if (dir === "desc") {
+  const { start, draw, length, order, userName, email, departmentId } =
+    req.body;
+  let dirTemp;
+  if (order[0].dir === "desc") {
     dirTemp = -1;
   } else {
     dirTemp = 1;
   }
 
+  const orderby = {
+    "name": dirTemp,
+  };
+
+  console.log(orderby);
   let userCount, userList;
   if (departmentId) {
     userCount = await User.find({
@@ -110,7 +101,6 @@ export const joinList = async (req, res) => {
     }).countDocuments();
     //console.log(pageNum);
     //console.log(userCount);
-
     userList = await User.find({
       department: new ObjectId(departmentId),
       name: { $regex: ".*" + userName + ".*" },
@@ -118,8 +108,7 @@ export const joinList = async (req, res) => {
     })
       .skip(Number(start))
       .limit(Number(length))
-      .sort({ sort: dirTemp })
-      .populate("department");
+      .populate({ path: "department", options: { sort: { "name" : dirTemp } } });
   } else {
     userCount = await User.find({
       name: { $regex: ".*" + userName + ".*" },
@@ -134,11 +123,56 @@ export const joinList = async (req, res) => {
     })
       .skip(Number(start))
       .limit(Number(length))
-      .sort({ sort: dirTemp })
-      .populate("department");
+      .populate({ path: "department", options: { sort: { "name" : -1 } } });;
+   
+  // userList = await User.aggregate([{
+  //     $lookup: {
+  //       from: "departments",
+  //       localField: "department",
+  //       foreignField: "_id",
+  //       as: "departments_docs"
+  //     }
+  //   }, {
+  //     $match: {
+  //       departments_docs: {
+  //         $ne: []
+  //       }
+  //     }
+  //   }, {
+  //     $addFields: {
+  //       departments_docs: {
+  //         $arrayElemAt: ["$departments_docs", 0]
+  //       }
+  //     }
+  //   }, {
+  //     $match: {
+  //       $expr: {
+  //         $and: [{
+  //           $eq: ["$name", {
+  //             $concat: [".*", userName, ".*"]
+  //           }]
+  //         }, {
+  //           $eq: ["$email", {
+  //             $concat: [".*", email, ".*"]
+  //           }]
+  //         }]
+  //       }
+  //     }
+  //   }, {
+  //     $project: {
+  //       name: 0,
+  //       "%": 0,
+  //       email: 0
+  //     }
+  //   }, {
+  //     $sort: {
+  //       "departments_docs.name": 1
+  //     }
+  //   }]).skip(Number(start)).limit(Number(length));
+
   }
 
-  //console.log(userList);
+  console.log(userList);
 
   return res.status(200).json({
     draw,

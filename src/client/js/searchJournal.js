@@ -170,10 +170,22 @@ async function tableSearch() {
         
         return res.data;
       },
-    },
+    },columnDefs: [
+      {
+        targets: [2],
+        orderable: false,
+        searchable: false,
+        render: function (data, type, row, meta) {
+          console.log('----------------');
+          console.log(row);
+          return row.position ? row.position : '';
+        },
+      },
+    ],
     columns: [
       { data: "title", title: "작성자" },
       { data: "department.name", title: "부서" },
+      { data: "position", title: "직책" },
       { data: "description", title: "업무내용" },
       { data: "start", title: "시작일자" },
       { data: "end", title: "종료일자" },

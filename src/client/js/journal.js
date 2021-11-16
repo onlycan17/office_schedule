@@ -274,6 +274,11 @@ document.addEventListener("DOMContentLoaded", function () {
     select: function (arg) {
       // 캘린더에서 드래그로 이벤트를 생성할 수 있다.
       //var title = prompt("제목:");
+      const department = JSON.parse(document.getElementById("department").value);
+      if(department._id === "612490cc21f010838f50a41b"){
+        alert('관리자는 등록하실 수 없습니다.');
+        return false;
+      }
       $("#commentTextarea").css("display", "none");
       console.log("selecte");
       start = moment(arg.start).format("YYYY-MM-DD HH:mm:SS");
