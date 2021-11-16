@@ -120,6 +120,8 @@ export const protectorMiddleware = async (req, res, next) => {
           } else {
             flag = false;
           }
+        }else{
+          flag = true;
         }
         const menu = await Menu.find().populate({
           path: "subMenu",
