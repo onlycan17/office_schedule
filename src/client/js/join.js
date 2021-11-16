@@ -74,6 +74,16 @@ function tableSearch(){
           render: function (data, type, row, meta) {
             console.log('----------------');
             console.log(row);
+            return row.position ? row.position : '';
+          },
+        },
+        {
+          targets: [4],
+          orderable: false,
+          searchable: false,
+          render: function (data, type, row, meta) {
+            console.log('----------------');
+            console.log(row);
             return (
               `<input type="color" disabled value="${row.color}" />` 
             );
@@ -84,6 +94,7 @@ function tableSearch(){
       { data: "name", title: "성명" },
       { data: "email", title: "이메일" },
       { data: "department.name", title: "부서" },
+      { data: "position", title: "직책" },
       { data: "color", title: "컬러" },
     ],
     error: function (xhr, error, code) {

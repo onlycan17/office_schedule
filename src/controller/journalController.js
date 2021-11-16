@@ -420,7 +420,7 @@ export const postSearchJournal = async (req, res) => {
     email,
     departmentId,
   } = req.body;
-  const pageNum = Number(start) + Number(length); //Calculate page number
+  //const pageNum = Number(start) + Number(length); //Calculate page number
   let journal, journalCount;
   if (!departmentId) {
     journalCount = await Journal.find({
