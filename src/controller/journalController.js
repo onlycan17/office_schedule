@@ -609,6 +609,10 @@ export const excelDownload = async (req, res) => {
     const { createdAt } = element;
     element.departmentName = name;
     element.createdAtFormat = moment(createdAt).format("YYYY-MM-DD hh:mm:ss");
+    let descriptionExp = element.description;
+    descriptionExp = descriptionExp.replace(/(<([^>]+)>)/gi, "");
+    console.log(descriptionExp);
+    element.description = descriptionExp;
   });
   const newRows = sheet.addRows(journal);
   //console.log(newRows);
