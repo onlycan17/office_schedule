@@ -90,6 +90,7 @@ function weather() {
   // ⑦ Shower
 
   //console.log(weatherStr);
+  
   if (weatherStr === "Rain") {
     const cloud = document.querySelector("#clouds");
     cloud.style.display = "block";
@@ -125,7 +126,7 @@ function makeItRain() {
   var increment = 0;
   var drops = "";
   var backDrops = "";
-  $("body").css("background", "linear-gradient(to bottom, #5821f0, #080847)");
+  $("body").css({"background":"linear-gradient(to bottom, #5821f0, #080847)","background-attachment":"fixed"});
   while (increment < 100) {
     //couple random numbers to use for various randomizations
     //random number between 98 and 1

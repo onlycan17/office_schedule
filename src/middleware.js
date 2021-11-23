@@ -1,6 +1,7 @@
 import { async } from "regenerator-runtime";
 import requestIp from "request-ip";
 import multer from "multer";
+import dropboxV2Api from "dropbox-v2-api";
 import ActionLog from "./schema/actionLog";
 import Menu from "./schema/menu";
 import parse from "rss-to-json";
@@ -200,7 +201,7 @@ export const protectorMiddleware = async (req, res, next) => {
           $or: [{ user: userId }, { department: dep }],
         },
       },
-    });
+    }).sort("order");
     //console.log("menutest-----------------");
     //console.log(menuList);
     res.locals.menuList = menuList;
@@ -229,3 +230,21 @@ export const fileUpload = multer({
     fileSize: 9900000000,
   },
 });
+
+export const dropbox = dropboxV2Api.authenticate({
+  // client_id : process.env.DBX_APP_KEY,
+  // client_secret : process.env.DBX_APP_SECRET,
+  // redirect_uri: process.env.REDIRECT || 'http://localhost:4500/auth',
+  token: process.env.DBX_TOKEN
+});
+
+  //  use session ref to call API, i.e.:
+// dropbox({
+//   resource: 'users/get_account',
+//   parameters: {
+//       'account_id': 'dbid:AAH4f99T0taONIb-OurWxbNQ6ywGRopQngc'
+//   }
+// }, (err, result, response) => {
+//   if (err) { return console.log(err); }
+//   console.log(result);
+// });

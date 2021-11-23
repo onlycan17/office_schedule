@@ -6,6 +6,8 @@ const fileSchema = new mongoose.Schema({
     filename: {type: String, require:true},
     path:{type: String, require:true},
     size: {type: Number},
+    dropboxUrl: {type: String},
+    createdAt:{type:Date, default:Date.now()},
 });
 
 const File = mongoose.model("File", fileSchema);

@@ -63,6 +63,7 @@ import {
 } from "../controller/journalController";
 import multipart from "connect-multiparty";
 import { fileUpload } from "../middleware";
+import { addNoticeBoard, addNoticeBoardForm, getNoticeBoardList, getNoticeBoardListForm, noticeBoardListDetail, noticeBoardListDetailDelete, noticeBoardListDetailUpdate, noticeBoardListFileDownload } from "../controller/noticeBoardController";
 
 const multipartMiddleware = multipart();
 
@@ -151,9 +152,17 @@ router.route("/deleteSchedule").delete(deleteSchedule);
 router.route("/customSchedule").get(customSchedule);
 router.route("/customWeekSchedule").get(customWeekSchedule);
 
+//업무일지조회
 router.route("/searchJournal").all(protectorMiddleware).get(getSearchJournalForm);
 router.route("/postSearchJournal").post(postSearchJournal);
 router.route("/excelDownload").post(excelDownload);
+
+// 공지사항
+router.route("/noticeBoardList").all(protectorMiddleware).get(getNoticeBoardListForm).post(getNoticeBoardList);
+router.route("/noticeBoardListAdd").all(protectorMiddleware).get(addNoticeBoardForm).post(fileUpload.fields([{name:"singleFile"}]),addNoticeBoard);
+router.route("/noticeBoardListDetail/:id([0-9a-f]{24})").all(protectorMiddleware).get(noticeBoardListDetail).post(noticeBoardListDetailUpdate).delete(noticeBoardListDetailDelete);
+router.route("/noticeBoardListFileDownload/:id([0-9a-f]{24})").get(noticeBoardListFileDownload);
+
 
 router.route("/journal").all(protectorMiddleware).get(getJournal);
 router.route("/addJournal").post(fileUpload.fields([{name:"singleFile"}]),postAddJournal);

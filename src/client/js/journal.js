@@ -53,6 +53,7 @@ let asyncValue = true;
 let tooltip;
 
 const scheduleData = JSON.parse(calValue); // 캘린더 스케줄 데이터
+let index;
 
 document.addEventListener("DOMContentLoaded", function () {
   const calendarEl = document.getElementById("calendar");
@@ -188,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
           }
           $("#submit").remove();
 
-          let index = 0;
+          
           let fileYn = false;
           scheduleData.forEach((element, idx) => {
             if (element._id === e.event.id) {
@@ -243,7 +244,7 @@ document.addEventListener("DOMContentLoaded", function () {
           if (fileYn && scheduleData[index].file) {
             $('#divFile').css("display","flex");
             $("#singleFile").replaceWith(
-              `<a href='/download/${scheduleData[index].file._id}'>${scheduleData[index].file.originalname}</a>`
+              `<a href='#' id="fileDownload">${scheduleData[index].file.originalname}</a>`
             );
           }
 
@@ -799,6 +800,30 @@ $(function () {
     $("#comment").empty();
   });
 
+  $(document).on('click','#fileDownload', function(){
+    $.ajax({
+        type: "get",
+        url: `/download/${scheduleData[index].file._id}`,
+        success: function (response) {
+            var a = document.createElement("a");
+            const url = window.location.hostname;
+            console.log(url);
+            if(url.indexOf('localhost') !== -1){
+                a.href = `http://localhost:4500/uploads/files/${scheduleData[index].file.originalname}`;
+            }else{
+                a.href = `https://master-piece-r.herokuapp.com/uploads/files/${scheduleData[index].file.originalname}`;
+            }
+            // Set the file name
+            a.download = scheduleData[index].file.originalname;
+            a.click();
+        },
+        error: function (xhr) {
+                console.log(xhr);
+            }
+        }).fail(function () {
+            alert('fail');
+      });
+  });
   // $("#file").change(function (event) {
   //   event.preventDefault();
   //   let file = event.target.files[0];

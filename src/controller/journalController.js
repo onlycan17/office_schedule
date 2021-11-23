@@ -10,6 +10,7 @@ import Department from "../schema/department";
 import excel from "exceljs";
 import moment from "moment";
 import Auth from "../schema/auth";
+import { dropbox } from "../middleware";
 
 let ObjectId = require("mongoose").Types.ObjectId;
 
@@ -27,7 +28,10 @@ export const getJournal = async (req, res) => {
 
   //console.log(JSON.stringify(req.session.user.department._id));
   //관리자일 경우
-  if (req.session.user.department._id === "612490cc21f010838f50a41b"|| (res.locals.menuName && res.locals.flag === true && res.locals.lastOrder)) {
+  if (
+    req.session.user.department._id === "612490cc21f010838f50a41b" ||
+    (res.locals.menuName && res.locals.flag === true && res.locals.lastOrder)
+  ) {
     urlStr = req.url;
     urlStr = urlStr.split("?");
     urlParam = urlStr[0];
@@ -55,13 +59,17 @@ export const getJournal = async (req, res) => {
     }
     //console.log("------submenufilter-----");
     //console.log(subMenu);
-    const auth = await Auth.findOne({subUrl:urlParam,order}).select("department");
-    console.log('-----auth-departmentId-------');
+    const auth = await Auth.findOne({ subUrl: urlParam, order }).select(
+      "department"
+    );
+    console.log("-----auth-departmentId-------");
     console.log(auth);
-    
-    const dep = {
-      _id: new ObjectId(auth.department._id),
-    };
+    let dep;
+    if (auth) {
+      dep = {
+        _id: new ObjectId(auth.department._id),
+      };
+    }
     //console.log("-------------");
     //console.log(dep);
     journal = await Journal.find({
@@ -117,7 +125,17 @@ export const postAddJournal = async (req, res) => {
   let journal, fileId, filePath, strFileName;
   const departmentInfo = JSON.parse(department);
   //console.log(req.files);
-
+  journal = await Journal.create({
+    title: req.session.user.name,
+    description,
+    // file: file._id,
+    start,
+    end,
+    allDay,
+    color,
+    user,
+    department: departmentInfo._id,
+  });
   if (req.files.singleFile) {
     const { singleFile } = req.files;
     const { originalname, mimetype, filename, path, size } = singleFile[0];
@@ -129,30 +147,26 @@ export const postAddJournal = async (req, res) => {
       filename,
       path,
       size,
+      dropboxUrl: `/journal/${journal._id}/${originalname}`,
     });
     fileId = file._id;
-    journal = await Journal.create({
-      title: req.session.user.name,
-      description,
-      file: file._id,
-      start,
-      end,
-      allDay,
-      color,
-      user,
-      department: departmentInfo._id,
-    });
-  } else {
-    journal = await Journal.create({
-      title: req.session.user.name,
-      description,
-      start,
-      end,
-      allDay,
-      color,
-      user,
-      department: departmentInfo._id,
-    });
+    dropbox(
+      {
+        resource: "files/upload",
+        parameters: {
+          path: `/journal/${journal._id}/${originalname}`,
+        },
+        readStream: fs.createReadStream(path),
+      },
+      (err, result, response) => {
+        //upload completed
+        console.log("----fileupload----");
+        console.log(err);
+      }
+    );
+    await Journal.findByIdAndUpdate(journal._id, { file: file._id });
+    // journal.file.push(file._id);
+    // journal.save();
   }
 
   const userInfo = await User.findById(user);
@@ -168,22 +182,32 @@ export const downloadFile = async (req, res) => {
   //const fileDown = file.path + '/'
   //const mimetype = mime.getType(file.originalname);
   try {
-    const fileCheck = fs.readFileSync(file.path, "utf-8");
-    //console.log(fileCheck);
-    if (!fileCheck) {
-      res.send("서버재기동으로 파일이 사라졌습니다.");
-      return;
-    }
-    if (fs.existsSync(file.path)) {
-      res.setHeader(
-        "Content-disposition",
-        "attachment; filename=" + getDownloadFilename(req, file.originalname)
-      );
-      res.setHeader("Content-type", file.mimetype);
-      const filestream = fs.createReadStream(file.path);
-      filestream.pipe(res);
-      return;
-    }
+    dropbox(
+      {
+        resource: "files/download",
+        parameters: {
+          path: file.dropboxUrl,
+        },
+      },
+      (err, result, response) => {
+        //download completed
+        console.log(err);
+
+        res.setHeader(
+          "Content-disposition",
+          "attachment; filename=" + getDownloadFilename(req, file.originalname)
+        );
+        res.setHeader("Content-type", file.mimetype);
+        console.log("path---------");
+
+        return res.status(200).send(response);
+      }
+    ).pipe(
+      fs.createWriteStream(
+        `${process.env.PWD}/uploads/files/${file.originalname}`
+      )
+    );
+    return;
   } catch (e) {
     //console.log(e);
     res.send("파일을 다운로드하는 중에 에러가 발생했습니다.");
@@ -222,14 +246,17 @@ export const customJournal = async (req, res) => {
   let journal;
   //url = req.url;
   //console.log(req);
-  const { url, calendarDate,order,menuName,flag } = req.query;
+  const { url, calendarDate, order, menuName, flag } = req.query;
   //console.log(req.query);
   //console.log(url);
   orderParam = Number(order);
   const flagTemp = JSON.parse(flag);
   //console.log(JSON.stringify(req.session.user.department._id));
   //관리자일 경우
-  if (req.session.user.department._id === "612490cc21f010838f50a41b"||(menuName && flagTemp === true && order)) {
+  if (
+    req.session.user.department._id === "612490cc21f010838f50a41b" ||
+    (menuName && flagTemp === true && order)
+  ) {
     const menu = await Menu.findOne({
       subMenu: {
         $elemMatch: {
@@ -242,16 +269,18 @@ export const customJournal = async (req, res) => {
     if (!subMenu) {
       return res.sendStatus(500);
     }
-    const auth = await Auth.findOne({subUrl:url, order:orderParam}).select("department");
+    const auth = await Auth.findOne({ subUrl: url, order: orderParam }).select(
+      "department"
+    );
     //console.log('-----auth-departmentId-------');
     console.log(auth);
-    
+
     const dep = {
       _id: new ObjectId(auth.department._id),
     };
     // console.log(department);
     journal = await Journal.find({
-      department:dep,
+      department: dep,
       $or: [
         { start: new RegExp(calendarDate) },
         { end: new RegExp(calendarDate) },
@@ -280,7 +309,7 @@ export const customJournal = async (req, res) => {
       })
       .populate("file");
   }
-   //console.log(journal);
+  //console.log(journal);
   const color = req.session.user.color;
   //console.log(color);
   return res.status(200).json({
@@ -292,7 +321,7 @@ export const customWeekJournal = async (req, res) => {
   let journal;
   //url = req.url;
   //console.log(req);
-  const { url, startDate, endDate,order,menuName,flag } = req.query;
+  const { url, startDate, endDate, order, menuName, flag } = req.query;
   //console.log(req.query);
   //console.log(url);
   const now = new Date();
@@ -305,7 +334,10 @@ export const customWeekJournal = async (req, res) => {
   orderParam = Number(order);
   const flagTemp = JSON.parse(flag);
   //관리자일 경우
-  if (req.session.user.department._id === "612490cc21f010838f50a41b" || (menuName && flagTemp === true && order)) {
+  if (
+    req.session.user.department._id === "612490cc21f010838f50a41b" ||
+    (menuName && flagTemp === true && order)
+  ) {
     const menu = await Menu.findOne({
       subMenu: {
         $elemMatch: {
@@ -314,16 +346,18 @@ export const customWeekJournal = async (req, res) => {
       },
     }).populate("subMenu");
     // console.log(menu);
-    const auth = await Auth.findOne({subUrl:url,order:orderParam}).select("department");
-    console.log('-----auth-departmentId-------');
+    const auth = await Auth.findOne({ subUrl: url, order: orderParam }).select(
+      "department"
+    );
+    console.log("-----auth-departmentId-------");
     console.log(auth);
-    
+
     const dep = {
       _id: new ObjectId(auth.department._id),
     };
     // console.log(department);
     journal = await Journal.find({
-      department:dep,
+      department: dep,
       $or: [{ start: { $gte: startDate } }, { start: { $lte: endDate } }],
       $or: [{ end: { $gte: startDate } }, { end: { $lte: endDate } }],
     })
@@ -529,7 +563,7 @@ export const excelDownload = async (req, res) => {
     { header: "종료일자", key: "end" },
     { header: "생성일자", key: "createdAtFormat" },
   ];
-  
+
   let journal;
   if (!departmentId) {
     journal = await Journal.find({
@@ -572,13 +606,13 @@ export const excelDownload = async (req, res) => {
   journal.forEach((element) => {
     //console.log(element.department.name);
     const { name } = element.department;
-    const {createdAt}  = element;
+    const { createdAt } = element;
     element.departmentName = name;
-    element.createdAtFormat = moment(createdAt).format('YYYY-MM-DD hh:mm:ss');
+    element.createdAtFormat = moment(createdAt).format("YYYY-MM-DD hh:mm:ss");
   });
-  const newRows =  sheet.addRows(journal);
+  const newRows = sheet.addRows(journal);
   //console.log(newRows);
-  res.setHeader("Content-Type","application/octet-stream;charset=utf-8");
+  res.setHeader("Content-Type", "application/octet-stream;charset=utf-8");
   res.setHeader(
     "Content-Type",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -588,10 +622,10 @@ export const excelDownload = async (req, res) => {
   //   console.log('완료');
   //   res.status(200).end();
   // });
-  return workbook.xlsx.writeFile("./excel/temp.xlsx").then(function(){
-      //console.log('엑셀생성');
-      res.download('./excel/temp.xlsx',function(err){
-          console.log('error:'+err);
-      });
+  return workbook.xlsx.writeFile("./excel/temp.xlsx").then(function () {
+    //console.log('엑셀생성');
+    res.download("./excel/temp.xlsx", function (err) {
+      console.log("error:" + err);
+    });
   });
 };

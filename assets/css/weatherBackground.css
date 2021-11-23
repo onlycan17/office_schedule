@@ -6,7 +6,8 @@ body {
   height: 100%;
   margin: 0;
   overflow-y: scroll;
-  /* background: linear-gradient(to bottom, #8fe2f7, #2d2db8); */
+  background: linear-gradient(to bottom, #8fe2f7, #2d2db8);
+  background-attachment: fixed;
 }
 
 body.back-row-toggle .rain.back-row {
@@ -23,7 +24,7 @@ body.back-row-toggle .rain.back-row {
   }
   
   .rain.back-row {
-    z-index: -999;
+    z-index: -998;
     bottom: 60px;
     opacity: 0.5;
   }
