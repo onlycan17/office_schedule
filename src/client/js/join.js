@@ -93,7 +93,7 @@ function tableSearch(){
     columns: [
       { data: "name", title: "성명" },
       { data: "email", title: "이메일" },
-      { data: "department.name", title: "부서" },
+      { data: "departmentName", title: "부서" },
       { data: "position", title: "직책" },
       { data: "color", title: "컬러" },
     ],
