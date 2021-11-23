@@ -30,10 +30,11 @@ block content
             .content !{notice.content}
         .item
             label 첨부파일
-            a(href='#' id="fileDownload") #{notice.files[0].originalname}
-            //- a(href=`/noticeBoardListDetail/${notice.files[0]._id}` id="fileDownload") #{notice.files[0].originalname}
-            input(type="hidden" id="fileId" value=notice.files[0]._id)     
-            input(type="hidden" id="fileName" value=notice.files[0].originalname)     
+            if(notice.files[0])
+                a(href='#' id="fileDownload") #{notice.files[0].originalname}
+                //- a(href=`/noticeBoardListDetail/${notice.files[0]._id}` id="fileDownload") #{notice.files[0].originalname}
+                input(type="hidden" id="fileId" value=notice.files[0]._id)     
+                input(type="hidden" id="fileName" value=notice.files[0].originalname)     
         .row-right             
             button(id="edit") 수정
             button(id="delete") 삭제       
