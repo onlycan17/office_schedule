@@ -160,7 +160,7 @@ router.route("/excelDownload").post(excelDownload);
 // 공지사항
 router.route("/noticeBoardList").all(protectorMiddleware).get(getNoticeBoardListForm).post(getNoticeBoardList);
 router.route("/noticeBoardListAdd").all(protectorMiddleware).get(addNoticeBoardForm).post(fileUpload.fields([{name:"singleFile"}]),addNoticeBoard);
-router.route("/noticeBoardListDetail/:id([0-9a-f]{24})").all(protectorMiddleware).get(noticeBoardListDetail).post(noticeBoardListDetailUpdate).delete(noticeBoardListDetailDelete);
+router.route("/noticeBoardListDetail/:id([0-9a-f]{24})").all(protectorMiddleware).get(noticeBoardListDetail).post(fileUpload.fields([{name:"singleFile"}]),noticeBoardListDetailUpdate).delete(noticeBoardListDetailDelete);
 router.route("/noticeBoardListFileDownload/:id([0-9a-f]{24})").get(noticeBoardListFileDownload);
 
 

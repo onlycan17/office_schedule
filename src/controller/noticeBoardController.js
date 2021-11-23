@@ -115,8 +115,46 @@ export const noticeBoardListDetail = async (req, res) => {
 
 export const noticeBoardListDetailUpdate = async (req, res) => {
   const { boardId, boardGroupId, title, editor4, publicYn } = req.body;
-  await Board.findByIdAndUpdate(boardId, { title, content: editor4, publicYn });
-
+  console.log('noticeBoardListDetailUpdate------');
+  console.log(boardId);
+  const notiUpdate =  await Board.findByIdAndUpdate(boardId, { title, content: editor4, publicYn });
+  console.log(notiUpdate);
+  if (req.files?.singleFile) {
+    //const noticeBoard = await Board.findById(boardId);
+    console.log('files--------');
+    if(notiUpdate.files[0]){
+      await File.findByIdAndDelete(notiUpdate.files[0]._id);
+    }
+    const { originalname, path, mimetype, filename, size } =
+      req.files.singleFile[0];
+    const file = await File.create({
+      originalname,
+      mimetype,
+      filename,
+      path,
+      size,
+      dropboxUrl: `/noticeBoard/${boardId}/${originalname}`,
+    });
+    dropbox(
+      {
+        resource: "files/upload",
+        parameters: {
+          path: `/noticeBoard/${boardId}/${originalname}`,
+        },
+        readStream: fs.createReadStream(path),
+      },
+      (err, result, response) => {
+        //upload completed
+        console.log("----fileupload----");
+        console.log(err);
+      }
+    );
+    //   await Board.findByIdAndUpdate(boardId._id, {
+    //     files: file._id,
+    //   });
+    notiUpdate.files.push(file._id);
+    notiUpdate.save();
+  }
   return res.redirect("/noticeBoardList");
 };
 

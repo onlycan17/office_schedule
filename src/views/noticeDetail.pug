@@ -30,7 +30,7 @@ block content
             .content !{notice.content}
         .item
             label 첨부파일
-            if(notice.files[0])
+            if(notice.files[0] !== undefined )
                 a(href='#' id="fileDownload") #{notice.files[0].originalname}
                 //- a(href=`/noticeBoardListDetail/${notice.files[0]._id}` id="fileDownload") #{notice.files[0].originalname}
                 input(type="hidden" id="fileId" value=notice.files[0]._id)     
@@ -39,7 +39,7 @@ block content
             button(id="edit") 수정
             button(id="delete") 삭제       
     .component(id="component" style="display:none")    
-        form(method="post")
+        form(method="post" enctype="multipart/form-data")
             input(type="hidden" value="1" name="boardGroupId")
             input(type="hidden" value=id name="boardId" id="boardId")
             select(name="publicYn")
@@ -51,6 +51,7 @@ block content
                     option(value="N" selected="true") 비공개
             input(placeholder="제목", name="title", type="text", value=notice.title required)
             textarea(class="ckeditor", name="editor4", cols="30", rows="10") #{notice.content}
+            input(type="file" name="singleFile")
             input(type="submit", value="저장")
 
 block scripts
