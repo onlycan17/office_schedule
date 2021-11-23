@@ -80,18 +80,14 @@ export const getJoinForm = async (req, res) => {
 export const joinList = async (req, res) => {
   const { start, draw, length, order, userName, email, departmentId } =
     req.body;
-  let dirTemp;
-  if (order[0].dir === "desc") {
-    dirTemp = -1;
-  } else {
-    dirTemp = 1;
-  }
+  // let dirTemp;
+  // if (order[0].dir === "desc") {
+  //   dirTemp = -1;
+  // } else {
+  //   dirTemp = 1;
+  // }
 
-  const orderby = {
-    "name": dirTemp,
-  };
-
-  console.log(orderby);
+  
   let userCount, userList;
   if (departmentId) {
     userCount = await User.find({
@@ -108,7 +104,7 @@ export const joinList = async (req, res) => {
     })
       .skip(Number(start))
       .limit(Number(length))
-      .populate({ path: "department", options: { sort: { "name" : dirTemp } } });
+      .populate({ path: "department"});
   } else {
     userCount = await User.find({
       name: { $regex: ".*" + userName + ".*" },
@@ -123,53 +119,41 @@ export const joinList = async (req, res) => {
     })
       .skip(Number(start))
       .limit(Number(length))
-      .populate({ path: "department", options: { sort: { "name" : -1 } } });;
-   
-  // userList = await User.aggregate([{
-  //     $lookup: {
-  //       from: "departments",
-  //       localField: "department",
-  //       foreignField: "_id",
-  //       as: "departments_docs"
-  //     }
-  //   }, {
-  //     $match: {
-  //       departments_docs: {
-  //         $ne: []
-  //       }
-  //     }
-  //   }, {
-  //     $addFields: {
-  //       departments_docs: {
-  //         $arrayElemAt: ["$departments_docs", 0]
-  //       }
-  //     }
-  //   }, {
-  //     $match: {
-  //       $expr: {
-  //         $and: [{
-  //           $eq: ["$name", {
-  //             $concat: [".*", userName, ".*"]
-  //           }]
-  //         }, {
-  //           $eq: ["$email", {
-  //             $concat: [".*", email, ".*"]
-  //           }]
-  //         }]
-  //       }
-  //     }
-  //   }, {
-  //     $project: {
-  //       name: 0,
-  //       "%": 0,
-  //       email: 0
-  //     }
-  //   }, {
-  //     $sort: {
-  //       "departments_docs.name": 1
-  //     }
-  //   }]).skip(Number(start)).limit(Number(length));
+      .populate({ path: "department"});; 
+  }
 
+  const departmentObj = await Department.find();  
+
+  userList.forEach(element => {
+    departmentObj.forEach(depElement =>{
+      if(element.department._id === depElement._id){
+        element.departmentName = depElement.name;
+      }
+    });
+  });
+  console.log(order);
+  if(order[0].column === '2'){
+    if(order[0].dir === "desc"){
+      console.log('desc');
+      userList.sort((a,b) => {
+        console.log('departmentName--------');
+        console.log(a.departmentName);
+        const upperCaseA = a.departmentName;
+        const upperCaseB = b.departmentName;
+        if(upperCaseA < upperCaseB) return 1;
+        if(upperCaseA > upperCaseB) return -1;
+        if(upperCaseA === upperCaseB) return 0;
+      });
+    }else{
+      console.log('asc');
+      userList.sort((a,b) => {
+        const upperCaseA = a.departmentName;
+        const upperCaseB = b.departmentName;
+        if(upperCaseA > upperCaseB) return 1;
+        if(upperCaseA < upperCaseB) return -1;
+        if(upperCaseA === upperCaseB) return 0;
+      });
+    }
   }
 
   console.log(userList);

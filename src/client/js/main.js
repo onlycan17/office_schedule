@@ -115,7 +115,7 @@ function weather() {
   // ⑥ Snow
   // ⑦ Shower
 
-  //console.log(weatherStr);
+  console.log(weatherStr);
   
   if (weatherStr === "Rain") {
     const cloud = document.querySelector("#clouds");
@@ -124,6 +124,7 @@ function weather() {
   } else if (
     weatherStr === "Snow" ||
     weatherStr === "Rain/Snow" ||
+    weatherStr === "Snow/Rain" ||
     weatherStr === "Shower"
   ) {
     $(document).snowfall({
