@@ -280,17 +280,32 @@ document.addEventListener("DOMContentLoaded", function () {
         alert('관리자는 등록하실 수 없습니다.');
         return false;
       }
-      $("#commentTextarea").css("display", "none");
-      console.log("selecte");
-      start = moment(arg.start).format("YYYY-MM-DD HH:mm:SS");
-      end = moment(arg.end).format("YYYY-MM-DD HH:mm:SS");
-      allDay = arg.allDay;
-      console.log(start);
-      console.log(end);
-      document.getElementById("start").value = start;
-      document.getElementById("end").value = end;
-      //modal.style.display = "block";
-      toggleSideBar();
+      const month = moment(arg.start).format("YYYYMM");
+      const startDay = moment(arg.start).format("DD");
+      const todayMonth = moment(new Date()).format("YYYYMM");
+      const today = moment(new Date()).format("DD");
+      if (
+            (Number(month) === Number(todayMonth) ||
+              (Number(month) + 1 === Number(todayMonth) &&
+                Number(today) <= 7) ||
+              Number(todayMonth) - Number(month) === 89 && Number(today) <= 7  
+            )
+          ) {
+            $("#commentTextarea").css("display", "none");
+            console.log("selecte");
+            start = moment(arg.start).format("YYYY-MM-DD HH:mm:SS");
+            end = moment(arg.end).format("YYYY-MM-DD HH:mm:SS");
+            allDay = arg.allDay;
+            console.log(start);
+            console.log(end);
+            document.getElementById("start").value = start;
+            document.getElementById("end").value = end;
+            //modal.style.display = "block";
+            toggleSideBar();
+      }else{
+          alert("지난달 업무일지를 작성할 수 있는 기간이 만료되었습니다.\n (예: 작성할 지난달이 10월일경우 11월 7일전까지 등록해야 함.)");
+      }
+      
     },
     eventAdd: async function (obj) {
       // 이벤트가 추가되면 발생하는 이벤트
