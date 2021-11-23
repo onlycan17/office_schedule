@@ -16,7 +16,8 @@ header
         ul
             if loggedIn
                 li
-                    span #{loggedInUser.name}님 입장!
+                    a(href=`/join/user/${loggedInUser._id}`)
+                        span #{loggedInUser.name}님 입장!
                 li
                     a(href="/logout") Log Out
                 

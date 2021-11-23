@@ -86,8 +86,14 @@ export const joinList = async (req, res) => {
   // } else {
   //   dirTemp = 1;
   // }
-
-  
+  let thisOrder;
+  if(order[0].column === '0' && order[0].dir ==='desc'){
+    thisOrder = -1;
+  } else if(order[0].column === '0' && order[0].dir ==='asc'){
+    thisOrder = 1;
+  }else{
+   thisOrder = 1; 
+  }
   let userCount, userList;
   if (departmentId) {
     userCount = await User.find({
@@ -104,6 +110,7 @@ export const joinList = async (req, res) => {
     })
       .skip(Number(start))
       .limit(Number(length))
+      .sort({name:thisOrder})
       .populate({ path: "department"});
   } else {
     userCount = await User.find({
@@ -119,27 +126,37 @@ export const joinList = async (req, res) => {
     })
       .skip(Number(start))
       .limit(Number(length))
+      .sort({name:thisOrder})
       .populate({ path: "department"});; 
   }
 
   const departmentObj = await Department.find();  
-
-  userList.forEach(element => {
+  //let userObjArry = new Array();
+  userList.forEach((element,idx) => {
     departmentObj.forEach(depElement =>{
-      if(element.department._id === depElement._id){
-        element.departmentName = depElement.name;
+      // console.log('----test------')
+      // console.log(typeof element.department._id);
+      console.log(element);
+      if(element.department._id+"" === depElement._id+""){
+        // console.log('success----------');
+        // console.log(depElement.name);
+        element._doc.departmentName = depElement.name;
+        console.log();
+        //userObjArry.push({...element});
       }
     });
   });
+  //console.log(userObjArry);
   console.log(order);
   if(order[0].column === '2'){
     if(order[0].dir === "desc"){
       console.log('desc');
       userList.sort((a,b) => {
         console.log('departmentName--------');
-        console.log(a.departmentName);
-        const upperCaseA = a.departmentName;
-        const upperCaseB = b.departmentName;
+        console.log(a);
+        console.log(b);
+        const upperCaseA = a._doc.departmentName;
+        const upperCaseB = b._doc.departmentName;
         if(upperCaseA < upperCaseB) return 1;
         if(upperCaseA > upperCaseB) return -1;
         if(upperCaseA === upperCaseB) return 0;
@@ -147,8 +164,8 @@ export const joinList = async (req, res) => {
     }else{
       console.log('asc');
       userList.sort((a,b) => {
-        const upperCaseA = a.departmentName;
-        const upperCaseB = b.departmentName;
+        const upperCaseA = a._doc.departmentName;
+        const upperCaseB = b._doc.departmentName;
         if(upperCaseA > upperCaseB) return 1;
         if(upperCaseA < upperCaseB) return -1;
         if(upperCaseA === upperCaseB) return 0;
@@ -156,7 +173,7 @@ export const joinList = async (req, res) => {
     }
   }
 
-  console.log(userList);
+  //console.log(userList);
 
   return res.status(200).json({
     draw,
@@ -180,6 +197,13 @@ export const getJoinUpdate = async (req, res) => {
   const partList = await Department.find().sort({ order: 1 });
   const user = await User.findById(id);
   return res.render("joinUpdate", { pageTitle: "회원수정", partList, user });
+};
+
+export const getJoinUserUpdate = async (req, res) => {
+  const { id } = req.params;
+  const partList = await Department.find().sort({ order: 1 });
+  const user = await User.findById(id);
+  return res.render("joinUserUpdate", { pageTitle: "회원수정", partList, user });
 };
 
 export const postJoinAdd = async (req, res) => {
@@ -237,6 +261,62 @@ export const postJoinAdd = async (req, res) => {
 export const postJoinUpdate = async (req, res) => {
   const partList = await Department.find();
   const userList = await User.find();
+  const { id, name, oldEmail, email, partId, color } =
+    req.body;
+  console.log("color~~~~ : " + color);
+  const pageTitle = "회원수정";
+  let department;
+  if (oldEmail !== email) {
+    const exists = await User.find({ email });
+    // console.log('findUserEmail~~~~')
+    // console.log(exists.length);
+    if (exists.length > 0) {
+      return res.status(400).render("join", {
+        pageTitle,
+        errorMessage: "이메일이 이미 존재합니다.",
+        partList,
+        userList,
+      });
+    }
+  }
+
+  try {
+    const userId = await User.updateOne(
+      {
+        _id: id,
+      },
+      {
+        $set: {
+          name,
+          email,
+          department: partId,
+          color,
+        },
+      }
+    );
+    if (partId) {
+      department = await Department.findById(partId);
+      // console.log("join:"+userId._id);
+      // console.log(department);
+      // console.log('-------------department');
+      department.user.push(userId._id);
+      department.save();
+    }
+    return res.redirect("/join");
+  } catch (error) {
+    return res.status(400).render("join", {
+      pageTitle: "회원수정",
+      errorMessage: error._message,
+      partList,
+      userList,
+    });
+  }
+};
+
+
+export const postJoinUserUpdate = async (req, res) => {
+  const partList = await Department.find();
+  const userList = await User.find();
   const { id, name, oldEmail, email, password, password2, partId, color } =
     req.body;
   console.log("color~~~~ : " + color);
@@ -288,7 +368,7 @@ export const postJoinUpdate = async (req, res) => {
       department.user.push(userId._id);
       department.save();
     }
-    return res.redirect("/join");
+    return res.redirect("/logout");
   } catch (error) {
     return res.status(400).render("join", {
       pageTitle: "회원수정",
