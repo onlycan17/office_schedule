@@ -6,7 +6,8 @@ import User from "../schema/user";
 export const getMenu = async (req, res) => {
   const menuList = await Menu.find()
     .populate({ path: "user" })
-    .populate({ path: "department", options: { sort: "order" } });
+    .populate({ path: "department", options: { sort: "order" } })
+    .sort("order");
   //console.log(menuList);
   const departmentList = await Department.find().sort("order");
   const userList = await User.find();

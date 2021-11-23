@@ -10,7 +10,6 @@ $(document).ready(function(){
 function addAuth(menuId,subMenuId,idx){
   const userId = $('#userAuth_'+subMenuId+' option:selected').val();  
   const departmentId = $('#departmentAuth_'+subMenuId+' option:selected').val();
-  console.log(userId , departmentId);
   if(!userId && !departmentId){
     alert('부서 또는 사용자정보를 선택해 주세요.');
     return false;
