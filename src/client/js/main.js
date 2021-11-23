@@ -50,7 +50,30 @@ channel.bind(department._id + "", function (data) {
   location.href = "/schedule";
 });
 
-var channelMorning = pusher.subscribe("morningAllDay_" + department._id);
+var pusherNotice = new Pusher("661fe6afce5e5f839f4a", {
+  cluster: "ap3",
+});
+var channelNotice = pusherNotice.subscribe("noticeAll");
+channelNotice.bind("noticeAlram", function (data) {
+  //alert(JSON.stringify(data));
+  const options = {
+    body: data.message,
+    icon: "/static/img/alamPush.png",
+    image: "/static/img/animalPush.png",
+  };
+  const notification = new Notification("공지사항알림", options);
+  alam.play();
+  setTimeout(function () {
+    notification.close();
+  }, 999000);
+  location.href = "/noticeBoardList";
+});
+
+
+var pusherMorning = new Pusher("661fe6afce5e5f839f4a", {
+  cluster: "ap3",
+});
+var channelMorning = pusherMorning.subscribe("morningAllDay_" + department._id);
 channelMorning.bind("morningAllDay_+" + department._id, function (data) {
   console.log(data);
   const options = {
@@ -65,7 +88,10 @@ channelMorning.bind("morningAllDay_+" + department._id, function (data) {
   }, 999000);
 });
 
-var channelTime = pusher.subscribe("timeAlram_" + department._id);
+var pusherTime = new Pusher("661fe6afce5e5f839f4a", {
+  cluster: "ap3",
+});
+var channelTime = pusherTime.subscribe("timeAlram_" + department._id);
 channelTime.bind("timeAlram_+" + department._id, function (data) {
   console.log(data);
   const options = {

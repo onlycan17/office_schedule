@@ -5,6 +5,7 @@ import File from "../schema/file";
 import fs from "fs";
 import iconv from "iconv-lite";
 import multer from "multer";
+import pusher from "../pusher";
 
 export const getNoticeBoardListForm = (req, res) => {
   console.log("getNoticeBoardListForm~~~~~~");
@@ -89,6 +90,12 @@ export const addNoticeBoard = async (req, res) => {
     boardId.files.push(file._id);
     boardId.save();
   }
+  if(publicYn === "Y"){
+    pusher.trigger("noticeAll","noticeAlram", {
+      message: "새로운 공지사항이 올라왔습니다. 확인해보세요!",
+    });
+  }
+  
   return res.redirect("/noticeBoardList");
 };
 
