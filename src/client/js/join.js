@@ -45,7 +45,7 @@ function tableSearch(){
     columnDefs: [  
         {
           targets: [0],
-          orderable: false,
+          orderable: true,
           searchable: false,
           render: function (data, type, row, meta) {
             // console.log('----------------');
@@ -72,7 +72,7 @@ function tableSearch(){
           orderable: false,
           searchable: false,
           render: function (data, type, row, meta) {
-            console.log('----------------');
+            //console.log('----------------');
             console.log(row);
             return row.position ? row.position : '';
           },
@@ -82,7 +82,7 @@ function tableSearch(){
           orderable: false,
           searchable: false,
           render: function (data, type, row, meta) {
-            console.log('----------------');
+            //console.log('----------------');
             console.log(row);
             return (
               `<input type="color" disabled value="${row.color}" />` 

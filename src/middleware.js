@@ -61,15 +61,15 @@ export const protectorMiddleware = async (req, res, next) => {
     lastOrder = order[1];
     res.locals.startUrl = startUrl;
     res.locals.lastOrder = lastOrder;
-    console.log(startUrl, lastOrder);
+    //console.log(startUrl, lastOrder);
   } else {
     res.locals.startUrl = url;
   }
-  console.log(req.session.loggedIn);
+  //console.log(req.session.loggedIn);
   if (req.session.loggedIn) {
     let flag = false;
-    console.log("urltest-----------");
-    console.log(startUrl);
+    //console.log("urltest-----------");
+    //console.log(startUrl);
     console.log(typeof lastOrder);
     if (startUrl === "/schedule" || startUrl === "/journal") {
       if (lastOrder) {
@@ -78,8 +78,8 @@ export const protectorMiddleware = async (req, res, next) => {
           order: Number(lastOrder),
         });
         console.log(auth);
-        console.log("++++++++++++++++++++++");
-        console.log(req.session.user.department._id);
+        //console.log("++++++++++++++++++++++");
+        //console.log(req.session.user.department._id);
         if (
           req.session.user.department._id + "" !==
           "612490cc21f010838f50a41b"
@@ -91,31 +91,31 @@ export const protectorMiddleware = async (req, res, next) => {
               },
             },
           });
-          console.log("submenu-------");
+          //console.log("submenu-------");
           const subMenu = menufind.subMenu.filter(
             (subMenu) =>
               subMenu.subMenuUrl === startUrl &&
               subMenu.order === Number(lastOrder)
           );
-          console.log(subMenu[0].user);
+          //console.log(subMenu[0].user);
           const result = subMenu[0].user.filter((userParam) => {
-            console.log("usercheck");
-            console.log(userParam, req.session.user._id);
-            console.log("+++++++++++");
+            //console.log("usercheck");
+            //console.log(userParam, req.session.user._id);
+            //console.log("+++++++++++");
             if (userParam + "" === req.session.user._id + "") {
               return true;
             }
             return false;
           });
           const result2 = subMenu[0].department.filter((departmentParam) => {
-            console.log("departmentcheck");
-            console.log(departmentParam, req.session.user.department._id);
-            console.log("+++++++++++");
+            // console.log("departmentcheck");
+            // console.log(departmentParam, req.session.user.department._id);
+            // console.log("+++++++++++");
             if (departmentParam + "" === req.session.user.department._id + "") {
               return true;
             }
           });
-          console.log(result, result2);
+          // console.log(result, result2);
           if (result.length > 0 || result2.length > 0) {
             flag = true;
           } else {
@@ -164,8 +164,8 @@ export const protectorMiddleware = async (req, res, next) => {
             });
             if (subMenu.user) {
               subMenu.user.forEach((user) => {
-                console.log(req.session.user._id);
-                console.log(user);
+                // console.log(req.session.user._id);
+                // console.log(user);
                 if (req.session.user._id + "" === user + "") {
                   flag = true;
                   //res.locals.lastOrder = subMenu.order;
