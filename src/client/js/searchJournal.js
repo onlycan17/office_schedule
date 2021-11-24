@@ -166,7 +166,7 @@ async function tableSearch() {
       url: "/postSearchJournal",
       data: form_data,
       dataSrc: function (res) {
-        console.log(res);
+        //console.log(res);
         
         return res.data;
       },
@@ -176,9 +176,19 @@ async function tableSearch() {
         orderable: false,
         searchable: false,
         render: function (data, type, row, meta) {
-          console.log('----------------');
-          console.log(row);
+          //console.log('----------------');
+          //console.log(row);
           return row.position ? row.position : '';
+        },
+      },
+      {
+        targets: [6],
+        orderable: false,
+        searchable: false,
+        render: function (data, type, row, meta) {
+          //console.log('----------------');
+          //console.log(row);
+          return moment(row.createdAt).format('YYYY-MM-DD hh:mm:ss') ;
         },
       },
     ],
