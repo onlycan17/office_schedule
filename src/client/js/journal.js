@@ -102,15 +102,15 @@ document.addEventListener("DOMContentLoaded", function () {
     eventDidMount: function (info) {
       console.log(info);
       menu.style.display = "block";
-      if (info.event.extendedProps.description) {
-        const descriptionExp = info.event.extendedProps.description;
-        tooltip = new Tooltip(info.el, {
-          title: descriptionExp.replace(/(<([^>]+)>)/gi, ""),
-          placement: "top",
-          trigger: "hover",
-          container: "body",
-        });
-      }
+      // if (info.event.extendedProps.description) {
+      //   const descriptionExp = info.event.extendedProps.description;
+      //   tooltip = new Tooltip(info.el, {
+      //     title: descriptionExp.replace(/(<([^>]+)>)/gi, ""),
+      //     placement: "top",
+      //     trigger: "hover",
+      //     container: "body",
+      //   });
+      // }
       console.log(info.el);
       console.log(info.event);
       //info.el.append('<span class="closeon">x</span>');
