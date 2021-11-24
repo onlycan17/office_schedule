@@ -261,11 +261,19 @@ export const postJoinAdd = async (req, res) => {
 export const postJoinUpdate = async (req, res) => {
   const partList = await Department.find();
   const userList = await User.find();
-  const { id, name, oldEmail, email, partId, color } =
+  const { id, name, oldEmail, email, password, password2, partId, color } =
     req.body;
-  console.log("color~~~~ : " + color);
+  //console.log("color~~~~ : " + color);
   const pageTitle = "회원수정";
   let department;
+  if (password !== password2) {
+    return res.status(400).render("join", {
+      pageTitle,
+      errorMessage: "비밀번호가 맞지 않습니다.",
+      partList,
+      userList,
+    });
+  }
   if (oldEmail !== email) {
     const exists = await User.find({ email });
     // console.log('findUserEmail~~~~')
@@ -281,6 +289,7 @@ export const postJoinUpdate = async (req, res) => {
   }
 
   try {
+    const enPassword = await bcrypt.hash(password, 5);
     const userId = await User.updateOne(
       {
         _id: id,
@@ -289,6 +298,7 @@ export const postJoinUpdate = async (req, res) => {
         $set: {
           name,
           email,
+          password: enPassword,
           department: partId,
           color,
         },
