@@ -75,6 +75,7 @@ import {
   noticeBoardListDetailUpdate,
   noticeBoardListFileDownload,
 } from "../controller/noticeBoardController";
+import { addReaderBoard, addReaderBoardForm, getReaderBoardList, getReaderBoardListForm, readerBoardListDetail, readerBoardListDetailDelete, readerBoardListDetailUpdate, readerBoardListFileDownload } from "../controller/readerBoardController";
 
 const multipartMiddleware = multipart();
 
@@ -199,6 +200,30 @@ router
 router
   .route("/noticeBoardListFileDownload/:id([0-9a-f]{24})")
   .get(noticeBoardListFileDownload);
+
+//팀장공지
+router
+  .route("/readerBoardList")
+  .all(protectorMiddleware)
+  .get(getReaderBoardListForm)
+  .post(getReaderBoardList);
+router
+  .route("/readerBoardListAdd")
+  .all(protectorMiddleware)
+  .get(addReaderBoardForm)
+  .post(fileUpload.fields([{ name: "singleFile" }]), addReaderBoard);
+router
+  .route("/readerBoardListDetail/:id([0-9a-f]{24})")
+  .all(protectorMiddleware)
+  .get(readerBoardListDetail)
+  .post(
+    fileUpload.fields([{ name: "singleFile" }]),
+    readerBoardListDetailUpdate
+  )
+  .delete(readerBoardListDetailDelete);
+router
+  .route("/readerBoardListFileDownload/:id([0-9a-f]{24})")
+  .get(readerBoardListFileDownload);
 
 router.route("/journal").all(protectorMiddleware).get(getJournal);
 router

@@ -12,6 +12,7 @@ module.exports = {
       searchJournal: BASE_JS + "searchJournal.js",
       join: BASE_JS + "join.js",
       noticeBoardList: BASE_JS + "noticeBoardList.js",
+      readerBoardList: BASE_JS + "readerBoardList.js",
       // CKEditorLoad: BASE_JS + "CKEditorLoad.js",
       //sideBar: BASE_JS + "sideBar.js",
   },
