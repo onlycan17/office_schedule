@@ -77,3 +77,19 @@ button{
 .content{
   padding: 20px;
 }
+
+.list{
+  margin-top: 10px;
+  display: flex;
+  justify-content: right;
+}
+
+.list a {
+  display: block;
+  font-size: 16px;
+  color: rgb(24, 83, 83);
+  background-color: rgb(103, 250, 189);
+  border-radius: 5px;
+  margin: 10px;
+  padding: 5px;
+}

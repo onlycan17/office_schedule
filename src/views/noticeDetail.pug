@@ -34,10 +34,11 @@ block content
                 a(href='#' id="fileDownload") #{notice.files[0].originalname}
                 //- a(href=`/noticeBoardListDetail/${notice.files[0]._id}` id="fileDownload") #{notice.files[0].originalname}
                 input(type="hidden" id="fileId" value=notice.files[0]._id)     
-                input(type="hidden" id="fileName" value=notice.files[0].originalname)     
-        .row-right             
-            button(id="edit") 수정
-            button(id="delete") 삭제       
+                input(type="hidden" id="fileName" value=notice.files[0].originalname)
+        if(loggedInUser.department._id === '612490cc21f010838f50a41b')                     
+            .row-right             
+                button(id="edit") 수정
+                button(id="delete") 삭제       
     .component(id="component" style="display:none")    
         form(method="post" enctype="multipart/form-data")
             input(type="hidden" value="1" name="boardGroupId")
@@ -53,7 +54,8 @@ block content
             textarea(class="ckeditor", name="editor4", cols="30", rows="10") #{notice.content}
             input(type="file" name="singleFile")
             input(type="submit", value="저장")
-
+    .list
+        a(href='/noticeBoardList?order=1') ⬅️뒤로가기
 block scripts
     script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js" type="text/javascript")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js", type="text/javascript")
