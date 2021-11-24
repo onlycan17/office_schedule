@@ -16,6 +16,9 @@ export const getNoticeBoardList = async (req, res) => {
   const { start, draw, length, searchTitle } = req.body;
   const noticeBoarCount = await Board.find({
     title: { $regex: ".*" + searchTitle + ".*" },
+    publicYn: "Y",
+    deleteYn: "N",
+    boardGroupId: 1,
   }).countDocuments();
   const noticeBoard = await Board.find({
     title: { $regex: ".*" + searchTitle + ".*" },
