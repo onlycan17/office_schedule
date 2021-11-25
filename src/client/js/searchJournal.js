@@ -188,7 +188,7 @@ async function tableSearch() {
         render: function (data, type, row, meta) {
           //console.log('----------------');
           //console.log(row);
-          return moment(row.createdAt).format('YYYY-MM-DD hh:mm:ss') ;
+          return moment(row.createdAt).format('YYYY-MM-DD HH:mm:ss') ;
         },
       },
     ],
