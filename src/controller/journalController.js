@@ -495,7 +495,7 @@ export const postSearchJournal = async (req, res) => {
         { end: { $gte: startDate, $lte: endDate } },
       ],
     })
-      .sort("-start -end")
+      .sort("-createdAt")
       .skip(Number(start))
       .limit(Number(length))
       .populate("department")
@@ -536,7 +536,7 @@ export const postSearchJournal = async (req, res) => {
         { end: { $gte: startDate, $lte: endDate } },
       ],
     })
-      .sort("-start -end")
+      .sort("-createdAt")
       .skip(Number(start))
       .limit(Number(length))
       .populate("department")
