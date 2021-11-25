@@ -9,43 +9,8 @@ const alam = document.getElementById("sound");
 const userMenu = JSON.parse(document.getElementById("menuList").value);
 const userId = document.getElementById("userId").value;
 
-let checkUsr,chkMenu;
-//console.log(userMenu);
-
-//------- 팀장 공지 알람 로직 시작---------------------------------------------------------------------------
-const selectMenu = userMenu.filter((element)=> {
-  //console.log(element._id);
-  return element._id+"" === '619c37bb2324de00166126b0';
-});
-
+//console.log('userId-------');
 //console.log(userId);
-
-if(selectMenu[0]){
-  const subMenu =  selectMenu[0].subMenu;
-
-  const checkMenu = subMenu.filter((element) => {
-    return element._id+"" === '619de0b07987930016a4167f';
-  });
-
-  //console.log(checkMenu);
-  if(checkMenu[0]){
-    const userList = checkMenu[0].user;
-    const userCheck = userList.filter((element) => {
-      console.log(element);
-      console.log(userId);
-      return element+"" === userId+"";
-    });
-    //console.log(userCheck);
-    if(userCheck[0]){
-      checkUsr = userCheck[0];
-      chkMenu = checkMenu[0];
-    }
-  }
-}
-//------- 팀장 공지 알람 로직 끝---------------------------------------------------------------------------
-console.log(chkMenu);
-
-
 
 getNotificationPermission();
 //알림 권한 요청
@@ -110,20 +75,20 @@ channelNotice.bind("noticeAlram", function (data) {
   //location.href = "/noticeBoardList";
 });
 
-//619de0b07987930016a4167f
-console.log(chkMenu._id);
-var pusherReader = new Pusher("661fe6afce5e5f839f4a", {
+
+//일일업무 댓글 알림
+var pusherJournalComment = new Pusher("661fe6afce5e5f839f4a", {
   cluster: "ap3",
 });
-var channelReader = pusherReader.subscribe(""+chkMenu._id);
-channelReader.bind(""+chkMenu._id, function (data) {
+var channelJournalComment = pusherJournalComment.subscribe(""+userId);
+channelJournalComment.bind(""+userId, function (data) {
   // alert(JSON.stringify(data));
   const options = {
     body: data.message,
     icon: "/static/img/alamPush.png",
     image: "/static/img/animalPush.png",
   };
-  const notification = new Notification("팀장공지알림", options);
+  const notification = new Notification("댓글알림", options);
   alam.play();
   setTimeout(function () {
     notification.close();

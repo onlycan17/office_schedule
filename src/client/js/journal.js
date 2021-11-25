@@ -5,10 +5,12 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import listPlugin from "@fullcalendar/list";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
-import "../css/calendar.css";
+//import "../css/calendar.css";
 import axios from "axios";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import moment from "moment";
+import fetch from "node-fetch";
+// import { text } from "express";
 
 const submitButton = document.querySelector("#submit");
 const commentSaveBtn = document.querySelector("#commentSaveBtn");
@@ -121,9 +123,8 @@ document.addEventListener("DOMContentLoaded", function () {
       // console.log(info.event._def.extendedProps.user === user);
       if (
         (Number(month) === Number(todayMonth) ||
-          (Number(month) + 1 === Number(todayMonth) &&
-            Number(today) <= 7) ||
-          (Number(todayMonth) - Number(month) === 89 && Number(today) <= 7)  ) &&
+          (Number(month) + 1 === Number(todayMonth) && Number(today) <= 7) ||
+          (Number(todayMonth) - Number(month) === 89 && Number(today) <= 7)) &&
         info.event._def.extendedProps.user === user
       ) {
         info.el.insertAdjacentHTML(
@@ -173,7 +174,8 @@ document.addEventListener("DOMContentLoaded", function () {
             (Number(month) === Number(todayMonth) ||
               (Number(month) + 1 === Number(todayMonth) &&
                 Number(today) <= 7) ||
-              Number(todayMonth) - Number(month) === 89 && Number(today) <= 7  ) &&
+              (Number(todayMonth) - Number(month) === 89 &&
+                Number(today) <= 7)) &&
             e.event._def.extendedProps.user === user
           ) {
             $(".editorCK").append(
@@ -184,12 +186,11 @@ document.addEventListener("DOMContentLoaded", function () {
             );
             const editCk = document.querySelector("#edit");
             editCk.addEventListener("click", () => clickEdit(e.event.id));
-          }else{
-            $('#divFile').css("display","none");
+          } else {
+            $("#divFile").css("display", "none");
           }
           $("#submit").remove();
 
-          
           let fileYn = false;
           scheduleData.forEach((element, idx) => {
             if (element._id === e.event.id) {
@@ -242,7 +243,7 @@ document.addEventListener("DOMContentLoaded", function () {
           });
           console.log(index);
           if (fileYn && scheduleData[index].file) {
-            $('#divFile').css("display","flex");
+            $("#divFile").css("display", "flex");
             $("#singleFile").replaceWith(
               `<a href='#' id="fileDownload">${scheduleData[index].file.originalname}</a>`
             );
@@ -275,9 +276,11 @@ document.addEventListener("DOMContentLoaded", function () {
     select: function (arg) {
       // 캘린더에서 드래그로 이벤트를 생성할 수 있다.
       //var title = prompt("제목:");
-      const department = JSON.parse(document.getElementById("department").value);
-      if(department._id === "612490cc21f010838f50a41b"){
-        alert('관리자는 등록하실 수 없습니다.');
+      const department = JSON.parse(
+        document.getElementById("department").value
+      );
+      if (department._id === "612490cc21f010838f50a41b") {
+        alert("관리자는 등록하실 수 없습니다.");
         return false;
       }
       const month = moment(arg.start).format("YYYYMM");
@@ -285,27 +288,26 @@ document.addEventListener("DOMContentLoaded", function () {
       const todayMonth = moment(new Date()).format("YYYYMM");
       const today = moment(new Date()).format("DD");
       if (
-            (Number(month) === Number(todayMonth) ||
-              (Number(month) + 1 === Number(todayMonth) &&
-                Number(today) <= 7) ||
-              Number(todayMonth) - Number(month) === 89 && Number(today) <= 7  
-            )
-          ) {
-            $("#commentTextarea").css("display", "none");
-            console.log("selecte");
-            start = moment(arg.start).format("YYYY-MM-DD HH:mm:SS");
-            end = moment(arg.end).format("YYYY-MM-DD HH:mm:SS");
-            allDay = arg.allDay;
-            console.log(start);
-            console.log(end);
-            document.getElementById("start").value = start;
-            document.getElementById("end").value = end;
-            //modal.style.display = "block";
-            toggleSideBar();
-      }else{
-          alert("지난달 업무일지를 작성할 수 있는 기간이 만료되었습니다.\n (예: 작성할 지난달이 10월일경우 11월 7일전까지 등록해야 함.)");
+        Number(month) === Number(todayMonth) ||
+        (Number(month) + 1 === Number(todayMonth) && Number(today) <= 7) ||
+        (Number(todayMonth) - Number(month) === 89 && Number(today) <= 7)
+      ) {
+        $("#commentTextarea").css("display", "none");
+        console.log("selecte");
+        start = moment(arg.start).format("YYYY-MM-DD HH:mm:SS");
+        end = moment(arg.end).format("YYYY-MM-DD HH:mm:SS");
+        allDay = arg.allDay;
+        console.log(start);
+        console.log(end);
+        document.getElementById("start").value = start;
+        document.getElementById("end").value = end;
+        //modal.style.display = "block";
+        toggleSideBar();
+      } else {
+        alert(
+          "지난달 업무일지를 작성할 수 있는 기간이 만료되었습니다.\n (예: 작성할 지난달이 10월일경우 11월 7일전까지 등록해야 함.)"
+        );
       }
-      
     },
     eventAdd: async function (obj) {
       // 이벤트가 추가되면 발생하는 이벤트
@@ -645,26 +647,50 @@ async function addComment() {
       timeout: 15000,
     });
 
-    if (res.status === 201) {
+    if (res.status === 200) {
       console.log("저장완료! id:" + res.data.id);
-      $("#comment").append(
-        ` 
-          <div class="commentColumn bolder">
-            <div class="row">${form_data.commentText}</div>
-            <div class="row">
-            <span>${res.data.user?.name}</span>&nbsp;&nbsp;
-            <span>${moment(new Date()).format("YYYY-MM-DD HH:mm:ss")}</span>
-            <a class="commentBtn" href="#" onclick="editCommentForm('${
-              res.data.id
-            }');">수정</a>
-            <a class="commentBtn" href="#" onclick="deleteComment('${
-              res.data.id
-            }');">삭제</a>
-            </div>
-          </div>
-        `
-      );
+      const comment = document.querySelector("#comment");
+      const divCommentColumn = document.createElement("div");
+      divCommentColumn.setAttribute("class", "commentColumn bolder");
+      divCommentColumn.setAttribute("id", "lv1_" + res.data.id);
+      const divRow1 = document.createElement("div");
+      divRow1.setAttribute("class", "row");
+      divRow1.setAttribute("id", "lv2_" + res.data.id);
+      divRow1.innerText = form_data.commentText;
+      const divRow2 = document.createElement("div");
+      divRow2.setAttribute("class", "row");
+      const span1 = document.createElement("span");
+      span1.innerText = res.data.user?.name;
+      const span2 = document.createElement("span");
+      span2.innerText = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+      const a1 = document.createElement("a");
+      a1.setAttribute("class", "commentBtn");
+      a1.setAttribute("href", "#");
+      a1.dataset.id = res.data.id;
+      a1.setAttribute("id", "editCommentFormComponent");
+      a1.innerText = "수정";
+      const a2 = document.createElement("a");
+      a2.setAttribute("class", "commentBtn");
+      a2.setAttribute("href", "#");
+      a2.dataset.id = res.data.id;
+      a2.setAttribute("id", "deleteCommentComponent");
+      a2.innerText = "삭제";
+      divRow2.appendChild(span1);
+      divRow2.appendChild(span2);
+      divRow2.appendChild(a1);
+      divRow2.appendChild(a2);
+      divCommentColumn.appendChild(divRow1);
+      divCommentColumn.appendChild(divRow2);
+      comment.appendChild(divCommentColumn);
+      a1.addEventListener("click", () => editCommentForm(res.data.id));
+      a2.addEventListener("click", () => deleteComment(res.data.id));
       $("#content").val("");
+      //console.log(window.location.href);
+      let temp = window.location.search;
+      const param  = temp.split("=")
+      //location.href = `/journal?order=${param[1]}`;
+      location.replace(`/journal?order=${param[1]}`);
+      $("#close-menu").trigger("click");
     }
   }
 }
@@ -687,17 +713,36 @@ function clickEdit(id) {
 }
 
 function editCommentForm(replyId) {
+  console.log("-------edit-------");
   console.log(replyId);
   let content = $("#lv2_" + replyId).text();
   $("#lv1_" + replyId).empty();
-  $("#lv1_" + replyId).append(`
-    <div id="commentSaveBtn">
-      <textarea name="content" id="content_${replyId}" cols="30%" rows="5">${content}</textarea>
-      <button id="commentSaveBtn_${replyId}" class="button"> 답변하기</button>
-    </div>  
-  `);
-  const commentSaveBtn = document.querySelector("#commentSaveBtn_" + replyId);
-  commentSaveBtn.addEventListener("click", () => editComment(replyId));
+  const editComponent = document.querySelector("#lv1_" + replyId);
+  console.log(editComponent);
+  const commentSaveBtn = document.createElement("div");
+  const textarea = document.createElement("textarea");
+  textarea.setAttribute("name", "content");
+  textarea.setAttribute("id", "content_" + replyId);
+  textarea.setAttribute("cols", "30%");
+  textarea.setAttribute("rows", "5");
+  textarea.innerText = content;
+  const button = document.createElement("button");
+  button.setAttribute("id", "commentSaveBtn_" + replyId);
+  button.setAttribute("class", "button");
+  button.innerText = "답변하기";
+  commentSaveBtn.appendChild(textarea);
+  commentSaveBtn.appendChild(button);
+  editComponent.appendChild(commentSaveBtn);
+  button.addEventListener("click", () => editComment(replyId));
+
+  // $("#lv1_" + replyId).append(`
+  //   <div id="commentSaveBtn">
+  //     <textarea name="content" id="content_${replyId}" cols="30%" rows="5">${content}</textarea>
+  //     <button id="commentSaveBtn_${replyId}" class="button"> 답변하기</button>
+  //   </div>
+  // `);
+  //const commentSaveBtn = document.querySelector("#commentSaveBtn_" + replyId);
+  //commentSaveBtn.addEventListener("click", () => editComment(replyId));
 }
 
 async function editComment(replyId) {
@@ -708,38 +753,69 @@ async function editComment(replyId) {
       commentText: document.getElementById("content_" + replyId).value,
       commentId: replyId,
     };
+
     const res = await axios({
       method: "patch",
-      url: "/editComment",
+      url: `/editComment`,
       data: form_data,
       timeout: 15000,
     });
     if (res.status === 200) {
-      $("#lv1_" + replyId).empty();
-      $("#lv1_" + replyId).append(`
-        <div id="lv2_${replyId}" class="row">${form_data.commentText}</div>
-        <div class="row">
-          <span>${userName}</span>&nbsp;&nbsp;
-          <span>${moment(new Date()).format("YYYY-mm-DD hh:MM:ss")}</span>
-          <a class="commentBtn" href="#" onclick="editCommentForm('${
-            res.data.id
-          }');">수정</a>
-          <a class="commentBtn" href="#" onclick="deleteComment('${
-            res.data.id
-          }');">삭제</a>
-        </div>
-      `);
+      $("#lv1_" + replyId).remove();
+      const comment = document.querySelector("#comment");
+      const divCommentColumn = document.createElement("div");
+      divCommentColumn.setAttribute("class", "commentColumn bolder");
+      divCommentColumn.setAttribute("id", "lv1_" + res.data.id);
+      const divRow1 = document.createElement("div");
+      divRow1.setAttribute("class", "row");
+      divRow1.setAttribute("id", "lv2_" + res.data.id);
+      divRow1.innerText = form_data.commentText;
+      const divRow2 = document.createElement("div");
+      divRow2.setAttribute("class", "row");
+      const span1 = document.createElement("span");
+      span1.innerText = res.data.user?.name;
+      const span2 = document.createElement("span");
+      span2.innerText = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+      const a1 = document.createElement("a");
+      a1.setAttribute("class", "commentBtn");
+      a1.setAttribute("href", "#");
+      a1.dataset.id = res.data.id;
+      a1.setAttribute("id", "editCommentFormComponent");
+      a1.innerText = "수정";
+      const a2 = document.createElement("a");
+      a2.setAttribute("class", "commentBtn");
+      a2.setAttribute("href", "#");
+      a2.dataset.id = res.data.id;
+      a2.setAttribute("id", "deleteCommentComponent");
+      a2.innerText = "삭제";
+      divRow2.appendChild(span1);
+      divRow2.appendChild(span2);
+      divRow2.appendChild(a1);
+      divRow2.appendChild(a2);
+      divCommentColumn.appendChild(divRow1);
+      divCommentColumn.appendChild(divRow2);
+      comment.appendChild(divCommentColumn);
+      a1.removeEventListener("click", () => editCommentForm(res.data.id))
+      a2.removeEventListener("click", () => deleteComment(res.data.id))
+      a1.addEventListener("click", () => editCommentForm(res.data.id));
+      a2.addEventListener("click", () => deleteComment(res.data.id));
+      $("#content").val("");
+      let temp = window.location.search;
+      const param  = temp.split("=")
+      location.replace(`/journal?order=${param[1]}`);
+      $("#close-menu").trigger("click");
     }
   }
 }
 
 async function deleteComment(replyId) {
-  console.log(replyId);
+  //console.log('deleteComment-----');
+  //console.log(replyId);
   const form_data = {
     commentId: replyId,
   };
   const res = await axios({
-    method: "get",
+    method: "delete",
     url: "/deleteComment",
     data: form_data,
     timeout: 15000,
@@ -816,33 +892,45 @@ $(function () {
     $("#comment").empty();
   });
 
-  $(document).on('click','#fileDownload', function(){
+  $(document).on("click", "#fileDownload", function () {
     $.ajax({
-        type: "get",
-        url: `/download/${scheduleData[index].file._id}`,
-        success: function (response) {
-            var a = document.createElement("a");
-            const url = window.location.hostname;
-            console.log(url);
-            if(url.indexOf('localhost') !== -1){
-                a.href = `http://localhost:4500/uploads/files/${scheduleData[index].file.originalname}`;
-            }else{
-                a.href = `https://master-piece-r.herokuapp.com/uploads/files/${scheduleData[index].file.originalname}`;
-            }
-            // Set the file name
-            a.download = scheduleData[index].file.originalname;
-            a.click();
-        },
-        error: function (xhr) {
-                console.log(xhr);
-            }
-        }).fail(function () {
-            alert('fail');
-      });
+      type: "get",
+      url: `/download/${scheduleData[index].file._id}`,
+      success: function (response) {
+        var a = document.createElement("a");
+        const url = window.location.hostname;
+        console.log(url);
+        if (url.indexOf("localhost") !== -1) {
+          a.href = `http://localhost:4500/uploads/files/${scheduleData[index].file.originalname}`;
+        } else {
+          a.href = `https://master-piece-r.herokuapp.com/uploads/files/${scheduleData[index].file.originalname}`;
+        }
+        // Set the file name
+        a.download = scheduleData[index].file.originalname;
+        a.click();
+      },
+      error: function (xhr) {
+        console.log(xhr);
+      },
+    }).fail(function () {
+      alert("fail");
+    });
   });
-  // $("#file").change(function (event) {
-  //   event.preventDefault();
-  //   let file = event.target.files[0];
-  //   console.log(file);
+
+  // $(document).on("click", "#deleteComment", async function () {
+  //   console.log(replyId);
+  //   const form_data = {
+  //     commentId: replyId,
+  //   };
+  //   const res = await axios({
+  //     method: "get",
+  //     url: "/deleteComment",
+  //     data: form_data,
+  //     timeout: 15000,
+  //   });
+  //   if (res.status === 200) {
+  //     console.log("삭제성공!");
+  //     $("#lv1_" + replyId).remove();
+  //   }
   // });
 });
