@@ -781,6 +781,7 @@ $(function () {
     editor.isReadOnly = false;
     $(".file > a").remove();
     $("#singleFile").remove();
+    $("#submit").remove();
     $(".file").append(`
       <input type="file" id="singleFile" />
     `);
