@@ -7,6 +7,7 @@ import iconv from "iconv-lite";
 import Comment from "../schema/comment";
 import { async } from "regenerator-runtime";
 import Department from "../schema/department";
+import pusher from "../pusher";
 import excel from "exceljs";
 import moment from "moment";
 import Auth from "../schema/auth";
@@ -405,24 +406,36 @@ export const addPostComment = async (req, res) => {
     }
     journal.comments.push(comment._id);
     journal.save();
+    //console.log('userId-----');
+    //console.log(journal.user._id);
+    pusher.trigger(journal.user._id + "", journal.user._id + "", {
+      message: "일일업무에 댓글이 등록되었습니다. 확인해보세요!",
+    });
     userOJ = await User.findById(user);
   }
-  return res.status(201).json({ id: journalId, user: userOJ });
+  return res.status(200).json({ id: journalId, user: userOJ });
 };
 
 export const editPatchComment = async (req, res) => {
+  console.log(req.body);
   const { commentId, commentText, journalId, user } = req.body;
   const comment = await Comment.findById(commentId);
   if (!comment) {
     return res.sendStatus(404);
   }
   await Comment.findByIdAndUpdate(commentId, { text: commentText });
-  return res.sendStatus(200);
+  let userOJ = await User.findById(user);
+  return res.status(200).json({ id: journalId, user: userOJ });
 };
 
 export const deleteComment = async (req, res) => {
+  //console.log('delete~~~~~');
   const { commentId } = req.body;
+  //console.log(req.params);
+  //console.log(req.body);
+  //console.log(commentId);
   const comment = await Comment.findById(commentId);
+  //console.log(comment);
   if (!comment) {
     return res.sendStatus(404);
   }

@@ -235,5 +235,5 @@ router.route("/customWeekJournal").get(customWeekJournal);
 router.route("/download/:id([0-9a-f]{24})").get(downloadFile);
 router.route("/addComment").post(addPostComment);
 router.route("/editComment").patch(editPatchComment);
-router.route("/deleteComment").get(deleteComment);
+router.route("/deleteComment").delete(deleteComment);
 export default router;
