@@ -10,11 +10,13 @@ header
         .cloud.x4
         .cloud.x5 
     a(href="/home").header__logo
-        //-i.fab.fa-youtube
+        //- i.fab.fa-youtube
         img(src="/static/img/palm_logo.png", style="width:80px;", alt="팜로고")
     nav
         ul
             if loggedIn
+                //- li(style="padding-top:10px;") 
+                //-     span(style="font-size:30px;") ✉️
                 li
                     a(href=`/join/user/${loggedInUser._id}`)
                         span #{loggedInUser.name}님 입장!
