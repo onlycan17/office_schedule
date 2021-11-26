@@ -135,7 +135,6 @@ document.addEventListener("DOMContentLoaded", function () {
         //   if (asyncValue) {
         //     asyncValue = false;
         //     deleteflag = true;
-            
         //     const event = calendar.getEventById(info.event.id);
         //     event.remove();
         //     console.log("-----delete------");
@@ -146,7 +145,6 @@ document.addEventListener("DOMContentLoaded", function () {
         //       data: { id: info.event.id },
         //       timeout: 15000,
         //     });
-
         //     if (res.status === 200) {
         //       console.log("저장완료!");
         //     }
@@ -532,7 +530,7 @@ async function addParam() {
       console.log("저장완료! id:" + res.data.id);
       console.log(res.data.filePath);
       console.log(res.data.fileName);
-      if(res.data.fileId){
+      if (res.data.fileId) {
         const pushData = {
           _id: res.data.id,
           id: res.data.id,
@@ -704,7 +702,7 @@ async function addComment() {
       $("#content").val("");
       //console.log(window.location.href);
       let temp = window.location.search;
-      const param  = temp.split("=")
+      const param = temp.split("=");
       //location.href = `/journal?order=${param[1]}`;
       location.replace(`/journal?order=${param[1]}`);
       $("#close-menu").trigger("click");
@@ -730,8 +728,8 @@ function clickEdit(id) {
   submitBtn.addEventListener("click", () => updateParam(id));
 }
 
-async function clickDelete(id){
-  if(confirm("일일업무를 삭제하시겠습니까?")){
+async function clickDelete(id) {
+  if (confirm("일일업무를 삭제하시겠습니까?")) {
     if (asyncValue && editor.getData()) {
       asyncValue = false;
       console.log("updateParam----");
@@ -775,7 +773,6 @@ function editCommentForm(replyId) {
   commentSaveBtn.appendChild(button);
   editComponent.appendChild(commentSaveBtn);
   button.addEventListener("click", () => editComment(replyId));
-
 }
 
 async function editComment(replyId) {
@@ -828,13 +825,13 @@ async function editComment(replyId) {
       divCommentColumn.appendChild(divRow1);
       divCommentColumn.appendChild(divRow2);
       comment.appendChild(divCommentColumn);
-      a1.removeEventListener("click", () => editCommentForm(res.data.id))
-      a2.removeEventListener("click", () => deleteComment(res.data.id))
+      a1.removeEventListener("click", () => editCommentForm(res.data.id));
+      a2.removeEventListener("click", () => deleteComment(res.data.id));
       a1.addEventListener("click", () => editCommentForm(res.data.id));
       a2.addEventListener("click", () => deleteComment(res.data.id));
       $("#content").val("");
       let temp = window.location.search;
-      const param  = temp.split("=")
+      const param = temp.split("=");
       location.replace(`/journal?order=${param[1]}`);
       $("#close-menu").trigger("click");
     }
@@ -949,5 +946,4 @@ $(function () {
       alert("fail");
     });
   });
-
 });

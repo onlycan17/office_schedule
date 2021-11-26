@@ -52,7 +52,9 @@ channel.bind(department._id + "", function (data) {
   setTimeout(function () {
     notification.close();
   }, 999000);
-  location.href = "/schedule";
+  let temp = window.location.search;
+  const param = temp.split("=");
+  location.replace(`/schedule?order=${param[1]}`);
 });
 
 // 공지사항 알림
