@@ -127,34 +127,32 @@ document.addEventListener("DOMContentLoaded", function () {
           (Number(todayMonth) - Number(month) === 89 && Number(today) <= 7)) &&
         info.event._def.extendedProps.user === user
       ) {
-        info.el.insertAdjacentHTML(
-          "beforeend",
-          '<span id="close_' + info.event.id + '" class="closeon">X</span>'
-        );
-        //info.el.innerText = `<span class='closeon'>x</span>`;
-        $("#close_" + info.event.id).click(async function () {
-          //$("#calendar").fullCalendar("removeEvents", info._id);
-          if (asyncValue) {
-            asyncValue = false;
-            deleteflag = true;
-            //globalId = info.event.id;
-            const event = calendar.getEventById(info.event.id);
-            event.remove();
-            console.log("-----delete------");
-            console.log(info.event.id);
-            const res = await axios({
-              method: "delete",
-              url: "/deleteJournal",
-              data: { id: info.event.id },
-              timeout: 15000,
-            });
+        // info.el.insertAdjacentHTML(
+        //   "beforeend",
+        //   '<span id="close_' + info.event.id + '" class="closeon">X</span>'
+        // );
+        // $("#close_" + info.event.id).click(async function () {
+        //   if (asyncValue) {
+        //     asyncValue = false;
+        //     deleteflag = true;
+            
+        //     const event = calendar.getEventById(info.event.id);
+        //     event.remove();
+        //     console.log("-----delete------");
+        //     console.log(info.event.id);
+        //     const res = await axios({
+        //       method: "delete",
+        //       url: "/deleteJournal",
+        //       data: { id: info.event.id },
+        //       timeout: 15000,
+        //     });
 
-            if (res.status === 200) {
-              console.log("저장완료!");
-            }
-            asyncValue = true;
-          }
-        });
+        //     if (res.status === 200) {
+        //       console.log("저장완료!");
+        //     }
+        //     asyncValue = true;
+        //   }
+        // });
       }
     },
     eventClick: function (e) {
@@ -179,13 +177,17 @@ document.addEventListener("DOMContentLoaded", function () {
             e.event._def.extendedProps.user === user
           ) {
             $(".editorCK").append(
-              `<div class="pull-right">
-                <button class="btn" id="edit">수정</button>
+              `
+              <div class="pull-right">
+                <button class="btn" id="edit">수정</button>&nbsp;&nbsp;
+                <button class="btn" id="deleteBtn">삭제</button>
               </div>
               `
             );
             const editCk = document.querySelector("#edit");
+            const deleteCk = document.querySelector("#deleteBtn");
             editCk.addEventListener("click", () => clickEdit(e.event.id));
+            deleteCk.addEventListener("click", () => clickDelete(e.event.id));
             $("#divFile").css("display", "none");
           }
           $("#submit").remove();
@@ -726,6 +728,29 @@ function clickEdit(id) {
   const submitBtn = document.querySelector("#submit");
   submitBtn.removeEventListener("click", addParam);
   submitBtn.addEventListener("click", () => updateParam(id));
+}
+
+async function clickDelete(id){
+  if(confirm("일일업무를 삭제하시겠습니까?")){
+    if (asyncValue && editor.getData()) {
+      asyncValue = false;
+      console.log("updateParam----");
+      console.log(id);
+      const resDel = await axios({
+        method: "delete",
+        url: "/deleteJournal",
+        data: { id },
+        timeout: 15000,
+      });
+      if (resDel.status === 200) {
+        console.log("삭제완료!");
+        const element = globalCalendar.getEventById(id);
+        element.remove();
+        $("#overlay").trigger("click");
+      }
+      asyncValue = true;
+    }
+  }
 }
 
 function editCommentForm(replyId) {

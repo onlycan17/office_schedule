@@ -67,6 +67,22 @@ textarea {
   opacity: 0.9;
 }
 
+#delete {
+  width: 127px;
+  height: 48px;
+  text-align: center;
+  border: none;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+#delete:hover {
+  color: #fff;
+  background-color: #216282;
+  opacity: 0.9;
+}
+
+
 html,
 body {
   margin: 0;
