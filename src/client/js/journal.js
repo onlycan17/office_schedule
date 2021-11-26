@@ -186,7 +186,6 @@ document.addEventListener("DOMContentLoaded", function () {
             );
             const editCk = document.querySelector("#edit");
             editCk.addEventListener("click", () => clickEdit(e.event.id));
-          } else {
             $("#divFile").css("display", "none");
           }
           $("#submit").remove();
@@ -498,7 +497,7 @@ function toggleSideBar() {
 }
 
 async function addParam() {
-  if (asyncValue) {
+  if (asyncValue && editor.getData()) {
     asyncValue = false;
     //title = document.getElementById("title").value;
     description = editor.getData();
@@ -531,24 +530,40 @@ async function addParam() {
       console.log("저장완료! id:" + res.data.id);
       console.log(res.data.filePath);
       console.log(res.data.fileName);
-      const pushData = {
-        _id: res.data.id,
-        id: res.data.id,
-        text: description,
-        start,
-        end,
-        allDay,
-        department,
-        user,
-        color,
-        file: {
-          _id: res.data.fileId,
-          originalname: res.data.fileName,
-          path: res.data.filePath,
-        },
-        comments: [],
-      };
-      scheduleData.push(pushData);
+      if(res.data.fileId){
+        const pushData = {
+          _id: res.data.id,
+          id: res.data.id,
+          text: description,
+          start,
+          end,
+          allDay,
+          department,
+          user,
+          color,
+          file: {
+            _id: res.data.fileId,
+            originalname: res.data.fileName,
+            path: res.data.filePath,
+          },
+          comments: [],
+        };
+        scheduleData.push(pushData);
+      } else {
+        const pushData = {
+          _id: res.data.id,
+          id: res.data.id,
+          text: description,
+          start,
+          end,
+          allDay,
+          department,
+          user,
+          color,
+          comments: [],
+        };
+        scheduleData.push(pushData);
+      }
     }
     asyncValue = true;
   }
@@ -585,7 +600,7 @@ function viewAddEvents(id) {
 }
 
 async function updateParam(id) {
-  if (asyncValue) {
+  if (asyncValue && editor.getData()) {
     asyncValue = false;
     console.log("updateParam----");
     console.log(id);
@@ -634,7 +649,7 @@ async function updateParam(id) {
 }
 
 async function addComment() {
-  if (globalId) {
+  if (globalId && document.getElementById("content").value) {
     const form_data = {
       user,
       journalId: globalId,
@@ -701,6 +716,7 @@ function clickEdit(id) {
   //editor.setData(contentDescription);
   $(".file a").remove();
   $("#singleFile").remove();
+  $("#divFile").css("display", "block");
   $(".file").append(`
       <input type="file" id="singleFile" />
     `);
