@@ -751,14 +751,6 @@ function editCommentForm(replyId) {
   editComponent.appendChild(commentSaveBtn);
   button.addEventListener("click", () => editComment(replyId));
 
-  // $("#lv1_" + replyId).append(`
-  //   <div id="commentSaveBtn">
-  //     <textarea name="content" id="content_${replyId}" cols="30%" rows="5">${content}</textarea>
-  //     <button id="commentSaveBtn_${replyId}" class="button"> 답변하기</button>
-  //   </div>
-  // `);
-  //const commentSaveBtn = document.querySelector("#commentSaveBtn_" + replyId);
-  //commentSaveBtn.addEventListener("click", () => editComment(replyId));
 }
 
 async function editComment(replyId) {
@@ -933,20 +925,4 @@ $(function () {
     });
   });
 
-  // $(document).on("click", "#deleteComment", async function () {
-  //   console.log(replyId);
-  //   const form_data = {
-  //     commentId: replyId,
-  //   };
-  //   const res = await axios({
-  //     method: "get",
-  //     url: "/deleteComment",
-  //     data: form_data,
-  //     timeout: 15000,
-  //   });
-  //   if (res.status === 200) {
-  //     console.log("삭제성공!");
-  //     $("#lv1_" + replyId).remove();
-  //   }
-  // });
 });
