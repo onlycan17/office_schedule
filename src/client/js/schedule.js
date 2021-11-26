@@ -11,6 +11,7 @@ import axios from "axios";
 const modal = document.querySelector(".modal");
 const coloseButton = document.querySelector(".close-button");
 const cancelButton = document.querySelector("#cancel");
+const deleteButton = document.querySelector("#delete");
 const submitButton = document.querySelector("#submit");
 const color = document.getElementById("color").value;
 const calValue = document.getElementById("calValue").value;
@@ -23,6 +24,7 @@ const flag  = document.getElementById("flag").value;
 coloseButton.addEventListener("click", cancel);
 submitButton.addEventListener("click", addParam);
 cancelButton.addEventListener("click", cancel);
+deleteButton.addEventListener("click", deleteBtnEvent);
 
 let globalId, title, description, url, start, end, allDay;
 let globalCalendar;
@@ -88,39 +90,37 @@ document.addEventListener("DOMContentLoaded", function () {
           container: "body",
         });
       }
-      console.log(info.el);
-      console.log(info.event);
-      console.log('test----user : '+info.event._def.extendedProps.user);
-      if(info.event._def.extendedProps.user === user){
-        info.el.insertAdjacentHTML(
-          "beforeend",
-          '<span id="close_' + info.event.id + '" class="closeon">X</span>'
-        );
-      }
+      // console.log(info.el);
+      // console.log(info.event);
+      // console.log('test----user : '+info.event._def.extendedProps.user);
+      // if(info.event._def.extendedProps.user === user){
+      //   info.el.insertAdjacentHTML(
+      //     "beforeend",
+      //     '<span id="close_' + info.event.id + '" class="closeon">X</span>'
+      //   );
+      // }
       //info.el.innerText = `<span class='closeon'>x</span>`;
-      $("#close_" + info.event.id).click(async function () {
-        //$("#calendar").fullCalendar("removeEvents", info._id);
-        if(asyncValue){
-          asyncValue = false;
-          deleteflag = true;
-        //globalId = info.event.id;
-          const event = calendar.getEventById(info.event.id);
-          event.remove();
-          console.log("-----delete------");
-          console.log(info.event.id);
-          const res = await axios({
-            method: "delete",
-            url: "/deleteSchedule",
-            data: { id: info.event.id },
-            timeout: 15000,
-          });
+      // $("#close_" + info.event.id).click(async function () {
+      //   if(asyncValue){
+      //     asyncValue = false;
+      //     deleteflag = true;
+      //     const event = calendar.getEventById(info.event.id);
+      //     event.remove();
+      //     console.log("-----delete------");
+      //     console.log(info.event.id);
+      //     const res = await axios({
+      //       method: "delete",
+      //       url: "/deleteSchedule",
+      //       data: { id: info.event.id },
+      //       timeout: 15000,
+      //     });
 
-          if (res.status === 200) {
-            console.log("저장완료!");
-          }
-          asyncValue = true;
-        }
-      });
+      //     if (res.status === 200) {
+      //       console.log("저장완료!");
+      //     }
+      //     asyncValue = true;
+      //   }
+      // });
     },
     eventClick: function (e) {
       console.log(e);
@@ -149,11 +149,20 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         }
         if(e.event._def.extendedProps.user === user){
+          deleteButton.style.display = "inline";
+          submitButton.style.display = 'inline';
+          const title = document.getElementById('title');
+          const description = document.getElementById('description');
+          const url =  document.getElementById('url');
+          title.disabled = false;
+          description.disabled = false;
+          url.disabled = false;
           submitButton.removeEventListener("click", addParam);
           submitButton.addEventListener("click", function () {
             updateParam(globalId);
           });
         }else{
+          deleteButton.style.display = "none";
           const title = document.getElementById('title');
           const description = document.getElementById('description');
           const url =  document.getElementById('url');
@@ -177,6 +186,14 @@ document.addEventListener("DOMContentLoaded", function () {
       end = arg.end;
       allDay = arg.allDay;
       modal.style.display = "block";
+      deleteButton.style.display = "none";
+      submitButton.style.display = 'inline';
+      const title = document.getElementById('title');
+      const description = document.getElementById('description');
+      const url =  document.getElementById('url');
+      title.disabled = false;
+      description.disabled = false;
+      url.disabled = false;
       toggleModal();
     },
     eventAdd: async function (obj) {
@@ -346,6 +363,24 @@ function cancel(){
   document.getElementById("url").value = "";
   globalCalendar.unselect();
   modal.classList.toggle("show-modal");
+}
+
+async function deleteBtnEvent() {
+  if(confirm("삭제 하시겠습니까?")){
+    const res = await axios({
+      method: "delete",
+      url: "/deleteSchedule",
+      data: { id: globalId },
+      timeout: 15000,
+    });
+
+    if (res.status === 200) {
+      console.log("저장완료!");
+      const calendar =  globalCalendar.getEventById(globalId);
+      calendar.remove();
+      modal.classList.toggle("show-modal");     
+    }
+  }
 }
 
 async function addParam() {

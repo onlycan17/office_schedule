@@ -599,6 +599,8 @@ A HORIZONTAL event
     flex-grow: 1;
     flex-shrink: 1;
     min-width: 0; /* important for allowing to shrink all the way */
+    padding-top: 3px;
+    height: 18px;
   }
 .fc-h-event .fc-event-title {
     display: inline-block; /* need this to be sticky cross-browser */
