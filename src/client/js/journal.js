@@ -566,6 +566,7 @@ async function addParam() {
       }
     }
     asyncValue = true;
+    
   }
 }
 
@@ -597,6 +598,7 @@ function viewAddEvents(id) {
   $(".pull-right > .btn").remove();
   $(".file a").remove();
   editor.isReadOnly = false;
+  location.reload();
 }
 
 async function updateParam(id) {
