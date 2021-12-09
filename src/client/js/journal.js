@@ -160,6 +160,7 @@ document.addEventListener("DOMContentLoaded", function () {
         $("#commentTextarea").css("display", "flex");
         if (e.event.extendedProps.description) {
           editor.setData(e.event.extendedProps.description);
+          $('#userNameText').val(e.event.title);
           editor.isReadOnly = true;
           //console.log(editor.state);
           const month = moment(e.event.start).format("YYYYMM");

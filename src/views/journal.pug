@@ -23,8 +23,11 @@ block content
             div(id="close-menu")
                 span(class="ion-close-round")
             div(class="sidebarTitle")
-                h1(style="color:white") 업무일지    
+                h1(style="color:white") 업무일지
             div(class="box")
+                div(class="column")
+                        label 작성자
+                        input(type="text", id="userNameText", readonly="true")
                 div(class="row")
                     div(class="column")
                         label(for="start") 시작날짜 
