@@ -62,7 +62,7 @@ export const getSchedule = async (req, res) => {
     schedule = await Schedule.find({
       department: dep,
       $or: [{ start: new RegExp(dateMonth) }, { end: new RegExp(dateMonth) }],
-    });
+    }).populate("user");
   } else {
     //console.log(typeof req.session.user.department._id);
     urlParam = req.url;
@@ -72,7 +72,7 @@ export const getSchedule = async (req, res) => {
     schedule = await Schedule.find({
       department: dep,
       $or: [{ start: new RegExp(dateMonth) }, { end: new RegExp(dateMonth) }],
-    }).populate("department");
+    }).populate("department").populate("user");
   }
   //console.log(schedule);
   const color = req.session.user.color;
@@ -246,7 +246,7 @@ export const customSchedule = async (req, res) => {
         { start: new RegExp(calendarDate) },
         { end: new RegExp(calendarDate) },
       ],
-    });
+    }).populate("user");
   } else {
     schedule = await Schedule.find({
       department: req.session.user.department,
@@ -254,7 +254,7 @@ export const customSchedule = async (req, res) => {
         { start: new RegExp(calendarDate) },
         { end: new RegExp(calendarDate) },
       ],
-    });
+    }).populate("user");
   }
   // console.log(schedule);
   const color = req.session.user.color;
@@ -300,13 +300,13 @@ export const customWeekSchedule = async (req, res) => {
       department: dep,
       $or: [{ start: { $gte: startDate } }, { start: { $lte: endDate } }],
       $or: [{ end: { $gte: startDate } }, { end: { $lte: endDate } }],
-    });
+    }).populate("user");
   } else {
     schedule = await Schedule.find({
       department: req.session.user.department,
       $or: [{ start: { $gte: startDate } }, { start: { $lte: endDate } }],
       $or: [{ end: { $gte: startDate } }, { end: { $lte: endDate } }],
-    });
+    }).populate("user");
   }
   // console.log(schedule);
   const color = req.session.user.color;

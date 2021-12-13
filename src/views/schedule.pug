@@ -10,12 +10,16 @@ block content
     input(id="flag", type="hidden", value=`${flag}`)
     input(id="menuName", type="hidden", value=`${menuName}`)
     input(id="user", type="hidden", value=`${loggedInUser._id}`)
+    input(id="sessionUserName", type="hidden", value=`${loggedInUser.name}`)
     input(id="department", type="hidden", value=`${loggedInUser.department._id}`)
     div(class="modal" style="display:none")
         div(class="modal-content")
             span(class="close-button") &times;
             h1 스케줄입력
             div(class="form")
+                div(class="content" id="userNameComponent")
+                    label(for="title") 작성자 
+                    input(type="text" , id="userName", disabled)
                 div(class="content")
                     label(for="title") 제목 
                     input(type="text" , id="title", require)
