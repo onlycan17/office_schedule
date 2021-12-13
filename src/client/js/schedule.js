@@ -16,6 +16,7 @@ const submitButton = document.querySelector("#submit");
 const color = document.getElementById("color").value;
 const calValue = document.getElementById("calValue").value;
 const user = document.getElementById("user").value;
+const sessionUserName = document.getElementById("sessionUserName").value;
 const department = document.getElementById("department").value;
 const order  = document.getElementById("order").value;
 const menuName  = document.getElementById("menuName").value;
@@ -133,6 +134,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("description").value =
           e.event.extendedProps.description;
         document.getElementById("url").value = e.event.url;
+        document.getElementById("userName").value = e.event.extendedProps.user.name;
         console.log("------update----");
         console.log(e.event.id);
         globalId = e.event.id;
@@ -188,6 +190,7 @@ document.addEventListener("DOMContentLoaded", function () {
       modal.style.display = "block";
       deleteButton.style.display = "none";
       submitButton.style.display = 'inline';
+      document.getElementById("userName").value = sessionUserName;
       const title = document.getElementById('title');
       const description = document.getElementById('description');
       const url =  document.getElementById('url');
