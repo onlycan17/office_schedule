@@ -127,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log(e);
       //description = e.description;
       e.jsEvent.preventDefault();
-      console.log(e.event);
+      // console.log(e.event);
       if (!deleteflag) {
         modal.style.display = "block";
         document.getElementById("title").value = e.event.title;
@@ -135,8 +135,8 @@ document.addEventListener("DOMContentLoaded", function () {
           e.event.extendedProps.description;
         document.getElementById("url").value = e.event.url;
         document.getElementById("userName").value = e.event.extendedProps.user.name;
-        console.log("------update----");
-        console.log(e.event.id);
+        // console.log("------update----");
+        // console.log(e.event.id);
         globalId = e.event.id;
         start = e.event.start;
         end = e.event.end;
@@ -150,7 +150,9 @@ document.addEventListener("DOMContentLoaded", function () {
             window.open(e.event.url, "_blank");
           }
         }
-        if(e.event._def.extendedProps.user === user){
+        // console.log('user === user');
+        // console.log(typeof e.event.extendedProps.user._id, typeof user);
+        if(e.event._def.extendedProps.user._id === user){
           deleteButton.style.display = "inline";
           submitButton.style.display = 'inline';
           const title = document.getElementById('title');
