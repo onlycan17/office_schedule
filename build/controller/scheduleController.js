@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.customWeekSchedule = exports.customSchedule = exports.deleteSchedule = exports.postAddSchedule = exports.getSchedule = void 0;
+exports.postAddSchedule = exports.getSchedule = exports.deleteSchedule = exports.customWeekSchedule = exports.customSchedule = void 0;
 
 var _menu = _interopRequireDefault(require("../schema/menu"));
 
@@ -16,6 +16,8 @@ var _user = _interopRequireDefault(require("../schema/user"));
 var _department = _interopRequireDefault(require("../schema/department"));
 
 var _nodeSchedule = _interopRequireDefault(require("node-schedule"));
+
+var _auth = _interopRequireDefault(require("../schema/auth"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -31,7 +33,7 @@ var urlParam, urlStr, orderParam;
 
 var getSchedule = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(req, res) {
-    var schedule, now, dateMonth, order, menu, subMenu, department, dep, _dep, color;
+    var schedule, now, dateMonth, order, menu, subMenu, auth, dep, _dep, color;
 
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
@@ -40,25 +42,25 @@ var getSchedule = /*#__PURE__*/function () {
             console.log("getSchedule!");
             console.log(urlParam);
             now = new Date();
-            dateMonth = now.getFullYear() + "-" + (now.getMonth() + 1 < 10 ? "0" + (now.getMonth() + 1) : now.getMonth() + 1);
-            console.log(dateMonth); //console.log(JSON.stringify(req.session.user.department._id));
+            dateMonth = now.getFullYear() + "-" + (now.getMonth() + 1 < 10 ? "0" + (now.getMonth() + 1) : now.getMonth() + 1); //console.log(dateMonth);
+            //console.log(JSON.stringify(req.session.user.department._id));
             //관리자일 경우
 
-            if (!(req.session.user.department._id === "612490cc21f010838f50a41b")) {
-              _context.next = 38;
+            if (!(req.session.user.department._id === "612490cc21f010838f50a41b" || res.locals.menuName && res.locals.flag === true && res.locals.lastOrder)) {
+              _context.next = 34;
               break;
             }
 
             urlStr = req.url;
             urlStr = urlStr.split("?");
             urlParam = urlStr[0];
-            order = req.query.order;
-            console.log(urlParam);
-            console.log("------order---");
-            console.log(req.query);
+            order = req.query.order; //console.log(urlParam);
+
+            console.log("------order---"); //console.log(req.query);
+
             console.log(order);
             orderParam = order;
-            _context.next = 17;
+            _context.next = 14;
             return _menu["default"].findOne({
               subMenu: {
                 $elemMatch: {
@@ -68,42 +70,48 @@ var getSchedule = /*#__PURE__*/function () {
               }
             }).populate("subMenu");
 
-          case 17:
+          case 14:
             menu = _context.sent;
-            console.log(menu);
 
             if (menu) {
-              _context.next = 21;
+              _context.next = 17;
               break;
             }
 
             return _context.abrupt("return", res.sendStatus(500));
 
-          case 21:
-            _context.next = 23;
+          case 17:
+            _context.next = 19;
             return menu.subMenu.find(isUrl);
 
-          case 23:
+          case 19:
             subMenu = _context.sent;
+            console.log(subMenu);
 
             if (subMenu) {
-              _context.next = 26;
+              _context.next = 23;
               break;
             }
 
             return _context.abrupt("return", res.sendStatus(500));
 
-          case 26:
-            console.log("------submenufilter-----");
-            console.log(subMenu);
-            department = subMenu.department[0];
-            console.log(department._id);
+          case 23:
+            _context.next = 25;
+            return _auth["default"].findOne({
+              subUrl: urlParam,
+              order: order
+            }).select("department");
+
+          case 25:
+            auth = _context.sent;
+            console.log('-----auth-departmentId-------');
+            console.log(auth);
             dep = {
-              _id: new ObjectId(department._id)
-            };
-            console.log("-------------");
-            console.log(dep);
-            _context.next = 35;
+              _id: new ObjectId(auth.department._id)
+            }; //console.log("-------------");
+            //console.log(dep);
+
+            _context.next = 31;
             return _schedule["default"].find({
               department: dep,
               $or: [{
@@ -111,20 +119,20 @@ var getSchedule = /*#__PURE__*/function () {
               }, {
                 end: new RegExp(dateMonth)
               }]
-            });
+            }).populate("user");
 
-          case 35:
+          case 31:
             schedule = _context.sent;
-            _context.next = 43;
+            _context.next = 39;
             break;
 
-          case 38:
+          case 34:
             //console.log(typeof req.session.user.department._id);
             urlParam = req.url;
             _dep = {
               _id: new ObjectId(req.session.user.department._id)
             };
-            _context.next = 42;
+            _context.next = 38;
             return _schedule["default"].find({
               department: _dep,
               $or: [{
@@ -132,22 +140,22 @@ var getSchedule = /*#__PURE__*/function () {
               }, {
                 end: new RegExp(dateMonth)
               }]
-            }).populate("department");
+            }).populate("department").populate("user");
 
-          case 42:
+          case 38:
             schedule = _context.sent;
 
-          case 43:
-            console.log(schedule);
-            color = req.session.user.color;
-            console.log(color);
+          case 39:
+            //console.log(schedule);
+            color = req.session.user.color; //console.log(color);
+
             return _context.abrupt("return", res.render("schedule", {
               pageTitle: req.session.user.department.name + "스케줄",
               schedule: schedule,
               color: color
             }));
 
-          case 47:
+          case 41:
           case "end":
             return _context.stop();
         }
@@ -163,9 +171,8 @@ var getSchedule = /*#__PURE__*/function () {
 exports.getSchedule = getSchedule;
 
 var isUrl = function isUrl(element, index) {
-  console.log("-----isUrl------");
-  console.log(element.order);
-
+  //console.log("-----isUrl------");
+  //console.log(element.order);
   if (element.subMenuUrl === urlParam && element.order === Number(orderParam)) {
     return true;
   }
@@ -179,13 +186,10 @@ var postAddSchedule = /*#__PURE__*/function () {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            _req$body = req.body, title = _req$body.title, description = _req$body.description, url = _req$body.url, start = _req$body.start, end = _req$body.end, allDay = _req$body.allDay, color = _req$body.color, user = _req$body.user, department = _req$body.department;
-            console.log(title, description);
+            _req$body = req.body, title = _req$body.title, description = _req$body.description, url = _req$body.url, start = _req$body.start, end = _req$body.end, allDay = _req$body.allDay, color = _req$body.color, user = _req$body.user, department = _req$body.department; //console.log(title, description);
+
             departmentInfo = JSON.parse(department);
-            console.log("~~~~~~~~~~");
-            console.log(req.body);
-            console.log(user);
-            _context2.next = 8;
+            _context2.next = 4;
             return _schedule["default"].create({
               title: title,
               description: description,
@@ -198,12 +202,12 @@ var postAddSchedule = /*#__PURE__*/function () {
               department: departmentInfo._id
             });
 
-          case 8:
+          case 4:
             schedule = _context2.sent;
-            _context2.next = 11;
+            _context2.next = 7;
             return _user["default"].findById(user);
 
-          case 11:
+          case 7:
             userInfo = _context2.sent;
 
             // console.log("~~~~~~~~~~");
@@ -216,8 +220,8 @@ var postAddSchedule = /*#__PURE__*/function () {
             startYear = start.substr(0, 4);
             startMonth = start.substr(5, 2);
             startDay = start.substr(8, 2); // console.log("substr 확인------");
+            //console.log(startYear + " " + startMonth + " " + startDay);
 
-            console.log(startYear + " " + startMonth + " " + startDay);
             dateNow = new Date();
             year = dateNow.getFullYear();
             month = "0" + (dateNow.getMonth() + 1);
@@ -244,9 +248,8 @@ var postAddSchedule = /*#__PURE__*/function () {
                 minute = 60 - 5 - Number(minute) + "";
               } else {
                 minute = Number(minute) - 5 + "";
-              }
+              } //console.log(startYear + " " + startMonth + " " + startDay);
 
-              console.log(startYear + " " + startMonth + " " + startDay);
 
               _nodeSchedule["default"].scheduleJob(new Date().getSeconds() + " " + minute + " " + hour + " " + startDay + " " + " " + startMonth + " " + startYear, function () {
                 _pusher["default"].trigger("timeAlram_" + departmentInfo._id, "timeAlram_" + departmentInfo._id, {
@@ -259,7 +262,7 @@ var postAddSchedule = /*#__PURE__*/function () {
               id: schedule._id
             }));
 
-          case 25:
+          case 20:
           case "end":
             return _context2.stop();
         }
@@ -281,19 +284,19 @@ var deleteSchedule = /*#__PURE__*/function () {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            console.log("deleteSchedule~~~!");
-            console.log(req.params);
-            console.log(req.body);
-            id = req.body.id;
-            console.log(id);
-            _context3.next = 7;
+            //console.log("deleteSchedule~~~!");
+            //console.log(req.params);
+            //console.log(req.body);
+            id = req.body.id; //console.log(id);
+
+            _context3.next = 3;
             return _schedule["default"].findByIdAndDelete(id);
 
-          case 7:
+          case 3:
             result = _context3.sent;
             return _context3.abrupt("return", res.sendStatus(200));
 
-          case 9:
+          case 5:
           case "end":
             return _context3.stop();
         }
@@ -310,7 +313,9 @@ exports.deleteSchedule = deleteSchedule;
 
 var customSchedule = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(req, res) {
-    var schedule, _req$query, url, calendarDate, menu, subMenu, department, color;
+    var _req$session, _req$session$user, _req$session$user$dep;
+
+    var schedule, _req$query, url, calendarDate, order, menuName, flag, flagTemp, menu, subMenu, auth, dep, color;
 
     return regeneratorRuntime.wrap(function _callee4$(_context4) {
       while (1) {
@@ -318,17 +323,25 @@ var customSchedule = /*#__PURE__*/function () {
           case 0:
             //url = req.url;
             //console.log(req);
-            _req$query = req.query, url = _req$query.url, calendarDate = _req$query.calendarDate;
-            console.log(req.query);
-            console.log(url); //console.log(JSON.stringify(req.session.user.department._id));
+            //console.log(req.query);
+            _req$query = req.query, url = _req$query.url, calendarDate = _req$query.calendarDate, order = _req$query.order, menuName = _req$query.menuName, flag = _req$query.flag;
+            console.log(order);
+            orderParam = Number(order); //console.log(req.query);
+            //console.log(url);
+            //console.log(JSON.stringify(req.session.user.department._id));
+            //console.log(menuName);
+            //console.log(order);
+            //console.log(typeof flag);
+
+            flagTemp = JSON.parse(flag); //console.log(req?.session?.user?.department?._id);
             //관리자일 경우
 
-            if (!(req.session.user.department._id === "612490cc21f010838f50a41b")) {
-              _context4.next = 18;
+            if (!((req === null || req === void 0 ? void 0 : (_req$session = req.session) === null || _req$session === void 0 ? void 0 : (_req$session$user = _req$session.user) === null || _req$session$user === void 0 ? void 0 : (_req$session$user$dep = _req$session$user.department) === null || _req$session$user$dep === void 0 ? void 0 : _req$session$user$dep._id) === "612490cc21f010838f50a41b" || menuName && flagTemp === true && order)) {
+              _context4.next = 23;
               break;
             }
 
-            _context4.next = 6;
+            _context4.next = 7;
             return _menu["default"].findOne({
               subMenu: {
                 $elemMatch: {
@@ -337,41 +350,52 @@ var customSchedule = /*#__PURE__*/function () {
               }
             }).populate("subMenu");
 
-          case 6:
+          case 7:
             menu = _context4.sent;
-            _context4.next = 9;
+            _context4.next = 10;
             return menu.subMenu.find(isUrl);
 
-          case 9:
+          case 10:
             subMenu = _context4.sent;
 
             if (subMenu) {
-              _context4.next = 12;
+              _context4.next = 13;
               break;
             }
 
             return _context4.abrupt("return", res.sendStatus(500));
 
-          case 12:
-            department = subMenu.department[0]; // console.log(department);
-
+          case 13:
             _context4.next = 15;
+            return _auth["default"].findOne({
+              subUrl: url,
+              order: orderParam
+            }).select("department");
+
+          case 15:
+            auth = _context4.sent;
+            //console.log('-----auth-departmentId-------');
+            console.log(auth);
+            dep = {
+              _id: new ObjectId(auth.department._id)
+            };
+            _context4.next = 20;
             return _schedule["default"].find({
-              department: department,
+              department: dep,
               $or: [{
                 start: new RegExp(calendarDate)
               }, {
                 end: new RegExp(calendarDate)
               }]
-            });
+            }).populate("user");
 
-          case 15:
+          case 20:
             schedule = _context4.sent;
-            _context4.next = 21;
+            _context4.next = 26;
             break;
 
-          case 18:
-            _context4.next = 20;
+          case 23:
+            _context4.next = 25;
             return _schedule["default"].find({
               department: req.session.user.department,
               $or: [{
@@ -379,12 +403,12 @@ var customSchedule = /*#__PURE__*/function () {
               }, {
                 end: new RegExp(calendarDate)
               }]
-            });
+            }).populate("user");
 
-          case 20:
+          case 25:
             schedule = _context4.sent;
 
-          case 21:
+          case 26:
             // console.log(schedule);
             color = req.session.user.color; //console.log(color);
 
@@ -392,7 +416,7 @@ var customSchedule = /*#__PURE__*/function () {
               schedule: schedule
             }));
 
-          case 23:
+          case 28:
           case "end":
             return _context4.stop();
         }
@@ -409,7 +433,7 @@ exports.customSchedule = customSchedule;
 
 var customWeekSchedule = /*#__PURE__*/function () {
   var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(req, res) {
-    var schedule, _req$query2, url, startDate, endDate, now, menu, subMenu, department, color;
+    var schedule, _req$query2, url, startDate, endDate, order, menuName, flag, flagTemp, now, menu, auth, dep, color;
 
     return regeneratorRuntime.wrap(function _callee5$(_context5) {
       while (1) {
@@ -417,19 +441,18 @@ var customWeekSchedule = /*#__PURE__*/function () {
           case 0:
             //url = req.url;
             //console.log(req);
-            _req$query2 = req.query, url = _req$query2.url, startDate = _req$query2.startDate, endDate = _req$query2.endDate;
-            console.log(req.query);
-            console.log(url);
-            now = new Date(); // const dateMonth =
-            //   now.getFullYear() +
-            //   "-" +
-            //   (now.getMonth()+ Number(monthCaculate) + 1 < 10 ? "0" + (now.getMonth()+ Number(monthCaculate) + 1) : now.getMonth() + Number(monthCaculate) + 1);
-            // console.log(dateMonth);
-            //console.log(JSON.stringify(req.session.user.department._id));
-            //관리자일 경우
+            _req$query2 = req.query, url = _req$query2.url, startDate = _req$query2.startDate, endDate = _req$query2.endDate, order = _req$query2.order, menuName = _req$query2.menuName, flag = _req$query2.flag; //console.log(menuName);
+            //console.log(order);
+            //console.log(flag);
 
-            if (!(req.session.user.department._id === "612490cc21f010838f50a41b")) {
-              _context5.next = 17;
+            orderParam = Number(order);
+            flagTemp = JSON.parse(flag); //console.log(req.query);
+            //console.log(url);
+
+            now = new Date(); //관리자일 경우
+
+            if (!(req.session.user.department._id === "612490cc21f010838f50a41b" || menuName && flagTemp === true && order)) {
+              _context5.next = 19;
               break;
             }
 
@@ -445,15 +468,22 @@ var customWeekSchedule = /*#__PURE__*/function () {
           case 7:
             menu = _context5.sent;
             _context5.next = 10;
-            return menu.subMenu.find(isUrl);
+            return _auth["default"].findOne({
+              subUrl: url,
+              order: orderParam
+            }).select("department");
 
           case 10:
-            subMenu = _context5.sent;
-            department = subMenu.department[0]; // console.log(department);
+            auth = _context5.sent;
+            console.log('-----auth-departmentId-------');
+            console.log(auth);
+            dep = {
+              _id: new ObjectId(auth.department._id)
+            }; // console.log(department);
 
-            _context5.next = 14;
+            _context5.next = 16;
             return _schedule["default"].find(_defineProperty({
-              department: department,
+              department: dep,
               $or: [{
                 start: {
                   $gte: startDate
@@ -471,15 +501,15 @@ var customWeekSchedule = /*#__PURE__*/function () {
               end: {
                 $lte: endDate
               }
-            }]));
+            }])).populate("user");
 
-          case 14:
+          case 16:
             schedule = _context5.sent;
-            _context5.next = 20;
+            _context5.next = 22;
             break;
 
-          case 17:
-            _context5.next = 19;
+          case 19:
+            _context5.next = 21;
             return _schedule["default"].find(_defineProperty({
               department: req.session.user.department,
               $or: [{
@@ -499,12 +529,12 @@ var customWeekSchedule = /*#__PURE__*/function () {
               end: {
                 $lte: endDate
               }
-            }]));
+            }])).populate("user");
 
-          case 19:
+          case 21:
             schedule = _context5.sent;
 
-          case 20:
+          case 22:
             // console.log(schedule);
             color = req.session.user.color; //console.log(color);
 
@@ -512,7 +542,7 @@ var customWeekSchedule = /*#__PURE__*/function () {
               schedule: schedule
             }));
 
-          case 22:
+          case 24:
           case "end":
             return _context5.stop();
         }

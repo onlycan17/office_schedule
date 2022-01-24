@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", function () {
         //     console.log(info.event.id);
         //     const res = await axios({
         //       method: "delete",
-        //       url: "/deleteJournal",
+        //       url: "/deleteMeal",
         //       data: { id: info.event.id },
         //       timeout: 15000,
         //     });
@@ -165,7 +165,8 @@ document.addEventListener("DOMContentLoaded", function () {
         $("#commentTextarea").css("display", "flex");
         if (e.event.extendedProps.description) {
           editor.setData(e.event.extendedProps.description);
-          $('#userNameText').val(e.event.title);
+          $('#title').val(e.event.title);
+          $('#title').attr("readonly",true);
           editor.isReadOnly = true;
           //console.log(editor.state);
           const month = moment(e.event.start).format("YYYYMM");
@@ -207,7 +208,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (element.comments) {
               element.comments.forEach((data) => {
-                if (data.journal === e.event.id) {
+                if (data.meal === e.event.id) {
                   $("#comment").append(`
                     <div id="lv1_${data._id}" class="commentColumn bolder">
                       <div id="lv2_${data._id}" class="row">${data?.text}</div>
@@ -284,8 +285,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const department = JSON.parse(
         document.getElementById("department").value
       );
-      if (department._id === "612490cc21f010838f50a41b") {
-        alert("관리자는 등록하실 수 없습니다.");
+      if (department._id !== "612490cc21f010838f50a41b") {
+        alert("관리자 외에는 등록하실 수 없습니다.");
         return false;
       }
       const month = moment(arg.start).format("YYYYMM");
@@ -310,7 +311,7 @@ document.addEventListener("DOMContentLoaded", function () {
         toggleSideBar();
       } else {
         alert(
-          "지난달 업무일지를 작성할 수 있는 기간이 만료되었습니다.\n (예: 작성할 지난달이 10월일경우 11월 7일전까지 등록해야 함.)"
+          "지난달 식단표를 작성할 수 있는 기간이 만료되었습니다.\n (예: 작성할 지난달이 10월일경우 11월 7일전까지 등록해야 함.)"
         );
       }
     },
@@ -346,7 +347,7 @@ document.addEventListener("DOMContentLoaded", function () {
             //console.log(window.location.pathname);
             const res = await axios({
               method: "get",
-              url: "/customJournal",
+              url: "/customMeal",
               params: {
                 calendarDate,
                 url: window.location.pathname,
@@ -356,8 +357,8 @@ document.addEventListener("DOMContentLoaded", function () {
               },
               timeout: 15000,
             });
-            console.log(res.data.journal);
-            res.data.journal.forEach((element) => {
+            console.log(res.data.meal);
+            res.data.meal.forEach((element) => {
               calendar.addEvent(element);
             });
             calendar.unselect();
@@ -369,7 +370,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const endDate = moment(end).format("YYYY-MM-DD");
             const res = await axios({
               method: "get",
-              url: "/customWeekJournal",
+              url: "/customWeekMeal",
               params: {
                 startDate,
                 endDate,
@@ -380,8 +381,8 @@ document.addEventListener("DOMContentLoaded", function () {
               },
               timeout: 15000,
             });
-            console.log(res.data.journal);
-            res.data.journal.forEach((element) => {
+            console.log(res.data.meal);
+            res.data.meal.forEach((element) => {
               calendar.addEvent(element);
             });
             calendar.unselect();
@@ -405,7 +406,7 @@ document.addEventListener("DOMContentLoaded", function () {
             //console.log(window.location.pathname);
             const res = await axios({
               method: "get",
-              url: "/customJournal",
+              url: "/customMeal",
               params: {
                 calendarDate,
                 url: window.location.pathname,
@@ -415,8 +416,8 @@ document.addEventListener("DOMContentLoaded", function () {
               },
               timeout: 15000,
             });
-            console.log(res.data.journal);
-            res.data.journal.forEach((element) => {
+            console.log(res.data.meal);
+            res.data.meal.forEach((element) => {
               calendar.addEvent(element);
             });
             calendar.unselect();
@@ -428,7 +429,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const endDate = moment(end).format("YYYY-MM-DD");
             const res = await axios({
               method: "get",
-              url: "/customWeekJournal",
+              url: "/customWeekMeal",
               params: {
                 startDate,
                 endDate,
@@ -439,8 +440,8 @@ document.addEventListener("DOMContentLoaded", function () {
               },
               timeout: 15000,
             });
-            console.log(res.data.journal);
-            res.data.journal.forEach((element) => {
+            console.log(res.data.meal);
+            res.data.meal.forEach((element) => {
               calendar.addEvent(element);
             });
             calendar.unselect();
@@ -505,27 +506,28 @@ function toggleSideBar() {
 async function addParam() {
   if (asyncValue && editor.getData()) {
     asyncValue = false;
-    //title = document.getElementById("title").value;
+    
     description = editor.getData();
-    const singleFile = document.getElementById("singleFile");
-    console.log(singleFile.files[0]);
-    let formData = new FormData();
-    formData.append("start", start);
-    formData.append("end", end);
-    formData.append("allDay", allDay);
-    formData.append("color", color);
-    formData.append("user", user);
-    formData.append("department", department);
-    formData.append("description", description);
-    formData.append("singleFile", singleFile.files[0]);
+    title = document.getElementById('title').value;
+    
+    const formData = {
+      start,
+      end,
+      allDay,
+      color,
+      user,
+      title,
+      description,
+    }
+    
 
     const res = await axios({
       method: "post",
-      url: "/addJournal",
+      url: "/addMeal",
       data: formData,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+      // headers: {
+      //   "Content-Type": "multipart/form-data",
+      // },
       timeout: 15000,
     });
 
@@ -534,42 +536,21 @@ async function addParam() {
       viewAddEvents(res.data.id);
       //calendar.refetchEvents();
       console.log("저장완료! id:" + res.data.id);
-      console.log(res.data.filePath);
-      console.log(res.data.fileName);
-      if (res.data.fileId) {
-        const pushData = {
-          _id: res.data.id,
-          id: res.data.id,
-          text: description,
-          start,
-          end,
-          allDay,
-          department,
-          user,
-          color,
-          file: {
-            _id: res.data.fileId,
-            originalname: res.data.fileName,
-            path: res.data.filePath,
-          },
-          comments: [],
-        };
-        scheduleData.push(pushData);
-      } else {
-        const pushData = {
-          _id: res.data.id,
-          id: res.data.id,
-          text: description,
-          start,
-          end,
-          allDay,
-          department,
-          user,
-          color,
-          comments: [],
-        };
-        scheduleData.push(pushData);
-      }
+      
+      const pushData = {
+        _id: res.data.id,
+        id: res.data.id,
+        text: description,
+        start,
+        end,
+        allDay,
+        department,
+        user,
+        color,
+        comments: [],
+      };
+      scheduleData.push(pushData);
+      
     }
     asyncValue = true;
     
@@ -580,17 +561,16 @@ function viewAddEvents(id) {
   if (description) {
     globalCalendar.addEvent({
       id,
-      title: userName,
+      title,
       start,
       end,
       allDay,
       description,
-      //url,
       color,
     });
   }
-  //title = "";
-  //document.getElementById("title").value = "";
+  title = "";
+  document.getElementById("title").value = "";
   description = "";
   editor.setData("");
   //url = "";
@@ -614,7 +594,7 @@ async function updateParam(id) {
     console.log(id);
     const resDel = await axios({
       method: "delete",
-      url: "/deleteJournal",
+      url: "/deleteMeal",
       data: { id },
       timeout: 15000,
     });
@@ -626,24 +606,21 @@ async function updateParam(id) {
 
     //title = document.getElementById("title").value;
     description = editor.getData();
-    const singleFile = document.getElementById("singleFile");
-    console.log(singleFile.files[0]);
-    let formData = new FormData();
-    formData.append("start", start);
-    formData.append("end", end);
-    formData.append("allDay", allDay);
-    formData.append("color", color);
-    formData.append("user", user);
-    formData.append("department", department);
-    formData.append("description", description);
-    formData.append("singleFile", singleFile.files[0]);
+    title = document.getElementById('title').value;
+    
+    const formData = {
+      start,
+      end,
+      allDay,
+      color,
+      user,
+      title,
+      description,
+    }
     const res = await axios({
       method: "post",
-      url: "/addJournal",
+      url: "/addMeal",
       data: formData,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
       timeout: 15000,
     });
 
@@ -660,12 +637,12 @@ async function addComment() {
   if (globalId && document.getElementById("content").value) {
     const form_data = {
       user,
-      journalId: globalId,
+      mealId: globalId,
       commentText: document.getElementById("content").value,
     };
     const res = await axios({
       method: "post",
-      url: "/addComment",
+      url: "/addMealComment",
       data: form_data,
       timeout: 15000,
     });
@@ -711,8 +688,8 @@ async function addComment() {
       //console.log(window.location.href);
       let temp = window.location.search;
       const param = temp.split("=");
-      //location.href = `/journal?order=${param[1]}`;
-      location.replace(`/journal?order=${param[1]}`);
+      //location.href = `/meal?order=${param[1]}`;
+      location.replace(`/meal?order=${param[1]}`);
       $("#close-menu").trigger("click");
     }
   }
@@ -721,6 +698,7 @@ async function addComment() {
 function clickEdit(id) {
   $(".pull-right > .btn").remove();
   editor.isReadOnly = false;
+  $('#title').attr("readonly",false);
   //editor.setData(contentDescription);
   $(".file a").remove();
   $("#singleFile").remove();
@@ -744,7 +722,7 @@ async function clickDelete(id) {
       console.log(id);
       const resDel = await axios({
         method: "delete",
-        url: "/deleteJournal",
+        url: "/deleteMeal",
         data: { id },
         timeout: 15000,
       });
@@ -787,14 +765,14 @@ async function editComment(replyId) {
   if (replyId) {
     const form_data = {
       user,
-      journalId: globalId,
+      mealId: globalId,
       commentText: document.getElementById("content_" + replyId).value,
       commentId: replyId,
     };
 
     const res = await axios({
       method: "patch",
-      url: `/editComment`,
+      url: `/editMealComment`,
       data: form_data,
       timeout: 15000,
     });
@@ -840,7 +818,7 @@ async function editComment(replyId) {
       $("#content").val("");
       let temp = window.location.search;
       const param = temp.split("=");
-      location.replace(`/journal?order=${param[1]}`);
+      location.replace(`/meal?order=${param[1]}`);
       $("#close-menu").trigger("click");
     }
   }
@@ -854,7 +832,7 @@ async function deleteComment(replyId) {
   };
   const res = await axios({
     method: "delete",
-    url: "/deleteComment",
+    url: "/deleteMealComment",
     data: form_data,
     timeout: 15000,
   });
@@ -890,6 +868,7 @@ $(function () {
     $("html").removeClass("active");
     $("#start").val("");
     $("#end").val("");
+    $('#title').val("");
     editor.setData("");
     $(".pull-right > .btn").remove();
     editor.isReadOnly = false;
@@ -912,6 +891,7 @@ $(function () {
     $("html").removeClass("active");
     $("#start").val("");
     $("#end").val("");
+    $('#title').val("");
     editor.setData("");
     $(".pull-right > .btn").remove();
     editor.isReadOnly = false;

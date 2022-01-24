@@ -25,6 +25,10 @@ var _journalController = require("../controller/journalController");
 
 var _connectMultiparty = _interopRequireDefault(require("connect-multiparty"));
 
+var _noticeBoardController = require("../controller/noticeBoardController");
+
+var _readerBoardController = require("../controller/readerBoardController");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var multipartMiddleware = (0, _connectMultiparty["default"])();
@@ -34,9 +38,11 @@ var router = _express["default"].Router();
 router.route("/").all(_middleware.localsMiddleware).get(_userController.getLogin).post(_userController.postLogin);
 router.route("/home").all(_middleware.localsMiddleware).all(_middleware.protectorMiddleware).get(_homeController.home);
 router.route("/logout").all(_middleware.localsMiddleware).get(_userController.logout);
-router.route("/join").all(_middleware.protectorMiddleware).get(_userController.getJoin);
+router.route("/join").all(_middleware.protectorMiddleware).get(_userController.getJoinForm);
+router.route("/joinList").post(_userController.joinList);
 router.route("/joinAdd").all(_middleware.protectorMiddleware).get(_userController.getJoinAdd).post(_userController.postJoinAdd);
 router.route("/join/:id([0-9a-f]{24})").all(_middleware.protectorMiddleware).get(_userController.getJoinUpdate).post(_userController.postJoinUpdate);
+router.route("/join/user/:id([0-9a-f]{24})").get(_userController.getJoinUserUpdate).post(_userController.postJoinUserUpdate);
 router.route("/department").all(_middleware.protectorMiddleware).get(_departmentController.getDepartment);
 router.route("/departmentAdd").all(_middleware.protectorMiddleware).get(_departmentController.getDepartmentAdd).post(_departmentController.postDepartmentAdd);
 router.route("/departmentDelete/:id([0-9a-f]{24})").all(_middleware.protectorMiddleware).get(_departmentController.deleteDepartment);
@@ -54,10 +60,29 @@ router.route("/schedule").all(_middleware.protectorMiddleware).get(_scheduleCont
 router.route("/addSchedule").post(_scheduleController.postAddSchedule);
 router.route("/deleteSchedule")["delete"](_scheduleController.deleteSchedule);
 router.route("/customSchedule").get(_scheduleController.customSchedule);
-router.route("/customWeekSchedule").get(_scheduleController.customWeekSchedule);
+router.route("/customWeekSchedule").get(_scheduleController.customWeekSchedule); //업무일지조회
+
 router.route("/searchJournal").all(_middleware.protectorMiddleware).get(_journalController.getSearchJournalForm);
 router.route("/postSearchJournal").post(_journalController.postSearchJournal);
-router.route("/excelDownload").post(_journalController.excelDownload);
+router.route("/excelDownload").post(_journalController.excelDownload); // 공지사항
+
+router.route("/noticeBoardList").all(_middleware.protectorMiddleware).get(_noticeBoardController.getNoticeBoardListForm).post(_noticeBoardController.getNoticeBoardList);
+router.route("/noticeBoardListAdd").all(_middleware.protectorMiddleware).get(_noticeBoardController.addNoticeBoardForm).post(_middleware.fileUpload.fields([{
+  name: "singleFile"
+}]), _noticeBoardController.addNoticeBoard);
+router.route("/noticeBoardListDetail/:id([0-9a-f]{24})").all(_middleware.protectorMiddleware).get(_noticeBoardController.noticeBoardListDetail).post(_middleware.fileUpload.fields([{
+  name: "singleFile"
+}]), _noticeBoardController.noticeBoardListDetailUpdate)["delete"](_noticeBoardController.noticeBoardListDetailDelete);
+router.route("/noticeBoardListFileDownload/:id([0-9a-f]{24})").get(_noticeBoardController.noticeBoardListFileDownload); //팀장공지
+
+router.route("/readerBoardList").all(_middleware.protectorMiddleware).get(_readerBoardController.getReaderBoardListForm).post(_readerBoardController.getReaderBoardList);
+router.route("/readerBoardListAdd").all(_middleware.protectorMiddleware).get(_readerBoardController.addReaderBoardForm).post(_middleware.fileUpload.fields([{
+  name: "singleFile"
+}]), _readerBoardController.addReaderBoard);
+router.route("/readerBoardListDetail/:id([0-9a-f]{24})").all(_middleware.protectorMiddleware).get(_readerBoardController.readerBoardListDetail).post(_middleware.fileUpload.fields([{
+  name: "singleFile"
+}]), _readerBoardController.readerBoardListDetailUpdate)["delete"](_readerBoardController.readerBoardListDetailDelete);
+router.route("/readerBoardListFileDownload/:id([0-9a-f]{24})").get(_readerBoardController.readerBoardListFileDownload);
 router.route("/journal").all(_middleware.protectorMiddleware).get(_journalController.getJournal);
 router.route("/addJournal").post(_middleware.fileUpload.fields([{
   name: "singleFile"
@@ -68,6 +93,6 @@ router.route("/customWeekJournal").get(_journalController.customWeekJournal);
 router.route("/download/:id([0-9a-f]{24})").get(_journalController.downloadFile);
 router.route("/addComment").post(_journalController.addPostComment);
 router.route("/editComment").patch(_journalController.editPatchComment);
-router.route("/deleteComment").get(_journalController.deleteComment);
+router.route("/deleteComment")["delete"](_journalController.deleteComment);
 var _default = router;
 exports["default"] = _default;

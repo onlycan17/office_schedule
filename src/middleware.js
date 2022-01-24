@@ -6,6 +6,8 @@ import ActionLog from "./schema/actionLog";
 import Menu from "./schema/menu";
 import parse from "rss-to-json";
 import Auth from "./schema/auth";
+import aws from "aws-sdk";
+import multerS3 from "multer-s3";
 let ObjectId = require("mongoose").Types.ObjectId;
 
 const isHeroku = process.env.NODE_ENV === "production";
@@ -232,12 +234,15 @@ export const fileUpload = multer({
 });
 
 export const dropbox = dropboxV2Api.authenticate({
-  // client_id : process.env.DBX_APP_KEY,
-  // client_secret : process.env.DBX_APP_SECRET,
-  // redirect_uri: process.env.REDIRECT || 'http://localhost:4500/auth',
+  client_id : process.env.DBX_APP_KEY,
+  client_secret : process.env.DBX_APP_SECRET,
+  redirect_uri: process.env.REDIRECT || 'http://localhost:4500/auth',
   token: process.env.DBX_TOKEN
 });
 
+const authUrl = dropbox.generateAuthUrl();
+console.log('----dropboxUrl------');
+console.log(authUrl);
   //  use session ref to call API, i.e.:
 // dropbox({
 //   resource: 'users/get_account',
@@ -248,3 +253,26 @@ export const dropbox = dropboxV2Api.authenticate({
 //   if (err) { return console.log(err); }
 //   console.log(result);
 // });
+
+
+const s3 = new aws.S3({
+  credentials: {
+      accessKeyId: process.env.AWS_KEY,
+      secretAccessKey: process.env.AWS_SECRET,
+  }
+});
+
+const s3ImageUploader = multerS3({
+  s3:s3,
+  bucket:'masterpiece-photo-uploads',
+  acl:"public-read",
+});
+
+export const photoUpload = multer({
+  dest: "uploads/photos/",
+  limits: {
+    fileSize: 9900000000,
+  },
+  //storage: isHeroku ? s3ImageUploader : undefined,
+  storage: s3ImageUploader,
+});

@@ -64,7 +64,7 @@ import {
   postSearchJournal,
 } from "../controller/journalController";
 import multipart from "connect-multiparty";
-import { fileUpload } from "../middleware";
+import { fileUpload,photoUpload } from "../middleware";
 import {
   addNoticeBoard,
   addNoticeBoardForm,
@@ -76,6 +76,8 @@ import {
   noticeBoardListFileDownload,
 } from "../controller/noticeBoardController";
 import { addReaderBoard, addReaderBoardForm, getReaderBoardList, getReaderBoardListForm, readerBoardListDetail, readerBoardListDetailDelete, readerBoardListDetailUpdate, readerBoardListFileDownload } from "../controller/readerBoardController";
+import { addPostMealComment, customMeal, customWeekMeal, deleteMeal, deleteMealComment, editPatchMealComment, getMeal, postAddMeal, uploadFileMeal } from "../controller/mealController";
+import { uploadPhotos } from "../controller/uploadImgController";
 
 const multipartMiddleware = multipart();
 
@@ -236,4 +238,20 @@ router.route("/download/:id([0-9a-f]{24})").get(downloadFile);
 router.route("/addComment").post(addPostComment);
 router.route("/editComment").patch(editPatchComment);
 router.route("/deleteComment").delete(deleteComment);
+
+//에디터 이미지 업로드
+router.route("/fileUploadMeal").post(photoUpload.any(), uploadPhotos);
+
+
+//식단스케줄
+router.route("/meal").all(protectorMiddleware).get(getMeal);
+router.route("/addMeal").post(postAddMeal);
+router.route("/deleteMeal").delete(deleteMeal);
+router.route("/customMeal").get(customMeal);
+router.route("/customWeekMeal").get(customWeekMeal);
+router.route("/downloadMeal/:id([0-9a-f]{24})").get(downloadFile);
+router.route("/addMealComment").post(addPostMealComment);
+router.route("/editMealComment").patch(editPatchMealComment);
+router.route("/deleteMealComment").delete(deleteMealComment);
+
 export default router;

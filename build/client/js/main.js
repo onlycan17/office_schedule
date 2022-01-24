@@ -8,7 +8,10 @@ var _regeneratorRuntime = require("regenerator-runtime");
 var department = JSON.parse(document.getElementById("department").value);
 var weatherStr = document.getElementById("weather").value;
 var alam = document.getElementById("sound");
-var snonwSound = document.getElementById("snowSound");
+var userMenu = JSON.parse(document.getElementById("menuList").value);
+var userId = document.getElementById("userId").value; //console.log('userId-------');
+//console.log(userId);
+
 getNotificationPermission(); //알림 권한 요청
 
 function getNotificationPermission() {
@@ -39,23 +42,64 @@ channel.bind(department._id + "", function (data) {
   //alert(JSON.stringify(data));
   var options = {
     body: data.message,
-    icon: '/static/img/alamPush.png',
-    image: '/static/img/animalPush.png'
+    icon: "/static/img/alamPush.png",
+    image: "/static/img/animalPush.png"
   };
   var notification = new Notification("일정등록알림", options);
   alam.play();
   setTimeout(function () {
     notification.close();
   }, 999000);
-  location.href = "/schedule";
+  var temp = window.location.search;
+  var param = temp.split("=");
+  location.replace("/schedule?order=".concat(param[1]));
+}); // 공지사항 알림
+
+var pusherNotice = new Pusher("661fe6afce5e5f839f4a", {
+  cluster: "ap3"
 });
-var channelMorning = pusher.subscribe("morningAllDay_" + department._id);
+var channelNotice = pusherNotice.subscribe("noticeAll");
+channelNotice.bind("noticeAlram", function (data) {
+  //alert(JSON.stringify(data));
+  var options = {
+    body: data.message,
+    icon: "/static/img/alamPush.png",
+    image: "/static/img/animalPush.png"
+  };
+  var notification = new Notification("공지사항알림", options);
+  alam.play();
+  setTimeout(function () {
+    notification.close();
+  }, 999000); //location.href = "/noticeBoardList";
+}); //일일업무 댓글 알림
+
+var pusherJournalComment = new Pusher("661fe6afce5e5f839f4a", {
+  cluster: "ap3"
+});
+var channelJournalComment = pusherJournalComment.subscribe("" + userId);
+channelJournalComment.bind("" + userId, function (data) {
+  // alert(JSON.stringify(data));
+  var options = {
+    body: data.message,
+    icon: "/static/img/alamPush.png",
+    image: "/static/img/animalPush.png"
+  };
+  var notification = new Notification("댓글알림", options);
+  alam.play();
+  setTimeout(function () {
+    notification.close();
+  }, 999000); //location.href = "/noticeBoardList";
+});
+var pusherMorning = new Pusher("661fe6afce5e5f839f4a", {
+  cluster: "ap3"
+});
+var channelMorning = pusherMorning.subscribe("morningAllDay_" + department._id);
 channelMorning.bind("morningAllDay_+" + department._id, function (data) {
   console.log(data);
   var options = {
     body: data.message,
-    icon: '/static/img/alamPush.png',
-    image: '/static/img/animalPush.png'
+    icon: "/static/img/alamPush.png",
+    image: "/static/img/animalPush.png"
   };
   var notification = new Notification("일정알림", options);
   alam.play();
@@ -63,13 +107,16 @@ channelMorning.bind("morningAllDay_+" + department._id, function (data) {
     notification.close();
   }, 999000);
 });
-var channelTime = pusher.subscribe("timeAlram_" + department._id);
+var pusherTime = new Pusher("661fe6afce5e5f839f4a", {
+  cluster: "ap3"
+});
+var channelTime = pusherTime.subscribe("timeAlram_" + department._id);
 channelTime.bind("timeAlram_+" + department._id, function (data) {
   console.log(data);
   var options = {
     body: data.message,
-    icon: '/static/img/alamPush.png',
-    image: '/static/img/animalPush.png'
+    icon: "/static/img/alamPush.png",
+    image: "/static/img/animalPush.png"
   };
   var notification = new Notification("일정알림", options);
   alam.play();
@@ -92,14 +139,13 @@ function weather() {
     var cloud = document.querySelector("#clouds");
     cloud.style.display = "block";
     makeItRain();
-  } else if (weatherStr === "Snow" || weatherStr === "Rain/Snow" || weatherStr === "Shower") {
+  } else if (weatherStr === "Snow" || weatherStr === "Rain/Snow" || weatherStr === "Snow/Rain" || weatherStr === "Shower") {
     $(document).snowfall({
       image: "/static/img/flake.png",
       minSize: 3,
       maxSize: 10,
       flakeCount: 120
-    });
-    snonwSound.play();
+    }); //snonwSound.play();
   } else if (weatherStr === "Cloudy") {
     var _cloud = document.querySelector("#clouds");
 
@@ -108,9 +154,9 @@ function weather() {
     var _cloud2 = document.querySelector("#clouds");
 
     _cloud2.style.display = "block";
-    $('.container-sun').css('display', 'block');
-  } else if (weatherStr === 'Clear') {
-    $('.container-sun').css('display', 'block');
+    $(".container-sun").css("display", "block");
+  } else if (weatherStr === "Clear") {
+    $(".container-sun").css("display", "block");
   }
 }
 
@@ -120,7 +166,10 @@ function makeItRain() {
   var increment = 0;
   var drops = "";
   var backDrops = "";
-  $('body').css('background', 'linear-gradient(to bottom, #5821f0, #080847)');
+  $("body").css({
+    "background": "linear-gradient(to bottom, #5821f0, #080847)",
+    "background-attachment": "fixed"
+  });
 
   while (increment < 100) {
     //couple random numbers to use for various randomizations
@@ -138,3 +187,11 @@ function makeItRain() {
   $(".rain.front-row").append(drops);
   $(".rain.back-row").append(backDrops);
 }
+
+var currentPosition = parseInt($(".sidemenu").css("top"));
+$(window).scroll(function () {
+  var position = $(window).scrollTop();
+  $(".sidemenu").stop().animate({
+    top: position + currentPosition + "px"
+  }, 1000);
+});
