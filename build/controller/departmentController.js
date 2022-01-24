@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getDeleteDepartmentDetail = exports.postDepartmentDetail = exports.getDepartmentDetail = exports.deleteDepartment = exports.postDepartmentAdd = exports.getDepartmentAdd = exports.getDepartment = void 0;
+exports.postDepartmentDetail = exports.postDepartmentAdd = exports.getDepartmentDetail = exports.getDepartmentAdd = exports.getDepartment = exports.getDeleteDepartmentDetail = exports.deleteDepartment = void 0;
 
 var _user = _interopRequireDefault(require("../schema/user"));
 

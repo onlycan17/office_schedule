@@ -5,12 +5,12 @@ block content
         span=errorMessage
     link(rel="stylesheet", href="/static/css/main.css")
     link(rel="stylesheet", href="/static/css/modal.css")
-    link(rel="stylesheet", href="/static/css/sidebar.css")
+    link(rel="stylesheet", href="/static/css/sidebarMeal.css")
     link(rel="stylesheet", href="/static/css/ckeditor.css")
     link(rel="stylesheet", href="//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css")
     
     div(id="calendar") 
-    input(id="calValue", type="hidden", value=journal)
+    input(id="calValue", type="hidden", value=meal)
     input(id="color", type="hidden", value=`${color}`)
     input(id="order", type="hidden", value=`${lastOrder}`)
     input(id="flag", type="hidden", value=`${flag}`)
@@ -23,11 +23,11 @@ block content
             div(id="close-menu")
                 span(class="ion-close-round")
             div(class="sidebarTitle")
-                h1(style="color:white") 업무일지
+                h1(style="color:white") 명작 식단표
             div(class="box")
-                div(class="column")
-                        label 작성자
-                        input(type="text", id="userNameText", readonly="true")
+                //- div(class="column")
+                //-         label 작성자
+                //-         input(type="text", id="userNameText", readonly="true")
                 div(class="row")
                     div(class="column")
                         label(for="start") 시작날짜 
@@ -35,11 +35,14 @@ block content
                     div(class="column")
                         label(for="end") 종료날짜 
                         input(type="text", id="end", readonly="true")
-                div(id="content" class="editorCK")    
+                div(class="column")        
+                    label 제목
+                    input(type="text", id="title")    
+                div(id="content" class="editorCK")
                     textarea(id="ckeditor", name="description")
-                div(class="file" id="divFile")
-                    label(for="file") 파일첨부
-                    input(type="file" , id="singleFile")
+                //- div(class="file" id="divFile")
+                //-     label(for="file") 파일첨부
+                //-     input(type="file" , id="singleFile")
                 div(id="submitDiv" class="pull-center")
                     button(id="submit", class="btn") 보내기
                 div(id="comment", class="commentColumn")    
@@ -54,5 +57,5 @@ block scripts
     script(src="https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js" type="text/javascript")
     //- script(src="https://cdn.ckeditor.com/ckeditor5/12.0.0/classic/ckeditor.js" type="text/javascript")
     //- script(src="/static/js/journal.js" type="text/javascript") 
-    script(src="/static/js/journal.js" type="text/javascript") 
+    script(src="/static/js/meal.js" type="text/javascript") 
     

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.subMenuAuthAdd = exports.getSubMenuDelete = exports.postAddSubMenu = exports.getMenuDetail = exports.postAddMenu = exports.getDeleteMenu = exports.getAddMenu = exports.getMenu = void 0;
+exports.subMenuAuthAdd = exports.postAddSubMenu = exports.postAddMenu = exports.getSubMenuDelete = exports.getMenuDetail = exports.getMenu = exports.getDeleteMenu = exports.getAddMenu = void 0;
 
 var _regeneratorRuntime = require("regenerator-runtime");
 
@@ -36,20 +36,19 @@ var getMenu = /*#__PURE__*/function () {
               options: {
                 sort: "order"
               }
-            });
+            }).sort("order");
 
           case 2:
             menuList = _context.sent;
-            console.log(menuList);
-            _context.next = 6;
+            _context.next = 5;
             return _department["default"].find().sort("order");
 
-          case 6:
+          case 5:
             departmentList = _context.sent;
-            _context.next = 9;
+            _context.next = 8;
             return _user["default"].find();
 
-          case 9:
+          case 8:
             userList = _context.sent;
             return _context.abrupt("return", res.render("menu", {
               pageTitle: "메뉴관리",
@@ -58,7 +57,7 @@ var getMenu = /*#__PURE__*/function () {
               userList: userList
             }));
 
-          case 11:
+          case 10:
           case "end":
             return _context.stop();
         }
@@ -222,10 +221,10 @@ var postAddMenu = /*#__PURE__*/function () {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
-            console.log(req.body);
+            //console.log(req.body);
             _req$body = req.body, menuName = _req$body.menuName, menuUrl = _req$body.menuUrl, order = _req$body.order, userId = _req$body.userId, departmentId = _req$body.departmentId;
-            _context5.prev = 2;
-            _context5.next = 5;
+            _context5.prev = 1;
+            _context5.next = 4;
             return _menu3["default"].create({
               menuName: menuName,
               menuUrl: menuUrl,
@@ -234,64 +233,63 @@ var postAddMenu = /*#__PURE__*/function () {
               department: departmentId ? departmentId : null
             });
 
-          case 5:
+          case 4:
             _menu = _context5.sent;
 
             if (!userId) {
-              _context5.next = 12;
+              _context5.next = 11;
               break;
             }
 
-            _context5.next = 9;
+            _context5.next = 8;
             return _user["default"].findById(userId);
 
-          case 9:
+          case 8:
             user = _context5.sent;
             user.menu.push(_menu._id);
             user.save();
 
-          case 12:
+          case 11:
             if (!departmentId) {
-              _context5.next = 18;
+              _context5.next = 17;
               break;
             }
 
-            _context5.next = 15;
+            _context5.next = 14;
             return _department["default"].findById(departmentId);
 
-          case 15:
+          case 14:
             department = _context5.sent;
             department.menu.push(_menu._id);
             department.save();
 
-          case 18:
+          case 17:
             _menu.save();
 
             return _context5.abrupt("return", res.redirect("/menu"));
 
-          case 22:
-            _context5.prev = 22;
-            _context5.t0 = _context5["catch"](2);
-            _context5.next = 26;
+          case 21:
+            _context5.prev = 21;
+            _context5.t0 = _context5["catch"](1);
+            _context5.next = 25;
             return _menu3["default"].find().populate({
               path: "user"
             }).populate({
               path: "department"
             });
 
-          case 26:
+          case 25:
             menuList = _context5.sent;
-            _context5.next = 29;
+            _context5.next = 28;
             return _department["default"].find().sort("order");
 
-          case 29:
+          case 28:
             departmentList = _context5.sent;
-            _context5.next = 32;
+            _context5.next = 31;
             return _user["default"].find();
 
-          case 32:
+          case 31:
             userList = _context5.sent;
-            console.log(_context5.t0);
             return _context5.abrupt("return", res.status(400).render("menu", {
               pageTitle: "menu 등록",
               errorMessage: _context5.t0._message,
@@ -300,12 +298,12 @@ var postAddMenu = /*#__PURE__*/function () {
               userList: userList
             }));
 
-          case 35:
+          case 33:
           case "end":
             return _context5.stop();
         }
       }
-    }, _callee5, null, [[2, 22]]);
+    }, _callee5, null, [[1, 21]]);
   }));
 
   return function postAddMenu(_x8, _x9) {
@@ -322,31 +320,31 @@ var getMenuDetail = /*#__PURE__*/function () {
       while (1) {
         switch (_context6.prev = _context6.next) {
           case 0:
-            console.log("---------getMenuDetail------------");
-            console.log(req.params);
+            //console.log("---------getMenuDetail------------");
+            //console.log(req.params);
             id = req.params.id;
-            _context6.next = 5;
+            _context6.next = 3;
             return _menu3["default"].findById(id);
 
-          case 5:
+          case 3:
             menucheck = _context6.sent;
-            _context6.next = 8;
+            _context6.next = 6;
             return _department["default"].find().sort("order");
 
-          case 8:
+          case 6:
             departmentList = _context6.sent;
-            _context6.next = 11;
+            _context6.next = 9;
             return _user["default"].find();
 
-          case 11:
+          case 9:
             userList = _context6.sent;
 
             if (!menucheck.subMenu) {
-              _context6.next = 17;
+              _context6.next = 14;
               break;
             }
 
-            _context6.next = 15;
+            _context6.next = 13;
             return _menu3["default"].findById(id).populate({
               path: "subMenu",
               sort: "order",
@@ -367,12 +365,10 @@ var getMenuDetail = /*#__PURE__*/function () {
               path: "user"
             });
 
-          case 15:
+          case 13:
             subMenuDetail = _context6.sent;
-            console.log(subMenuDetail);
 
-          case 17:
-            console.log(res);
+          case 14:
             return _context6.abrupt("return", res.render("menuDetail", {
               pageTitle: "서브메뉴관리",
               subMenuDetail: subMenuDetail,
@@ -381,7 +377,7 @@ var getMenuDetail = /*#__PURE__*/function () {
               menucheck: menucheck
             }));
 
-          case 19:
+          case 15:
           case "end":
             return _context6.stop();
         }
@@ -403,7 +399,7 @@ var getMenuDetail = /*#__PURE__*/function () {
 //     id,
 //     departmentList,
 //     userList,
-//   }); 
+//   });
 // }
 
 
@@ -436,35 +432,34 @@ var postAddSubMenu = /*#__PURE__*/function () {
 
           case 5:
             checkSubMenu = _context7.sent;
-            console.log(checkSubMenu);
 
             if (!checkSubMenu) {
-              _context7.next = 23;
-              break;
-            }
-
-            _context7.next = 10;
-            return _menu3["default"].findById(id);
-
-          case 10:
-            _menucheck = _context7.sent;
-            _context7.next = 13;
-            return _department["default"].find().sort("order");
-
-          case 13:
-            departmentList = _context7.sent;
-            _context7.next = 16;
-            return _user["default"].find();
-
-          case 16:
-            userList = _context7.sent;
-
-            if (!_menucheck.subMenu) {
               _context7.next = 21;
               break;
             }
 
-            _context7.next = 20;
+            _context7.next = 9;
+            return _menu3["default"].findById(id);
+
+          case 9:
+            _menucheck = _context7.sent;
+            _context7.next = 12;
+            return _department["default"].find().sort("order");
+
+          case 12:
+            departmentList = _context7.sent;
+            _context7.next = 15;
+            return _user["default"].find();
+
+          case 15:
+            userList = _context7.sent;
+
+            if (!_menucheck.subMenu) {
+              _context7.next = 20;
+              break;
+            }
+
+            _context7.next = 19;
             return _menu3["default"].findById(id).populate(_defineProperty({
               path: "subMenu",
               populate: {
@@ -475,11 +470,10 @@ var postAddSubMenu = /*#__PURE__*/function () {
               select: "_id name email"
             }));
 
-          case 20:
+          case 19:
             subMenuDetail = _context7.sent;
 
-          case 21:
-            console.log("------?------");
+          case 20:
             return _context7.abrupt("return", res.status(404).render("menuDetail", {
               pageTitle: "메뉴등록 상세페이지",
               errorMessage: "이미 등록된 메뉴정보(메뉴명,정렬순서) 입니다.",
@@ -489,62 +483,62 @@ var postAddSubMenu = /*#__PURE__*/function () {
               subMenuDetail: subMenuDetail
             }));
 
-          case 23:
+          case 21:
             if (!id) {
-              _context7.next = 29;
+              _context7.next = 27;
               break;
             }
 
-            _context7.next = 26;
+            _context7.next = 24;
             return _menu3["default"].findById(id);
 
-          case 26:
+          case 24:
             _context7.t0 = _context7.sent;
-            _context7.next = 30;
+            _context7.next = 28;
             break;
 
-          case 29:
+          case 27:
             _context7.t0 = null;
 
-          case 30:
+          case 28:
             menudetailObj = _context7.t0;
 
             if (!userId) {
-              _context7.next = 37;
+              _context7.next = 35;
               break;
             }
 
-            _context7.next = 34;
+            _context7.next = 32;
             return _user["default"].findById(userId);
 
-          case 34:
+          case 32:
             _context7.t1 = _context7.sent;
-            _context7.next = 38;
+            _context7.next = 36;
             break;
 
-          case 37:
+          case 35:
             _context7.t1 = null;
 
-          case 38:
+          case 36:
             user = _context7.t1;
 
             if (!departmentId) {
-              _context7.next = 45;
+              _context7.next = 43;
               break;
             }
 
-            _context7.next = 42;
+            _context7.next = 40;
             return _department["default"].findById(departmentId);
 
-          case 42:
+          case 40:
             _context7.t2 = _context7.sent;
-            _context7.next = 46;
+            _context7.next = 44;
             break;
 
-          case 45:
+          case 43:
             _context7.t2 = null;
 
-          case 46:
+          case 44:
             department = _context7.t2;
             //console.log(department);
             menudetailObj.subMenu.push({
@@ -558,11 +552,14 @@ var postAddSubMenu = /*#__PURE__*/function () {
             if (department) {
               menudetailObj.subMenu[submenuLength - 1].department.push(department._id);
               department.menu.push(menudetailObj.subMenu[submenuLength - 1]._id);
+              department.save();
             }
 
             if (user) {
               menudetailObj.subMenu[submenuLength - 1].user.push(user._id);
-              user.menu.push(menudetailObj.subMenu[submenuLength - 1]._id);
+              user.menu.push(menudetailObj._id);
+              console.log(user);
+              user.save();
             }
 
             menudetailObj.save(); //console.log('---test---');
@@ -570,27 +567,27 @@ var postAddSubMenu = /*#__PURE__*/function () {
 
             return _context7.abrupt("return", res.redirect("/menuDetail/" + id));
 
-          case 55:
-            _context7.prev = 55;
+          case 53:
+            _context7.prev = 53;
             _context7.t3 = _context7["catch"](2);
             console.log(_context7.t3);
-            _context7.next = 60;
+            _context7.next = 58;
             return _department["default"].find().sort("order");
 
-          case 60:
+          case 58:
             _departmentList = _context7.sent;
-            _context7.next = 63;
+            _context7.next = 61;
             return _user["default"].find();
 
-          case 63:
+          case 61:
             _userList = _context7.sent;
 
             if (!menucheck.subMenu) {
-              _context7.next = 68;
+              _context7.next = 66;
               break;
             }
 
-            _context7.next = 67;
+            _context7.next = 65;
             return _menu3["default"].findById(id).populate(_defineProperty({
               path: "subMenu",
               populate: {
@@ -601,12 +598,10 @@ var postAddSubMenu = /*#__PURE__*/function () {
               select: "_id name email"
             }));
 
-          case 67:
+          case 65:
             _subMenuDetail = _context7.sent;
 
-          case 68:
-            console.log("--------------------------");
-            console.log(_subMenuDetail);
+          case 66:
             return _context7.abrupt("return", res.status(400).render("menuDetail", {
               pageTitle: "menu 등록 상세페이지",
               errorMessage: _context7.t3._message,
@@ -616,12 +611,12 @@ var postAddSubMenu = /*#__PURE__*/function () {
               subMenuDetail: _subMenuDetail
             }));
 
-          case 71:
+          case 67:
           case "end":
             return _context7.stop();
         }
       }
-    }, _callee7, null, [[2, 55]]);
+    }, _callee7, null, [[2, 53]]);
   }));
 
   return function postAddSubMenu(_x12, _x13) {
@@ -722,49 +717,53 @@ var subMenuAuthAdd = /*#__PURE__*/function () {
       while (1) {
         switch (_context9.prev = _context9.next) {
           case 0:
-            console.log("subMenuAuthAdd");
-            console.log(req.body);
+            //console.log("subMenuAuthAdd");
+            //console.log(req.body);
             _req$body3 = req.body, menuId = _req$body3.menuId, subMenuId = _req$body3.subMenuId, idx = _req$body3.idx, userId = _req$body3.userId, departmentId = _req$body3.departmentId;
-            _context9.next = 5;
+            _context9.next = 3;
             return _menu3["default"].findById(menuId).populate(subMenuId);
 
-          case 5:
+          case 3:
             menu = _context9.sent;
 
             if (!userId) {
-              _context9.next = 12;
+              _context9.next = 13;
               break;
             }
 
             menu.subMenu[idx].user.push(userId);
-            _context9.next = 10;
+            _context9.next = 8;
             return _user["default"].findById(userId);
 
-          case 10:
+          case 8:
             user = _context9.sent;
+            console.log(user);
             user.menu.push(menu.subMenu[idx]._id);
+            console.log(user);
+            user.save();
 
-          case 12:
+          case 13:
             if (!departmentId) {
-              _context9.next = 18;
+              _context9.next = 20;
               break;
             }
 
             menu.subMenu[idx].department.push(departmentId);
-            _context9.next = 16;
+            _context9.next = 17;
             return _department["default"].findById(departmentId);
 
-          case 16:
+          case 17:
             department = _context9.sent;
             department.menu.push(menu.subMenu[idx]._id);
+            department.save();
 
-          case 18:
+          case 20:
             menu.save();
             res.json({
               message: "success"
             });
 
-          case 20:
+          case 22:
           case "end":
             return _context9.stop();
         }

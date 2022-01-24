@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getAuthDetail = exports.postAuth = exports.getAuth = void 0;
+exports.postAuth = exports.getAuthDetail = exports.getAuth = void 0;
 
 var _regeneratorRuntime = require("regenerator-runtime");
 

@@ -9,6 +9,8 @@ module.exports = {
       department: BASE_JS + "department.js",
       schedule: BASE_JS + "schedule.js",
       journal: BASE_JS + "journal.js",
+      meal: BASE_JS + "meal.js",
+      UploadAdapter: BASE_JS + "UploadAdapter.js",
       searchJournal: BASE_JS + "searchJournal.js",
       join: BASE_JS + "join.js",
       noticeBoardList: BASE_JS + "noticeBoardList.js",
