@@ -8,6 +8,7 @@ module.exports = {
       main: BASE_JS + "main.js",
       department: BASE_JS + "department.js",
       schedule: BASE_JS + "schedule.js",
+      bongoCar: BASE_JS + "bongoCar.js",
       journal: BASE_JS + "journal.js",
       meal: BASE_JS + "meal.js",
       UploadAdapter: BASE_JS + "UploadAdapter.js",

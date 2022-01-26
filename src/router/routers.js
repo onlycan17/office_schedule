@@ -78,6 +78,7 @@ import {
 import { addReaderBoard, addReaderBoardForm, getReaderBoardList, getReaderBoardListForm, readerBoardListDetail, readerBoardListDetailDelete, readerBoardListDetailUpdate, readerBoardListFileDownload } from "../controller/readerBoardController";
 import { addPostMealComment, customMeal, customWeekMeal, deleteMeal, deleteMealComment, editPatchMealComment, getMeal, postAddMeal, uploadFileMeal } from "../controller/mealController";
 import { uploadPhotos } from "../controller/uploadImgController";
+import { customBongoCar, deleteBongoCar, getBongoCar, postAddBongoCar } from "../controller/bongoCarController";
 
 const multipartMiddleware = multipart();
 
@@ -170,6 +171,12 @@ router.route("/addSchedule").post(postAddSchedule);
 router.route("/deleteSchedule").delete(deleteSchedule);
 router.route("/customSchedule").get(customSchedule);
 router.route("/customWeekSchedule").get(customWeekSchedule);
+
+router.route("/bongoCar").all(protectorMiddleware).get(getBongoCar);
+router.route("/addBongoCar").post(postAddBongoCar);
+router.route("/deleteBongoCar").delete(deleteBongoCar);
+router.route("/customBongoCar").get(customBongoCar);
+router.route("/customWeekBongoCar").get(customBongoCar);
 
 //업무일지조회
 router
