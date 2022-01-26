@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
       //"resourceTimelineDay,resourceTimelineThreeDays,timeGridWeek,dayGridMonth,listWeek",
     },
     //initialView: 'resourceTimelineDay',
-    initialView: "dayGridMonth",
+    initialView: "timeGridWeek",
     navLinks: true, // 날짜를 선택하면 Day 캘린더나 Week 캘린더로 링크
     editable: true, // 수정 가능?
     selectable: true, // 달력 일자 드래그 설정가능
