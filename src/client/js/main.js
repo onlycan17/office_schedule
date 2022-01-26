@@ -57,6 +57,36 @@ channel.bind(department._id + "", function (data) {
   location.replace(`/schedule?order=${param[1]}`);
 });
 
+//차량신청 알림
+var pusher = new Pusher("661fe6afce5e5f839f4a", {
+  cluster: "ap3",
+});
+console.log(department._id);
+//var channel = pusher.subscribe(department._id + "");
+var channel = pusher.subscribe("6110e83e4d79e34e8bff0e44_612490cc21f010838f50a41b");
+const channel_str = "6110e83e4d79e34e8bff0e44_612490cc21f010838f50a41b";
+console.log(department+"");
+if(channel_str.search(department._id + "") !== -1){
+    channel.bind("6110e83e4d79e34e8bff0e44_612490cc21f010838f50a41b", function (data) {
+    //alert(JSON.stringify(data));
+    const options = {
+      body: data.message,
+      icon: "/static/img/alamPush.png",
+      image: "/static/img/animalPush.png",
+    };
+    const notification = new Notification("차량예약신청알림", options);
+    alam.play();
+    setTimeout(function () {
+      notification.close();
+    }, 999000);
+    //let temp = window.location.search;
+    const param = temp.split("=");
+    location.replace(`/bongoCar?order=${param[1]}`);
+  });
+}
+
+
+
 // 공지사항 알림
 var pusherNotice = new Pusher("661fe6afce5e5f839f4a", {
   cluster: "ap3",
