@@ -44,17 +44,17 @@ menu {
 
 .box h1 {
   font-size: 32pt;
-  color: #000;
+  color: #fff;
 }
 
 .box h2 {
   font-size: 18pt;
-  color: #000;
+  color: #fff;
 }
 
 .box h3 {
   font-size: 13.55pt;
-  color: #000;
+  color: #fff;
 }
 
 .box i {
@@ -62,13 +62,13 @@ menu {
 }
 
 .box ul li {
-  color: #000;
+  color: #fff;
   cursor: pointer;
   list-style-type: disc;
 }
 
 .box ol li {
-  color: #000;
+  color: #fff;
   cursor: pointer;
   list-style-type: decimal;
 }
