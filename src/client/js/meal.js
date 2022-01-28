@@ -285,8 +285,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const department = JSON.parse(
         document.getElementById("department").value
       );
-      if (department._id !== "612490cc21f010838f50a41b") {
-        alert("관리자 외에는 등록하실 수 없습니다.");
+      if (department._id !== "612490cc21f010838f50a41b" || department._id !== "6110e83e4d79e34e8bff0e44") {
+        alert("관리자 총무팀 외에는 등록하실 수 없습니다.");
         return false;
       }
       const month = moment(arg.start).format("YYYYMM");
