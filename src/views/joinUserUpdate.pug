@@ -21,6 +21,6 @@ block content
         label 부서선택
         select(name="partId")
             option(value="") 선택
-            each item in partList
+            each item in teamList
                 option(value=`${item._id}`, selected=(`${item._id}` === `${user.department}`)) #{item.name}
         input(type="submit", value="수정")

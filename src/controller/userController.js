@@ -202,8 +202,10 @@ export const getJoinUpdate = async (req, res) => {
 export const getJoinUserUpdate = async (req, res) => {
   const { id } = req.params;
   const partList = await Department.find().sort({ order: 1 });
+  //console.log(partList);
+  const teamList = partList.filter(dep => dep._id+"" !== "612490cc21f010838f50a41b");
   const user = await User.findById(id);
-  return res.render("joinUserUpdate", { pageTitle: "회원수정", partList, user });
+  return res.render("joinUserUpdate", { pageTitle: "회원수정", teamList, user });
 };
 
 export const postJoinAdd = async (req, res) => {
