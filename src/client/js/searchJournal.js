@@ -182,6 +182,16 @@ async function tableSearch() {
         },
       },
       {
+        targets: [3],
+        orderable: false,
+        searchable: false,
+        render: function (data, type, row, meta) {
+          console.log('----------------');
+          console.log(row);
+          return row.description;
+        },
+      },
+      {
         targets: [6],
         orderable: false,
         searchable: false,

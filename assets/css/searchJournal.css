@@ -121,3 +121,8 @@
   background-color: lightblue;
   border: 0px solid;
 }
+
+figure img {
+  width: 15vw;
+  height: 15vh;
+}
