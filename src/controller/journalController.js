@@ -468,88 +468,72 @@ export const postSearchJournal = async (req, res) => {
     departmentId,
   } = req.body;
   //const pageNum = Number(start) + Number(length); //Calculate page number
-  let journal, journalCount;
-  if (!departmentId) {
-    journalCount = await Journal.find({
-      $or: [
-        { start: { $gte: startDate, $lte: endDate } },
-        { end: { $gte: startDate, $lte: endDate } },
-      ],
-    })
-      .countDocuments()
-      .populate("department")
-      .populate({
-        path: "user",
-        match: {
-          $or: [
-            { name: { $regex: ".*" + userName + ".*" } },
-            { email: { $regex: ".*" + email + ".*" } },
-          ],
-        },
-      });
-    //console.log(journalCount);
-
-    journal = await Journal.find({
-      $or: [
-        { start: { $gte: startDate, $lte: endDate } },
-        { end: { $gte: startDate, $lte: endDate } },
-      ],
-    })
-      .sort("-createdAt")
-      .skip(Number(start))
-      .limit(Number(length))
-      .populate("department")
-      .populate({
-        path: "user",
-        match: {
-          $or: [
-            { name: { $regex: ".*" + userName + ".*" } },
-            { email: { $regex: ".*" + email + ".*" } },
-          ],
-        },
-      });
-  } else {
-    journalCount = await Journal.find({
-      department: new ObjectId(departmentId),
-      $or: [
-        { start: { $gte: startDate, $lte: endDate } },
-        { end: { $gte: startDate, $lte: endDate } },
-      ],
-    })
-      .countDocuments()
-      .populate("department")
-      .populate({
-        path: "user",
-        match: {
-          $or: [
-            { name: { $regex: ".*" + userName + ".*" } },
-            { email: { $regex: ".*" + email + ".*" } },
-          ],
-        },
-      });
-    //console.log(journalCount);
-
-    journal = await Journal.find({
-      department: new ObjectId(departmentId),
-      $or: [
-        { start: { $gte: startDate, $lte: endDate } },
-        { end: { $gte: startDate, $lte: endDate } },
-      ],
-    })
-      .sort("-createdAt")
-      .skip(Number(start))
-      .limit(Number(length))
-      .populate("department")
-      .populate({
-        path: "user",
-        match: {
-          $or: [
-            { name: { $regex: ".*" + userName + ".*" } },
-            { email: { $regex: ".*" + email + ".*" } },
-          ],
-        },
-      });
+  let journal, journalCount, user;
+  console.log(userName);
+  if (userName) {
+    console.log("searchName");
+    user = await User.findOne(
+      { name: { $regex: ".*" + userName + ".*" }}).ne('department','612490cc21f010838f50a41b');
   }
+  if (email) {
+    console.log("searchEmail");
+    user = await User.findOne({ email: { $regex: ".*" + email + ".*" } });
+  }
+  let searchParam;
+
+  // console.log(user);
+  // console.log(user?._id);
+  // console.log(typeof user?._id);
+  if (user) {
+    if (!departmentId) {
+      searchParam = {
+        user: new ObjectId(user._id+""),
+        $or: [
+          { start: { $gte: startDate, $lte: endDate } },
+          { end: { $gte: startDate, $lte: endDate } },
+        ],
+      };
+    } else {
+      searchParam = {
+        user: new ObjectId(user._id+""),
+        department: new ObjectId(departmentId),
+        $or: [
+          { start: { $gte: startDate, $lte: endDate } },
+          { end: { $gte: startDate, $lte: endDate } },
+        ],
+      };
+    }
+  } else {
+    if (!departmentId) {
+      searchParam = {
+        $or: [
+          { start: { $gte: startDate, $lte: endDate } },
+          { end: { $gte: startDate, $lte: endDate } },
+        ],
+      };
+    } else {
+      searchParam = {
+        department: new ObjectId(departmentId),
+        $or: [
+          { start: { $gte: startDate, $lte: endDate } },
+          { end: { $gte: startDate, $lte: endDate } },
+        ],
+      };
+    }
+  }
+
+  journalCount = await Journal.find(searchParam)
+    .countDocuments()
+    .populate("department")
+    .populate("user");
+  //console.log(journalCount);
+
+  journal = await Journal.find(searchParam)
+    .sort("-createdAt")
+    .skip(Number(start))
+    .limit(Number(length))
+    .populate("department")
+    .populate("user");
 
   //console.log(journal);
   return res.status(200).json({
@@ -577,45 +561,61 @@ export const excelDownload = async (req, res) => {
     { header: "생성일자", key: "createdAtFormat" },
   ];
 
-  let journal;
-  if (!departmentId) {
-    journal = await Journal.find({
-      $or: [
-        { start: { $gte: startDate, $lte: endDate } },
-        { end: { $gte: startDate, $lte: endDate } },
-      ],
-    })
-      .sort("-start -end")
-      .populate("department")
-      .populate({
-        path: "user",
-        match: {
-          $or: [
-            { name: { $regex: ".*" + userName + ".*" } },
-            { email: { $regex: ".*" + email + ".*" } },
-          ],
-        },
-      });
-  } else {
-    journal = await Journal.find({
-      department: new ObjectId(departmentId),
-      $or: [
-        { start: { $gte: startDate, $lte: endDate } },
-        { end: { $gte: startDate, $lte: endDate } },
-      ],
-    })
-      .sort("-start -end")
-      .populate("department")
-      .populate({
-        path: "user",
-        match: {
-          $or: [
-            { name: { $regex: ".*" + userName + ".*" } },
-            { email: { $regex: ".*" + email + ".*" } },
-          ],
-        },
-      });
+  let journal, user;
+  if (userName) {
+    console.log("searchName");
+    user = await User.findOne(
+      { name: { $regex: ".*" + userName + ".*" }}).ne('department','612490cc21f010838f50a41b');
   }
+  if (email) {
+    console.log("searchEmail");
+    user = await User.findOne({ email: { $regex: ".*" + email + ".*" } });
+  }
+
+  let searchParam;
+  if (user) {
+    if (!departmentId) {
+      searchParam = {
+        user: user._id,
+        $or: [
+          { start: { $gte: startDate, $lte: endDate } },
+          { end: { $gte: startDate, $lte: endDate } },
+        ],
+      };
+    } else {
+      searchParam = {
+        user: user._id,
+        department: new ObjectId(departmentId),
+        $or: [
+          { start: { $gte: startDate, $lte: endDate } },
+          { end: { $gte: startDate, $lte: endDate } },
+        ],
+      };
+    }
+  } else {
+    if (!departmentId) {
+      searchParam = {
+        $or: [
+          { start: { $gte: startDate, $lte: endDate } },
+          { end: { $gte: startDate, $lte: endDate } },
+        ],
+      };
+    } else {
+      searchParam = {
+        department: new ObjectId(departmentId),
+        $or: [
+          { start: { $gte: startDate, $lte: endDate } },
+          { end: { $gte: startDate, $lte: endDate } },
+        ],
+      };
+    }
+  }
+
+  journal = await Journal.find(searchParam)
+    .sort("-start -end")
+    .populate("department")
+    .populate("user");
+
   journal.forEach((element) => {
     //console.log(element.department.name);
     const { name } = element.department;
