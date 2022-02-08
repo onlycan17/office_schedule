@@ -368,19 +368,19 @@ export const postJoinUserUpdate = async (req, res) => {
           name,
           email,
           password: enPassword,
-          department: partId,
+          //department: partId,
           color,
         },
       }
     );
-    if (partId) {
-      department = await Department.findById(partId);
-      // console.log("join:"+userId._id);
-      // console.log(department);
-      // console.log('-------------department');
-      department.user.push(userId._id);
-      department.save();
-    }
+    // if (partId) {
+    //   department = await Department.findById(partId);
+    //   // console.log("join:"+userId._id);
+    //   // console.log(department);
+    //   // console.log('-------------department');
+    //   department.user.push(userId._id);
+    //   department.save();
+    // }
     return res.redirect("/logout");
   } catch (error) {
     return res.status(400).render("join", {
