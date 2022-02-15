@@ -10,6 +10,7 @@ import admin from "./router/admin";
 import flash from "express-flash";
 import "./pusher";
 import opn from "better-opn";
+import apiRouter from "./router/apiRouters";
 
 console.log(ipfilter);
 const PORT = process.env.PORT || 4500;
@@ -51,6 +52,7 @@ app.use("/uploads", express.static("uploads"));
 app.use(flash());
 app.use(logger);
 app.use("/", router);
+app.use("/api", apiRouter);
 //app.use("/admin", admin);
 app.use("/static", express.static("assets"));
 app.use("/excel", express.static("excel"));

@@ -23,7 +23,7 @@ export const getBongoCar = async (req, res) => {
   const color = req.session.user.color;
   //console.log(color);
   return res.render("bongoCar", {
-    pageTitle: "봉고차 예약신청",
+    pageTitle: "팜스타렉스 예약신청",
     bongoCar,
     color,
   });
