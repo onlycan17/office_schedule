@@ -5,6 +5,7 @@ import fs from "fs";
 import iconv from "iconv-lite";
 import Comment from "../schema/comment";
 import { dropbox } from "../middleware";
+import pusher from "../pusher";
 
 let ObjectId = require("mongoose").Types.ObjectId;
 
@@ -53,7 +54,9 @@ export const postAddMeal = async (req, res) => {
     user,
   });
 
-
+  pusher.trigger("mealAllPush", "mealAllPush", {
+    message: "[명작식단표] 오늘의 메뉴가 등록되었습니다.",
+  });
   //const userInfo = await User.findById(user);
   //console.log(filePath);
   return res

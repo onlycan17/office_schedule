@@ -35,12 +35,12 @@ function getNotificationPermission() {
 // Enable pusher logging - don't include this in production
 Pusher.logToConsole = true;
 
-var pusher = new Pusher("661fe6afce5e5f839f4a", {
+var pusherSchedule = new Pusher("661fe6afce5e5f839f4a", {
   cluster: "ap3",
 });
 console.log(department._id);
-var channel = pusher.subscribe(department._id + "");
-channel.bind(department._id + "", function (data) {
+var channelSchedule = pusherSchedule.subscribe(department._id + "");
+channelSchedule.bind(department._id + "", function (data) {
   //alert(JSON.stringify(data));
   const options = {
     body: data.message,
@@ -58,16 +58,16 @@ channel.bind(department._id + "", function (data) {
 });
 
 //차량신청 알림
-var pusher = new Pusher("661fe6afce5e5f839f4a", {
+var pusherBongGo = new Pusher("661fe6afce5e5f839f4a", {
   cluster: "ap3",
 });
 console.log(department._id);
 //var channel = pusher.subscribe(department._id + "");
-var channel = pusher.subscribe("6110e83e4d79e34e8bff0e44_612490cc21f010838f50a41b");
-const channel_str = "6110e83e4d79e34e8bff0e44_612490cc21f010838f50a41b";
+var channelBonGo = pusherBongGo.subscribe("6110e83e4d79e34e8bff0e44_612490cc21f010838f50a41b");
+const channel_bongo_str = "6110e83e4d79e34e8bff0e44_612490cc21f010838f50a41b";
 console.log(department+"");
-if(channel_str.search(department._id + "") !== -1){
-    channel.bind("6110e83e4d79e34e8bff0e44_612490cc21f010838f50a41b", function (data) {
+if(channel_bongo_str.search(department._id + "") !== -1){
+  channelBonGo.bind("6110e83e4d79e34e8bff0e44_612490cc21f010838f50a41b", function (data) {
     //alert(JSON.stringify(data));
     const options = {
       body: data.message,
@@ -100,6 +100,27 @@ channelNotice.bind("noticeAlram", function (data) {
     image: "/static/img/animalPush.png",
   };
   const notification = new Notification("공지사항알림", options);
+  alam.play();
+  setTimeout(function () {
+    notification.close();
+  }, 999000);
+  //location.href = "/noticeBoardList";
+});
+
+
+// 명작 식단표 알림
+var pusherMeal = new Pusher("661fe6afce5e5f839f4a", {
+  cluster: "ap3",
+});
+var channelMeal = pusherMeal.subscribe("mealAllPush");
+channelMeal.bind("mealAllPush", function (data) {
+  //alert(JSON.stringify(data));
+  const options = {
+    body: data.message,
+    icon: "/static/img/alamPush.png",
+    image: "/static/img/animalPush.png",
+  };
+  const notification = new Notification("오늘의메뉴", options);
   alam.play();
   setTimeout(function () {
     notification.close();
