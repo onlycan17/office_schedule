@@ -29,6 +29,12 @@ var _noticeBoardController = require("../controller/noticeBoardController");
 
 var _readerBoardController = require("../controller/readerBoardController");
 
+var _mealController = require("../controller/mealController");
+
+var _uploadImgController = require("../controller/uploadImgController");
+
+var _bongoCarController = require("../controller/bongoCarController");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var multipartMiddleware = (0, _connectMultiparty["default"])();
@@ -60,7 +66,12 @@ router.route("/schedule").all(_middleware.protectorMiddleware).get(_scheduleCont
 router.route("/addSchedule").post(_scheduleController.postAddSchedule);
 router.route("/deleteSchedule")["delete"](_scheduleController.deleteSchedule);
 router.route("/customSchedule").get(_scheduleController.customSchedule);
-router.route("/customWeekSchedule").get(_scheduleController.customWeekSchedule); //업무일지조회
+router.route("/customWeekSchedule").get(_scheduleController.customWeekSchedule);
+router.route("/bongoCar").all(_middleware.protectorMiddleware).get(_bongoCarController.getBongoCar);
+router.route("/addBongoCar").post(_bongoCarController.postAddBongoCar);
+router.route("/deleteBongoCar")["delete"](_bongoCarController.deleteBongoCar);
+router.route("/customBongoCar").get(_bongoCarController.customBongoCar);
+router.route("/customWeekBongoCar").get(_bongoCarController.customBongoCar); //업무일지조회
 
 router.route("/searchJournal").all(_middleware.protectorMiddleware).get(_journalController.getSearchJournalForm);
 router.route("/postSearchJournal").post(_journalController.postSearchJournal);
@@ -93,6 +104,18 @@ router.route("/customWeekJournal").get(_journalController.customWeekJournal);
 router.route("/download/:id([0-9a-f]{24})").get(_journalController.downloadFile);
 router.route("/addComment").post(_journalController.addPostComment);
 router.route("/editComment").patch(_journalController.editPatchComment);
-router.route("/deleteComment")["delete"](_journalController.deleteComment);
+router.route("/deleteComment")["delete"](_journalController.deleteComment); //에디터 이미지 업로드
+
+router.route("/fileUploadMeal").post(_middleware.photoUpload.any(), _uploadImgController.uploadPhotos); //식단스케줄
+
+router.route("/meal").all(_middleware.protectorMiddleware).get(_mealController.getMeal);
+router.route("/addMeal").post(_mealController.postAddMeal);
+router.route("/deleteMeal")["delete"](_mealController.deleteMeal);
+router.route("/customMeal").get(_mealController.customMeal);
+router.route("/customWeekMeal").get(_mealController.customWeekMeal);
+router.route("/downloadMeal/:id([0-9a-f]{24})").get(_journalController.downloadFile);
+router.route("/addMealComment").post(_mealController.addPostMealComment);
+router.route("/editMealComment").patch(_mealController.editPatchMealComment);
+router.route("/deleteMealComment")["delete"](_mealController.deleteMealComment);
 var _default = router;
 exports["default"] = _default;

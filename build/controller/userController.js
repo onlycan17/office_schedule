@@ -13,7 +13,7 @@ var _regeneratorRuntime = require("regenerator-runtime");
 
 var _department = _interopRequireDefault(require("../schema/department"));
 
-var _bcrypt = _interopRequireDefault(require("bcrypt"));
+var _bcryptjs = _interopRequireDefault(require("bcryptjs"));
 
 var _menu = _interopRequireDefault(require("../schema/menu"));
 
@@ -69,7 +69,7 @@ var postLogin = /*#__PURE__*/function () {
 
           case 8:
             _context.next = 10;
-            return _bcrypt["default"].compare(password, user.password);
+            return _bcryptjs["default"].compareSync(password, user.password);
 
           case 10:
             ok = _context.sent;
@@ -440,7 +440,7 @@ exports.getJoinUpdate = getJoinUpdate;
 
 var getJoinUserUpdate = /*#__PURE__*/function () {
   var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(req, res) {
-    var id, partList, user;
+    var id, partList, user, teamList;
     return regeneratorRuntime.wrap(function _callee6$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
@@ -458,13 +458,18 @@ var getJoinUserUpdate = /*#__PURE__*/function () {
 
           case 6:
             user = _context6.sent;
+            //console.log(partList);
+            teamList = partList.filter(function (dep) {
+              return dep._id + "" === user.department + "";
+            });
+            console.log(user);
             return _context6.abrupt("return", res.render("joinUserUpdate", {
               pageTitle: "회원수정",
-              partList: partList,
+              teamList: teamList,
               user: user
             }));
 
-          case 8:
+          case 10:
           case "end":
             return _context6.stop();
         }
@@ -656,7 +661,7 @@ var postJoinUpdate = /*#__PURE__*/function () {
           case 16:
             _context8.prev = 16;
             _context8.next = 19;
-            return _bcrypt["default"].hash(password, 5);
+            return _bcryptjs["default"].hashSync(password, 5);
 
           case 19:
             enPassword = _context8.sent;
@@ -783,7 +788,7 @@ var postJoinUserUpdate = /*#__PURE__*/function () {
           case 17:
             _context9.prev = 17;
             _context9.next = 20;
-            return _bcrypt["default"].hash(password, 5);
+            return _bcryptjs["default"].hashSync(password, 5);
 
           case 20:
             enPassword = _context9.sent;
@@ -795,35 +800,17 @@ var postJoinUserUpdate = /*#__PURE__*/function () {
                 name: name,
                 email: email,
                 password: enPassword,
-                department: partId,
+                //department: partId,
                 color: color
               }
             });
 
           case 23:
             userId = _context9.sent;
-
-            if (!partId) {
-              _context9.next = 30;
-              break;
-            }
-
-            _context9.next = 27;
-            return _department["default"].findById(partId);
-
-          case 27:
-            department = _context9.sent;
-            // console.log("join:"+userId._id);
-            // console.log(department);
-            // console.log('-------------department');
-            department.user.push(userId._id);
-            department.save();
-
-          case 30:
             return _context9.abrupt("return", res.redirect("/logout"));
 
-          case 33:
-            _context9.prev = 33;
+          case 27:
+            _context9.prev = 27;
             _context9.t0 = _context9["catch"](17);
             return _context9.abrupt("return", res.status(400).render("join", {
               pageTitle: "회원수정",
@@ -832,12 +819,12 @@ var postJoinUserUpdate = /*#__PURE__*/function () {
               userList: userList
             }));
 
-          case 36:
+          case 30:
           case "end":
             return _context9.stop();
         }
       }
-    }, _callee9, null, [[17, 33]]);
+    }, _callee9, null, [[17, 27]]);
   }));
 
   return function postJoinUserUpdate(_x17, _x18) {
