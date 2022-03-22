@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 const boardSchema = new mongoose.Schema({
   boardGroupId: { type: Number, require:true},
@@ -14,7 +14,7 @@ const boardSchema = new mongoose.Schema({
 
 boardSchema.pre("save", async function () {
   if (this.isModified("password")) {
-    this.password = await bcrypt.hash(this.password, 5);
+    this.password = await bcrypt.hashSync(this.password, 5);
   }
 });
 
