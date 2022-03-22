@@ -33,12 +33,12 @@ function getNotificationPermission() {
 
 
 Pusher.logToConsole = true;
-var pusher = new Pusher("661fe6afce5e5f839f4a", {
+var pusherSchedule = new Pusher("661fe6afce5e5f839f4a", {
   cluster: "ap3"
 });
 console.log(department._id);
-var channel = pusher.subscribe(department._id + "");
-channel.bind(department._id + "", function (data) {
+var channelSchedule = pusherSchedule.subscribe(department._id + "");
+channelSchedule.bind(department._id + "", function (data) {
   //alert(JSON.stringify(data));
   var options = {
     body: data.message,
@@ -53,7 +53,36 @@ channel.bind(department._id + "", function (data) {
   var temp = window.location.search;
   var param = temp.split("=");
   location.replace("/schedule?order=".concat(param[1]));
-}); // 공지사항 알림
+}); //차량신청 알림
+
+var pusherBongGo = new Pusher("661fe6afce5e5f839f4a", {
+  cluster: "ap3"
+});
+console.log(department._id); //var channel = pusher.subscribe(department._id + "");
+
+var channelBonGo = pusherBongGo.subscribe("6110e83e4d79e34e8bff0e44_612490cc21f010838f50a41b");
+var channel_bongo_str = "6110e83e4d79e34e8bff0e44_612490cc21f010838f50a41b";
+console.log(department + "");
+
+if (channel_bongo_str.search(department._id + "") !== -1) {
+  channelBonGo.bind("6110e83e4d79e34e8bff0e44_612490cc21f010838f50a41b", function (data) {
+    //alert(JSON.stringify(data));
+    var options = {
+      body: data.message,
+      icon: "/static/img/alamPush.png",
+      image: "/static/img/animalPush.png"
+    };
+    var notification = new Notification("차량예약신청알림", options);
+    alam.play();
+    setTimeout(function () {
+      notification.close();
+    }, 999000); //let temp = window.location.search;
+
+    var param = temp.split("=");
+    location.replace("/bongoCar?order=".concat(param[1]));
+  });
+} // 공지사항 알림
+
 
 var pusherNotice = new Pusher("661fe6afce5e5f839f4a", {
   cluster: "ap3"
@@ -67,6 +96,24 @@ channelNotice.bind("noticeAlram", function (data) {
     image: "/static/img/animalPush.png"
   };
   var notification = new Notification("공지사항알림", options);
+  alam.play();
+  setTimeout(function () {
+    notification.close();
+  }, 999000); //location.href = "/noticeBoardList";
+}); // 명작 식단표 알림
+
+var pusherMeal = new Pusher("661fe6afce5e5f839f4a", {
+  cluster: "ap3"
+});
+var channelMeal = pusherMeal.subscribe("mealAllPush");
+channelMeal.bind("mealAllPush", function (data) {
+  //alert(JSON.stringify(data));
+  var options = {
+    body: data.message,
+    icon: "/static/img/alamPush.png",
+    image: "/static/img/animalPush.png"
+  };
+  var notification = new Notification("오늘의메뉴", options);
   alam.play();
   setTimeout(function () {
     notification.close();

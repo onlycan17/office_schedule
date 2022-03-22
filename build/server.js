@@ -24,6 +24,8 @@ require("./pusher");
 
 var _betterOpn = _interopRequireDefault(require("better-opn"));
 
+var _apiRouters = _interopRequireDefault(require("./router/apiRouters"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
@@ -70,7 +72,8 @@ app.use((0, _expressSession["default"])({
 app.use("/uploads", _express["default"]["static"]("uploads"));
 app.use((0, _expressFlash["default"])());
 app.use(logger);
-app.use("/", _routers["default"]); //app.use("/admin", admin);
+app.use("/", _routers["default"]);
+app.use("/api", _apiRouters["default"]); //app.use("/admin", admin);
 
 app.use("/static", _express["default"]["static"]("assets"));
 app.use("/excel", _express["default"]["static"]("excel"));
