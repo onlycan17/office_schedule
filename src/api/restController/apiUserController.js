@@ -2,7 +2,7 @@ import User from "../../schema/user";
 import session from "express-session";
 import { async } from "regenerator-runtime";
 import Department from "../../schema/department";
-import bcrypt from "bcrypt";
+import bcrypt from 'bcryptjs';
 import Menu from "../../schema/menu";
 import jwt from "jsonwebtoken";
 
@@ -28,7 +28,7 @@ export const apiPostLogin = async (req, res) => {
         errorMessage: "해당 계정이 존재하지 않습니다.",
       });
     }
-    const ok = await bcrypt.compare(password, user.password);
+    const ok = await bcrypt.compareSync(password, user.password);
     if (!ok) {
       return res.send({
         pageTitle,
@@ -277,7 +277,7 @@ export const postJoinUpdate = async (req, res) => {
   }
 
   try {
-    const enPassword = await bcrypt.hash(password, 5);
+    const enPassword = await bcrypt.hashSync(password, 5);
     const userId = await User.updateOne(
       {
         _id: id,
@@ -343,7 +343,7 @@ export const postJoinUserUpdate = async (req, res) => {
   }
 
   try {
-    const enPassword = await bcrypt.hash(password, 5);
+    const enPassword = await bcrypt.hashSync(password, 5);
     const userId = await User.updateOne(
       {
         _id: id,
