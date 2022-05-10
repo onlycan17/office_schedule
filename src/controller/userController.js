@@ -57,7 +57,7 @@ export const postLogin = async (req, res) => {
     console.log(user.department._id);
     req.flash("info", "로그인 성공!");
     if (user.department._id + "" === "612490cc21f010838f50a41b") {
-      return res.redirect("/home");
+      return res.redirect("/searchJournal?order=4");
     } else {
       return res.redirect("/schedule?order=" + objOrder);
     }
