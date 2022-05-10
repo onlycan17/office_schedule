@@ -50,15 +50,6 @@ app.use(
     }),
   })
 );
-app.use(function(req, res, next) {
-    if(isAws){
-        const xForwrded = req.get('X-Forwarded-Proto')   //로드밸런서경우, X-Forwarded-Proto 로, 어떤 요청으로 왔는지 알 수 있다.
-        if(!!xForwrded && xForwrded !== 'https') {
-            res.redirect('https://' + req.get('Host') + req.url);
-            return;
-        }
-    }
-});
 //app.use(fileUpload());
 app.use("/uploads", express.static("uploads"));
 app.use(flash());

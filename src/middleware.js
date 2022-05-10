@@ -228,9 +228,6 @@ export const protectorMiddleware = async (req, res, next) => {
 
 export const fileUpload = multer({
   dest: "uploads/files/",
-  limits: {
-    fileSize: 9900000000,
-  },
 });
 
 export const dropbox = dropboxV2Api.authenticate({
@@ -270,9 +267,6 @@ const s3ImageUploader = multerS3({
 
 export const photoUpload = multer({
   dest: "uploads/photos/",
-  limits: {
-    fileSize: 9900000000,
-  },
   //storage: isHeroku ? s3ImageUploader : undefined,
   storage: s3ImageUploader,
 });
