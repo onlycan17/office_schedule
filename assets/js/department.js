@@ -15,7 +15,7 @@
   \*************************************/
 /***/ (() => {
 
-eval("var btn_update = document.getElementById('btn_update');\n\nvar test = function test() {\n  console.log('test~~!!!!');\n};\n\nbtn_update.addEventListener(\"click\", test);\n\n//# sourceURL=webpack://masterpiece_site/./src/client/js/department.js?");
+eval("const btn_update = document.getElementById('btn_update');\nconst test = () => {\n  console.log('test~~!!!!');\n};\nbtn_update.addEventListener(\"click\", test);\n\n//# sourceURL=webpack://masterpiece_site/./src/client/js/department.js?");
 
 /***/ })
 

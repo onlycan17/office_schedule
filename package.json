@@ -8,19 +8,19 @@
     "build": "npm run build:server && npm run build:assets",
     "build:server": "babel src -d build",
     "build:assets": "webpack --mode=production",
-    "dev:server": "nodemon",
+    "dev:server": "set NODE_ENV=development && nodemon --exec babel-node src/server.js",
     "dev:assets": "webpack --mode=development -w"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/onlycan17/masterpiece_site.git"
+    "url": "git+https://github.com/onlycan17/office_schedule.git"
   },
   "author": "오진석",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/onlycan17/masterpiece_site/issues"
+    "url": "https://github.com/onlycan17/office_schedule/issues"
   },
-  "homepage": "https://github.com/onlycan17/masterpiece_site#readme",
+  "homepage": "https://github.com/onlycan17/office_schedule#readme",
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^31.0.0",
     "@fullcalendar/adaptive": "^5.9.0",
@@ -50,6 +50,7 @@
     "express-ipfilter": "^1.2.0",
     "express-session": "^1.17.2",
     "fullcalendar": "^5.9.0",
+    "helmet": "^7.1.0",
     "iconv-lite": "^0.6.3",
     "isomorphic-fetch": "^3.0.0",
     "jquery": "^3.6.0",
@@ -78,6 +79,7 @@
     "@babel/plugin-transform-runtime": "^7.14.5",
     "@babel/preset-env": "^7.14.9",
     "babel-loader": "^8.2.2",
+    "cross-env": "^7.0.3",
     "css-loader": "^6.2.0",
     "mini-css-extract-plugin": "^2.1.0",
     "nodemon": "^2.0.12",
