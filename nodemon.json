@@ -1,7 +1,4 @@
 {
     "ignore":["webpack.confign.js","src/client/*","assets/*"],
-    "exec":"babel-node src/server.js",
-    "env": {
-    "NODE_ENV": "development"
-  }
+    "exec":"babel-node src/server.js"
 }

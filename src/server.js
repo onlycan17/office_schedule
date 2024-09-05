@@ -1,27 +1,26 @@
 import "dotenv/config";
-import express from "express";
+import express, { request, response } from "express";
+const ipfilter = require("express-ipfilter").IpFilter;
 import morgan from "morgan";
 import "./db";
-const ipfilter = require("express-ipfilter").IpFilter;
 import Mongostore from "connect-mongo";
 import session from "express-session";
 import router from "./router/routers";
+import admin from "./router/admin";
 import flash from "express-flash";
+import "./pusher";
+import opn from "better-opn";
 import apiRouter from "./router/apiRouters";
-import helmet from "helmet";
 
 console.log(ipfilter);
 
-//const isAws = process.env.NODE_ENV === "production";
+const isAws = process.env.NODE_ENV === "production";
 
 const PORT = process.env.PORT || 4500;
 const app = express();
 const logger = morgan("dev");
 const ips = ["127.126.0.1"];
 
-app.use(helmet({
-  contentSecurityPolicy:false,
-}));
 app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views/");
 app.use(ipfilter(ips));
