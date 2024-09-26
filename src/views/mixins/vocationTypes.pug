@@ -1,0 +1,9 @@
+mixin vocatinonTypes(item)
+    tr
+        td
+            a(href=`/vocationTypeDetail/${item._id}`) #{item.name}
+        td
+            a(href=`/vocationTypeDetail/${item._id}`) #{item.order}
+        td(style="text-align:center")
+            a(href=`/vocationTypeDelete/${item._id}`) ❌ 
+            

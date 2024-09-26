@@ -31,7 +31,7 @@ let globalId, title, description, url, start, end, allDay;
 let globalCalendar;
 let monthCaculate = 0;
 let deleteflag = false;
-let dateType = "month";
+let dateType = "week";
 let asyncValue = true;
 
 const scheduleData = JSON.parse(calValue); // 캘린더 스케줄 데이터
@@ -64,7 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
     //initialView: 'resourceTimelineDay',
     initialView: "timeGridWeek",
     navLinks: true, // 날짜를 선택하면 Day 캘린더나 Week 캘린더로 링크
-    editable: true, // 수정 가능?
     selectable: true, // 달력 일자 드래그 설정가능
     nowIndicator: true, // 현재 시간 마크
     dayMaxEvents: true, // 이벤트가 오버되면 높이 제한 (+ 몇 개식으로 표현)
@@ -215,17 +214,15 @@ document.addEventListener("DOMContentLoaded", function () {
           }else{
             const calendarDate = calendar.getDate().toISOString();
             const startDate = moment(calendarDate).format('YYYY-MM-DD');
-            let calendarDateEnd = calendar.getDate();
-            let end = calendarDateEnd.getDay()+7;
-            const endDate = moment(end).format('YYYY-MM-DD'); 
+            const endDate = moment(calendar.view.currentEnd).format('YYYY-MM-DD');
             const res = await axios({
               method: "get",
               url: "/customWeekBongoCar",
               params: { startDate, endDate , url: window.location.pathname,order,menuName,flag },
               timeout: 15000,
             });
-            console.log(res.data.schedule);
-            res.data.schedule.forEach((element) => {
+            console.log(res.data.bongoCar);
+            res.data.bongoCar.forEach((element) => {
               calendar.addEvent(element);
             });
             calendar.unselect();
@@ -261,17 +258,15 @@ document.addEventListener("DOMContentLoaded", function () {
           }else{
             const calendarDate = calendar.getDate().toISOString();
             const startDate = moment(calendarDate).format('YYYY-MM-DD');
-            let calendarDateEnd = calendar.getDate();
-            let end = calendarDateEnd.getDay()+7;
-            const endDate = moment(end).format('YYYY-MM-DD'); 
+            const endDate = moment(calendar.view.currentEnd).format('YYYY-MM-DD');
             const res = await axios({
               method: "get",
               url: "/customWeekBongoCar",
               params: { startDate, endDate , url: window.location.pathname,order,menuName,flag },
               timeout: 15000,
             });
-            console.log(res.data.schedule);
-            res.data.schedule.forEach((element) => {
+            console.log(res.data.bongoCar);
+            res.data.bongoCar.forEach((element) => {
               calendar.addEvent(element);
             });
             calendar.unselect();
@@ -354,7 +349,7 @@ async function deleteBtnEvent() {
       const calendar =  globalCalendar.getEventById(globalId);
       calendar.remove();
       modal.classList.toggle("show-modal");    
-      location.reload(); 
+      location.reload(true); 
     }
   }
 }
@@ -414,7 +409,7 @@ function viewAddEvents(id) {
   // document.getElementById("url").value = "";
   globalCalendar.unselect();
   toggleModal();
-  location.reload();
+  location.reload(true);
 }
 
 async function updateParam(id) {

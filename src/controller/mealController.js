@@ -116,8 +116,6 @@ export const customWeekMeal = async (req, res) => {
       })
       .populate("file");
   // console.log(Meal);
-  const color = req.session.user.color;
-  //console.log(color);
   return res.status(200).json({
     meal,
   });

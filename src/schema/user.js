@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
   position: {type: String},
   menu: [{ type: mongoose.Schema.Types.ObjectId, ref: "Menu"}],
   color: {type: String, require: true},
+  vocation: {type: Number}
 });
 
 userSchema.pre("save", async function () {

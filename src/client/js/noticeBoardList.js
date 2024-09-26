@@ -34,7 +34,6 @@ async function tableSearch() {
     searching: false,
     language: lang_kor,
     ajax: {
-      data: "json",
       type: "post",
       url: "/noticeBoardList",
       data: form_data,

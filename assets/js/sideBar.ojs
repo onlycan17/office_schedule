@@ -11,10 +11,11 @@ $(function () {
   });
 
   $(window).resize(function () {
-    var w = $(window).width(),
+    var w = $(window).width(),정
       h = $(window).height();
     //$('section').width(w);
     $("section").height(h);
     $("menu .container").height(h - 60);
   });
 });
+

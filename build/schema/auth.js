@@ -4,11 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = void 0;
-
 var _mongoose = _interopRequireDefault(require("mongoose"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
 var authSchema = new _mongoose["default"].Schema({
   subUrl: {
     type: String,
@@ -23,8 +20,5 @@ var authSchema = new _mongoose["default"].Schema({
     ref: "Department"
   }
 });
-
 var Auth = _mongoose["default"].model("Auth", authSchema);
-
-var _default = Auth;
-exports["default"] = _default;
+var _default = exports["default"] = Auth;

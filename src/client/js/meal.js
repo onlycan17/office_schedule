@@ -89,7 +89,6 @@ document.addEventListener("DOMContentLoaded", function () {
     //initialView: 'resourceTimelineDay',
     initialView: "dayGridMonth",
     navLinks: true, // 날짜를 선택하면 Day 캘린더나 Week 캘린더로 링크
-    editable: true, // 수정 가능?
     selectable: true, // 달력 일자 드래그 설정가능
     nowIndicator: true, // 현재 시간 마크
     dayMaxEvents: true, // 이벤트가 오버되면 높이 제한 (+ 몇 개식으로 표현)
@@ -178,8 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
               (Number(month) + 1 === Number(todayMonth) &&
                 Number(today) <= 7) ||
               (Number(todayMonth) - Number(month) === 89 &&
-                Number(today) <= 7)) &&
-            e.event._def.extendedProps.user === user
+                Number(today) <= 7))
           ) {
             $(".editorCK").append(
               `
@@ -286,19 +284,10 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("department").value
       );
       //console.log(department._id);
-      if (department._id !== "612490cc21f010838f50a41b" && department._id !== "6110e83e4d79e34e8bff0e44") {
-        alert("관리자 외에는 등록하실 수 없습니다.");
-        return false;
-      }
-      const month = moment(arg.start).format("YYYYMM");
-      const startDay = moment(arg.start).format("DD");
-      const todayMonth = moment(new Date()).format("YYYYMM");
-      const today = moment(new Date()).format("DD");
-      if (
-        Number(month) === Number(todayMonth) ||
-        (Number(month) + 1 === Number(todayMonth) && Number(today) <= 7) ||
-        (Number(todayMonth) - Number(month) === 89 && Number(today) <= 7)
-      ) {
+      // if (department._id !== "612490cc21f010838f50a41b" && department._id !== "6110e83e4d79e34e8bff0e44") {
+      //   alert("관리자 외에는 등록하실 수 없습니다.");
+      //   return false;
+      // }
         $("#commentTextarea").css("display", "none");
         console.log("selecte");
         start = moment(arg.start).format("YYYY-MM-DD HH:mm:SS");
@@ -310,11 +299,6 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("end").value = end;
         //modal.style.display = "block";
         toggleSideBar();
-      } else {
-        alert(
-          "지난달 식단표를 작성할 수 있는 기간이 만료되었습니다.\n (예: 작성할 지난달이 10월일경우 11월 7일전까지 등록해야 함.)"
-        );
-      }
     },
     eventAdd: async function (obj) {
       // 이벤트가 추가되면 발생하는 이벤트
@@ -585,7 +569,7 @@ function viewAddEvents(id) {
   $(".pull-right > .btn").remove();
   $(".file a").remove();
   editor.isReadOnly = false;
-  location.reload();
+  location.reload(true);
 }
 
 async function updateParam(id) {

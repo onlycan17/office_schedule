@@ -1,0 +1,18 @@
+extends base
+include mixins/vocationTypes
+
+block content
+    if errorMessage 
+        span=errorMessage
+    div 
+        a.button(href="/vocationAdd") 부서등록
+    table(style="max-width:500px")
+        tr
+            th 코드
+            th 휴가명
+            th 비중
+            th(style="width:30px; text-align:center") 삭제
+        each item in vocationTypes
+            +vocatinonTypes(item)
+        else 
+            span.empty__message 연차종류 내용이 비어있습니다. 등록해 주세요.

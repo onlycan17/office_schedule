@@ -4,11 +4,11 @@ $(document).ready(function(){
   $('.close-button').click(function(){
       modal.classList.toggle("show-modal");
   });
-  
+
 });
 
 function addAuth(menuId,subMenuId,idx){
-  const userId = $('#userAuth_'+subMenuId+' option:selected').val();  
+  const userId = $('#userAuth_'+subMenuId+' option:selected').val();
   const departmentId = $('#departmentAuth_'+subMenuId+' option:selected').val();
   if(!userId && !departmentId){
     alert('부서 또는 사용자정보를 선택해 주세요.');

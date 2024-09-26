@@ -22,10 +22,11 @@ function getNotificationPermission() {
   // 데스크탑 알림 권한 요청
   Notification.requestPermission(function (result) {
     // 권한 거절
-    if (result == "denied") {
+    if (result == "denied" && localStorage.getItem("alarm") == "on") {
       alert(
         "알림을 차단하셨습니다.\n브라우저의 사이트 설정에서 변경하실 수 있습니다."
       );
+      localStorage.setItem("alarm", "on");
       return false;
     }
   });

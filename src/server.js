@@ -13,9 +13,6 @@ import opn from "better-opn";
 import apiRouter from "./router/apiRouters";
 
 console.log(ipfilter);
-
-const isAws = process.env.NODE_ENV === "production";
-
 const PORT = process.env.PORT || 4500;
 const app = express();
 const logger = morgan("dev");

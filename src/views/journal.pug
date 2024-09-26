@@ -3,7 +3,7 @@ extends base
 block content
     if errorMessage 
         span=errorMessage
-    link(rel="stylesheet", href="/static/css/main.css")
+    link(rel="stylesheet", href="/static/css/mainStyle.css")
     link(rel="stylesheet", href="/static/css/modal.css")
     link(rel="stylesheet", href="/static/css/sidebar.css")
     link(rel="stylesheet", href="/static/css/ckeditor.css")
@@ -26,7 +26,7 @@ block content
                 h1(style="color:white") 업무일지
             div(class="box")
                 div(class="column")
-                        label 작성자
+                        label(id="userNameLabel") 작성자
                         input(type="text", id="userNameText", readonly="true")
                 div(class="row")
                     div(class="column")
@@ -36,7 +36,9 @@ block content
                         label(for="end") 종료날짜 
                         input(type="text", id="end", readonly="true")
                 div(id="content" class="editorCK")    
-                    textarea(id="ckeditor", name="description")
+                    //-- textarea(id="ckeditor", name="description")
+                    div(id="toolbar-container")
+                    div(id="ckeditor", name="description" style="height:300px; border-color:white;")
                 div(class="file" id="divFile")
                     label(for="file") 파일첨부
                     input(type="file" , id="singleFile")

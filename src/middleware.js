@@ -10,11 +10,11 @@ import aws from "aws-sdk";
 import multerS3 from "multer-s3";
 let ObjectId = require("mongoose").Types.ObjectId;
 
-const isHeroku = process.env.NODE_ENV === "production";
+const isAWSEB = process.env.NODE_ENV === "production";
 
 export const publicOnlyMiddleware = (req, res, next) => {
   //console.log("~~~~~~~~~~~~~~~~");
-  //console.log(isHeroku);
+  //console.log(isAWSEB);
   // await ActionLog.create({
   //   url: req.url,
   //   params: JSON.stringify(req.params),
@@ -45,7 +45,7 @@ export const localsMiddleware = async (req, res, next) => {
   res.locals.loggedIn = Boolean(req.session.loggedIn);
   res.locals.siteName = "명작";
   res.locals.loggedInUser = req.session.user || {};
-  res.locals.isHeroku = isHeroku;
+  res.locals.isAWSEB = isAWSEB;
   //console.log(res.locals.loggedInUser);
   next();
 };
@@ -211,7 +211,7 @@ export const protectorMiddleware = async (req, res, next) => {
     res.locals.siteName = "명작";
     res.locals.loggedInUser = req.session.user || {};
     res.locals.flag = flag;
-    res.locals.isHeroku = isHeroku;
+    res.locals.isAWSEB = isAWSEB;
     const rss = await parse(
       "https://www.kma.go.kr/wid/queryDFSRSS.jsp?zone=4471025000"
     );
@@ -228,6 +228,9 @@ export const protectorMiddleware = async (req, res, next) => {
 
 export const fileUpload = multer({
   dest: "uploads/files/",
+  limits: {
+    fileSize: 999900000000,
+  },
 });
 
 export const dropbox = dropboxV2Api.authenticate({
@@ -267,6 +270,9 @@ const s3ImageUploader = multerS3({
 
 export const photoUpload = multer({
   dest: "uploads/photos/",
-  //storage: isHeroku ? s3ImageUploader : undefined,
+  limits: {
+    fileSize: 999900000000,
+  },
+  //storage: isAWSEB ? s3ImageUploader : undefined,
   storage: s3ImageUploader,
 });

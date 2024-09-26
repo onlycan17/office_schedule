@@ -370,8 +370,9 @@ export const customWeekJournal = async (req, res) => {
       })
       .populate("file");
   } else {
+    console.log(req.session.user.department);
     journal = await Journal.find({
-      department: req.session.user.department,
+      department: req.session.user.department._id,
       $or: [{ start: { $gte: startDate } }, { start: { $lte: endDate } }],
       $or: [{ end: { $gte: startDate } }, { end: { $lte: endDate } }],
     })

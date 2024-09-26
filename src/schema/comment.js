@@ -5,6 +5,7 @@ const commentSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
   journal: { type: mongoose.Schema.Types.ObjectId, ref: "Journal" },
   meal: {type: mongoose.Schema.Types.ObjectId, ref: "Meal"},
+  vocation:{type: mongoose.Schema.Types.ObjectId, ref:"Vocation"},
   createdAt: { type: Date, required: true, default: Date.now },
 });
 

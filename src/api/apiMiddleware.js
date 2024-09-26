@@ -10,7 +10,7 @@ import aws from "aws-sdk";
 import multerS3 from "multer-s3";
 let ObjectId = require("mongoose").Types.ObjectId;
 
-const isHeroku = process.env.NODE_ENV === "production";
+const isAWSEB = process.env.NODE_ENV === "production";
 
 export const apiPublicOnlyMiddleware = (req, res, next) => {
   console.log(req);
@@ -37,7 +37,7 @@ export const apiLocalsMiddleware = async (req, res, next) => {
   res.locals.loggedIn = Boolean(req.session.loggedIn);
   res.locals.siteName = "명작";
   res.locals.loggedInUser = req.session.user || {};
-  res.locals.isHeroku = isHeroku;
+  res.locals.isAWSEB = isAWSEB;
   //console.log(res.locals.loggedInUser);
   next();
 };
@@ -203,7 +203,7 @@ export const apiProtectorMiddleware = async (req, res, next) => {
     res.locals.siteName = "명작";
     res.locals.loggedInUser = req.session.user || {};
     res.locals.flag = flag;
-    res.locals.isHeroku = isHeroku;
+    res.locals.isAWSEB = isAWSEB;
     const rss = await parse(
       "https://www.kma.go.kr/wid/queryDFSRSS.jsp?zone=4471025000"
     );
@@ -265,6 +265,6 @@ export const photoUpload = multer({
   limits: {
     fileSize: 9900000000,
   },
-  //storage: isHeroku ? s3ImageUploader : undefined,
+  //storage: isAWSEB ? s3ImageUploader : undefined,
   storage: s3ImageUploader,
 });

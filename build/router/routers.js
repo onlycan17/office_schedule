@@ -4,43 +4,27 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = void 0;
-
 var _express = _interopRequireDefault(require("express"));
-
 var _middleware = require("../middleware");
-
 var _userController = require("../controller/userController");
-
 var _departmentController = require("../controller/departmentController");
-
 var _menuController = require("../controller/menuController");
-
 var _authController = require("../controller/authController");
-
 var _homeController = require("../controller/homeController");
-
 var _scheduleController = require("../controller/scheduleController");
-
 var _journalController = require("../controller/journalController");
-
 var _connectMultiparty = _interopRequireDefault(require("connect-multiparty"));
-
 var _noticeBoardController = require("../controller/noticeBoardController");
-
 var _readerBoardController = require("../controller/readerBoardController");
-
 var _mealController = require("../controller/mealController");
-
 var _uploadImgController = require("../controller/uploadImgController");
-
 var _bongoCarController = require("../controller/bongoCarController");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
+var _officeRoomController = require("../controller/officeRoomController");
+var _vocationController = require("../controller/vocationController");
+var _vocationTypeController = require("../controller/vocationTypeController");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
 var multipartMiddleware = (0, _connectMultiparty["default"])();
-
 var router = _express["default"].Router();
-
 router.route("/").all(_middleware.localsMiddleware).get(_userController.getLogin).post(_userController.postLogin);
 router.route("/home").all(_middleware.localsMiddleware).all(_middleware.protectorMiddleware).get(_homeController.home);
 router.route("/logout").all(_middleware.localsMiddleware).get(_userController.logout);
@@ -71,12 +55,21 @@ router.route("/bongoCar").all(_middleware.protectorMiddleware).get(_bongoCarCont
 router.route("/addBongoCar").post(_bongoCarController.postAddBongoCar);
 router.route("/deleteBongoCar")["delete"](_bongoCarController.deleteBongoCar);
 router.route("/customBongoCar").get(_bongoCarController.customBongoCar);
-router.route("/customWeekBongoCar").get(_bongoCarController.customBongoCar); //업무일지조회
+router.route("/customWeekBongoCar").get(_bongoCarController.customWeekBongoCar);
 
+//
+router.route("/officeRoom").all(_middleware.protectorMiddleware).get(_officeRoomController.getOfficeRoom);
+router.route("/addOfficeRoom").post(_officeRoomController.postAddOfficeRoom);
+router.route("/deleteOfficeRoom")["delete"](_officeRoomController.deleteOfficeRoom);
+router.route("/customOfficeRoom").get(_officeRoomController.customOfficeRoom);
+router.route("/customWeekOfficeRoom").get(_officeRoomController.customWeekOfficeRoom);
+
+//업무일지조회
 router.route("/searchJournal").all(_middleware.protectorMiddleware).get(_journalController.getSearchJournalForm);
 router.route("/postSearchJournal").post(_journalController.postSearchJournal);
-router.route("/excelDownload").post(_journalController.excelDownload); // 공지사항
+router.route("/excelDownload").post(_journalController.excelDownload);
 
+// 공지사항
 router.route("/noticeBoardList").all(_middleware.protectorMiddleware).get(_noticeBoardController.getNoticeBoardListForm).post(_noticeBoardController.getNoticeBoardList);
 router.route("/noticeBoardListAdd").all(_middleware.protectorMiddleware).get(_noticeBoardController.addNoticeBoardForm).post(_middleware.fileUpload.fields([{
   name: "singleFile"
@@ -84,8 +77,9 @@ router.route("/noticeBoardListAdd").all(_middleware.protectorMiddleware).get(_no
 router.route("/noticeBoardListDetail/:id([0-9a-f]{24})").all(_middleware.protectorMiddleware).get(_noticeBoardController.noticeBoardListDetail).post(_middleware.fileUpload.fields([{
   name: "singleFile"
 }]), _noticeBoardController.noticeBoardListDetailUpdate)["delete"](_noticeBoardController.noticeBoardListDetailDelete);
-router.route("/noticeBoardListFileDownload/:id([0-9a-f]{24})").get(_noticeBoardController.noticeBoardListFileDownload); //팀장공지
+router.route("/noticeBoardListFileDownload/:id([0-9a-f]{24})").get(_noticeBoardController.noticeBoardListFileDownload);
 
+//팀장공지
 router.route("/readerBoardList").all(_middleware.protectorMiddleware).get(_readerBoardController.getReaderBoardListForm).post(_readerBoardController.getReaderBoardList);
 router.route("/readerBoardListAdd").all(_middleware.protectorMiddleware).get(_readerBoardController.addReaderBoardForm).post(_middleware.fileUpload.fields([{
   name: "singleFile"
@@ -104,10 +98,23 @@ router.route("/customWeekJournal").get(_journalController.customWeekJournal);
 router.route("/download/:id([0-9a-f]{24})").get(_journalController.downloadFile);
 router.route("/addComment").post(_journalController.addPostComment);
 router.route("/editComment").patch(_journalController.editPatchComment);
-router.route("/deleteComment")["delete"](_journalController.deleteComment); //에디터 이미지 업로드
+router.route("/deleteComment")["delete"](_journalController.deleteComment);
 
-router.route("/fileUploadMeal").post(_middleware.photoUpload.any(), _uploadImgController.uploadPhotos); //식단스케줄
+//휴가
+router.route("/vocation").all(_middleware.protectorMiddleware).get(_vocationController.getVocation);
+router.route("/addVocation").post(_vocationController.postAddVocation);
+router.route("/deleteVocation")["delete"](_vocationController.deleteVocation);
+router.route("/customVocation").get(_vocationController.customVocation);
+router.route("/customWeekVocation").get(_vocationController.customWeekVocation);
+//router.route("/download/:id([0-9a-f]{24})").get(downloadFile);
+router.route("/addVocationComment").post(_vocationController.addPostVocationComment);
+router.route("/ediVocationtComment").patch(_vocationController.editPatchVocationComment);
+router.route("/deleteVocationComment")["delete"](_vocationController.deleteVocationComment);
 
+//에디터 이미지 업로드
+router.route("/fileUploadMeal").post(_middleware.photoUpload.any(), _uploadImgController.uploadPhotos);
+
+//식단스케줄
 router.route("/meal").all(_middleware.protectorMiddleware).get(_mealController.getMeal);
 router.route("/addMeal").post(_mealController.postAddMeal);
 router.route("/deleteMeal")["delete"](_mealController.deleteMeal);
@@ -117,5 +124,15 @@ router.route("/downloadMeal/:id([0-9a-f]{24})").get(_journalController.downloadF
 router.route("/addMealComment").post(_mealController.addPostMealComment);
 router.route("/editMealComment").patch(_mealController.editPatchMealComment);
 router.route("/deleteMealComment")["delete"](_mealController.deleteMealComment);
-var _default = router;
-exports["default"] = _default;
+
+//휴가종류 등록
+router.route("/vocationType").all(_middleware.protectorMiddleware).get(_vocationTypeController.getVocationType);
+router.route("/vocationTypeAdd").all(_middleware.protectorMiddleware).get(_vocationTypeController.getVocationTypeAdd).post(_vocationTypeController.postVocationTypeAdd);
+router.route("/vocationTypeDelete/:id([0-9a-f]{24})").all(_middleware.protectorMiddleware).get(_vocationTypeController.deleteVocationType);
+
+// router
+//     .route("/departmentDetail/:id([0-9a-f]{24})")
+//     .all(protectorMiddleware)
+//     .get(getDepartmentDetail)
+//     .post(postDepartmentDetail);
+var _default = exports["default"] = router;
